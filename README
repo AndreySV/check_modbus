@@ -1,0 +1,65 @@
+This is Nagios plugin for Modbus TCP.
+The first version of this plugin was taken from
+http://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/Check_modbus_tcp/details
+
+Added many useful features:
+- support of IPv6 / IPv4 
+- support of DNS names
+- support of many data formats  (unsigned/signed int16_t, int32_t, float, double)
+- support of several data orders (LSB, MSB and some others)
+- retries can be sent to get reliable answer
+
+In general, plugin can be build as usual
+
+./configure 
+make
+make install
+
+
+When you are trying to build plugin under MinGW, then maybe you will need to define path for
+libmodbus explicitly.
+
+libmodbus is installed by default in /usr/local/lib. In MinGW you will need to run 
+
+./configure LDFLAGS=-L/usr/local/lib CPPFLAGS=-I/usr/local/include
+
+instead of just ./configure
+
+
+
+Using
+
+    check_modbus [options]
+
+    -v  --verbose       Print settings before working
+    -h  --help          Print this help
+    -H  --ip=           IP address or hostname 
+    -p  --port=         [ TCP Port number. Default 502 ]  
+    -d  --device=       [ Device modbus number. Default 1 ] 
+    -a  --address=      [ Register/bit address reference. Default 1 ] 
+    -t  --try=          [ Number of tries. Default 1 ] 
+    -F  --format=	    [ Data format. Default 1 ] 
+     		                1 -  int16_t  
+     		                2 - uint16_t  
+     		                3 -  int32_t 
+     		                4 - uint32_t 
+     		                5 -  int64_t 
+     		                6 - uint64_t 
+     		                7 -  float   
+     		                8 -  double  
+    -s  --swapbytes     [ Swap bytes in each incomming word ]
+    -i  --inverse       [ Use inversed words order ]
+    -f  --function=	    Number of functions
+     		                1 - Read coils 
+     		                2 - Read input discretes
+     		                3 - Read multiple registers
+     		                4 - Read input registers
+    -w  --warning=	    [ Warning range ]
+    -c  --critical=	    [ Critical range ]
+    -n  --null          [ If the query will get zero, return the critical signal ]
+    -N  --not_null	    [ If the query will get no zero, return the critical signal ] 
+
+     Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 13 -f 4 -w 123.4 -c 234.5
+     Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 15 -f 4 -w 2345 -c 1234
+     Example: ./check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n
+
