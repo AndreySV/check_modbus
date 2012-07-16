@@ -1,0 +1,6 @@
+# was build using MinGW (non-official build with gcc 4.4.5)
+MinGW=c:\MinGW\bin
+PATH := ${MinGW};${PATH}
+
+all:
+	gcc -DPACKAGE_VERSION="0.2" -Lc:/mingw/msys/1.0/local/lib -Ic:/mingw/msys/1.0/local/include check_modbus.c variant.c -lmodbus -o check_modbus.exe
