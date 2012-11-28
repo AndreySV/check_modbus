@@ -34,6 +34,14 @@ typedef struct
     int     swap_bytes;		            // bytes order
     int     inverse_words;		        // words order
     int     verbose;		            // verbose
+
+    int     perf_min_en;
+    int     perf_max_en;
+
+    double  perf_min;                   // min value for performance data
+    double  perf_max;                   // max value for performance data
+    int     perf_data;		            // enable performance data
+    char*   perf_label;                 // label for performance data
 }   modbus_params_t;
 
 

@@ -1,6 +1,6 @@
 /* Original version 0.01 made by Roman Suchkov aka Fineson
  * 
- * 0.3 version created by Andrey Skvortsov 
+ * 0.31 version created by Andrey Skvortsov 
  */
 
 
@@ -51,6 +51,11 @@ void print_help(void)
     printf("-n  --null          [ If the query will get zero, return the critical signal ]\n");
     printf("-N  --not_null	    [ If the query will get no zero, return the critical signal ]\n"); 
     printf("\n");
+    printf("-m  --perf_min=     [ Minimum value for performance data]\n");
+    printf("-M  --perf_max=     [ Maximum value for performance data]\n");
+    printf("-P  --perf_data     [ Enable to show performance data. By default performance data is disabled]\n");
+    printf("-L  --perf_label=   [ Label for performance data]\n");
+    printf("\n");
     printf(" Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 13 -f 4 -w 123.4 -c 234.5\n");
     printf(" Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 15 -f 4 -w 2345 -c 1234\n");
     printf(" Example: ./check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n\n");
@@ -76,6 +81,16 @@ void print_settings(modbus_params_t* params)
     printf("critical:   %lf\n",         params->crit_range  );
     printf("null:       %d\n",          params->nc          );
     printf("not null:   %d\n",          params->nnc         );
+    printf("\n");
+    printf("perf_data:   %d\n",         params->perf_data   );
+
+    if (params->perf_label)
+    printf("perf_label:  %s\n",         params->perf_label  );
+    else
+    printf("perf_data:   NULL\n"                            );
+
+    printf("perf_min:   %lf\n",         params->perf_min    );
+    printf("perf_max:   %lf\n",         params->perf_max    );
     printf("---------------------------------------------\n");
 }
 
@@ -99,6 +114,13 @@ void    load_defaults(modbus_params_t* params)
         params->warn_range  = 0; 
         params->crit_range  = 0; 
         params->verbose     = 0;
+
+        params->perf_min_en = 0;
+        params->perf_max_en = 0;
+        params->perf_data   = 0;
+        params->perf_label  = NULL;
+        params->perf_min    = 0;
+        params->perf_max    = 0;
 }
 
 
@@ -124,23 +146,28 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
     int rs;
     int option_index;
 
-    const char* short_options = "hH:p:d:a:f:w:c:nNt:F:isv";
+    const char* short_options = "hH:p:d:a:f:w:c:nNt:F:isvPm:M:L:";
     const struct option long_options[] = {
-        {"help",no_argument,NULL,'h'},
-        {"ip",required_argument,NULL,'H'},
-        {"port",optional_argument,NULL,'p'},
-        {"device",optional_argument,NULL,'d'},
-        {"address",required_argument,NULL,'a'},
-        {"try",required_argument,NULL,'t'},
-        {"function",required_argument,NULL,'f'},
-        {"warning",required_argument,NULL,'w'},
-        {"critical",required_argument,NULL,'c'},
-        {"null",no_argument,NULL,'n'},
-        {"not_null",no_argument,NULL,'N'},
-        {"swapbytes",no_argument,NULL,'s'},
-        {"inverse",no_argument,NULL,'i'},
-        {"verbose",no_argument,NULL,'v'},
-        {NULL,0,NULL,0}
+        {"help"         ,no_argument            ,NULL,  'h'   },
+        {"ip"           ,required_argument      ,NULL,  'H'   },
+        {"port"         ,required_argument      ,NULL,  'p'   },
+        {"device"       ,required_argument      ,NULL,  'd'   },
+        {"address"      ,required_argument      ,NULL,  'a'   },
+        {"try"          ,required_argument      ,NULL,  't'   },
+        {"function"     ,required_argument      ,NULL,  'f'   },
+        {"format"       ,required_argument      ,NULL,  'F'   },
+        {"function"     ,required_argument      ,NULL,  'f'   },
+        {"critical"     ,required_argument      ,NULL,  'c'   },
+        {"null"         ,no_argument            ,NULL,  'n'   },
+        {"not_null"     ,no_argument            ,NULL,  'N'   },
+        {"swapbytes"    ,no_argument            ,NULL,  's'   },
+        {"inverse"      ,no_argument            ,NULL,  'i'   },
+        {"verbose"      ,no_argument            ,NULL,  'v'   },
+        {"perf_data"    ,no_argument            ,NULL,  'P'   },
+        {"perf_min"     ,required_argument      ,NULL,  'm'   },
+        {"perf_max"     ,required_argument      ,NULL,  'M'   },
+        {"perf_label"   ,required_argument      ,NULL,  'L'   },
+        {NULL           ,0                      ,NULL,   0    }
         };
 
     //************************************************************
@@ -205,6 +232,21 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
             case 'N':
                 params->nnc = 1;
                 break;
+            case 'm':
+                params->perf_min = atof(optarg);
+                params->perf_min_en = 1;
+                break;
+            case 'M':
+                params->perf_max = atof(optarg);
+                params->perf_max_en = 1;
+                break;
+            case 'L':
+                params->perf_label = optarg;
+                break;
+            case 'P':
+                params->perf_data = 1;
+                break;
+
             case '?': 
             default:
                 print_help(); 
@@ -227,6 +269,12 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
     if (check_format_type( params->format) )
     {
         printf("Invalid data format: %d\n", params->format );
+        return RESULT_WRONG_ARG;
+    }
+
+    if (params->perf_data && (params->perf_label==NULL))
+    {
+        printf("Label parameter is required, when performance data is enabled\n");
         return RESULT_WRONG_ARG;
     }
 
@@ -298,6 +346,18 @@ int     print_error( int rc )
     }
 }
 
+void print_performance_data(modbus_params_t* params, data_t* data)
+{
+    if (params->perf_data)
+    {
+        printf("\t\t|'%s'=", params->perf_label);
+        printf_data_t( data );
+        printf(";%lf;%lf;", params->warn_range, params->crit_range);
+        if (params->perf_min_en) printf("%lf", params->perf_min );
+        printf(";");
+        if (params->perf_max_en) printf("%lf", params->perf_max );
+    }
+}
 
 int print_result(modbus_params_t* params, data_t* data)
 {
@@ -346,6 +406,8 @@ int print_result(modbus_params_t* params, data_t* data)
     }
 
     printf_data_t( data ); 
+    print_performance_data( params, data );
+
     printf("\n"); 
 
     return rc;

@@ -8,6 +8,7 @@ Added many useful features:
 - support of many data formats  (unsigned/signed int16_t, int32_t, float, double)
 - support of several data orders (LSB, MSB and some others)
 - retries can be sent to get reliable answer
+- supports performance data
 
 In general, plugin can be build as usual
 
@@ -58,6 +59,12 @@ Using
     -c  --critical=	    [ Critical range ]
     -n  --null          [ If the query will get zero, return the critical signal ]
     -N  --not_null	    [ If the query will get no zero, return the critical signal ] 
+
+    -m  --perf_min=     [ Minimum value for performance data]
+    -M  --perf_max=     [ Maximum value for performance data]
+    -P  --perf_data     [ Enable to show performance data. By default performance data is disabled]
+    -L  --perf_label=   [ Label for performance data]
+
 
      Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 13 -f 4 -w 123.4 -c 234.5
      Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 15 -f 4 -w 2345 -c 1234

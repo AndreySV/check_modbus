@@ -15,3 +15,8 @@
 	added verbose mode
 	added timeout between retries is calculated using random generator
 
+2012-08-06 version 0.31
+	fidex bug: command line parameter "--format" did not work
+	added support of performance data functionality
+
+
