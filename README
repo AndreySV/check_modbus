@@ -5,6 +5,7 @@ http://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/Chec
 Added many useful features:
 - support of IPv6 / IPv4 
 - support of DNS names
+- support of serial port connections (RS232 and RS485)
 - support of many data formats  (unsigned/signed int16_t, int32_t, float, double)
 - support of several data orders (LSB, MSB and some others)
 - retries can be sent to get reliable answer
@@ -36,6 +37,11 @@ Using
     -h  --help          Print this help
     -H  --ip=           IP address or hostname 
     -p  --port=         [ TCP Port number. Default 502 ]  
+    -S  --serial=       Serial port to use
+    -r  --serial_mode=  [ Mode of serial port. Default 0 ]
+                                0 - RS232
+                                1 - RS485
+    -b  --serial_bps=   [ Serial port speed ]
     -d  --device=       [ Device modbus number. Default 1 ] 
     -a  --address=      [ Register/bit address reference. Default 1 ] 
     -t  --try=          [ Number of tries. Default 1 ] 
@@ -69,4 +75,5 @@ Using
      Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 13 -f 4 -w 123.4 -c 234.5
      Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 15 -f 4 -w 2345 -c 1234
      Example: ./check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n
+     Example: ./check_modbus --serial=/dev/ttyS0 --try=5 -d 2 -a 20 -f 2 -n
 

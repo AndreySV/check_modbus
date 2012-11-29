@@ -20,13 +20,18 @@
 
 void print_help(void)
 {
-    printf("Check ModBus TCP version %s\n", XSTR(PACKAGE_VERSION) );
+    printf("Check ModBus version %s\n", XSTR(PACKAGE_VERSION) );
     printf("Build date: %02d.%02d.%04d\n",COMPILE_DAY,COMPILE_MONTH,COMPILE_YEAR);
     printf("\n");
     printf("-v  --verbose       Print settings before working\n" );
     printf("-h  --help          Print this help\n" );
     printf("-H  --ip=           IP address or hostname\n"); 
     printf("-p  --port=         [ TCP Port number. Default 502 ]\n");  
+    printf("-S  --serial=       Serial port to use\n");
+    printf("-r  --serial_mode=  [ RS mode of serial port. Default 0 ]\n");
+    printf(" 		                0 - RS232\n");
+    printf(" 		                1 - RS485\n");
+    printf("-b  --serial_bps=   [ Serial port speed. Default 9600 ]\n");
     printf("-d  --device=       [ Device modbus number. Default 1 ]\n"); 
     printf("-a  --address=      [ Register/bit address reference. Default 1 ]\n"); 
     printf("-t  --try=          [ Number of tries. Default 1 ]\n"); 
@@ -66,21 +71,26 @@ void print_settings(modbus_params_t* params)
 {
     printf("---------------------------------------------\n");
     printf("Settings:\n");
-    printf("ip:         %s\n",          params->host        );
-    printf("port:       %s\n",          params->mport       );
-    printf("device:     %d\n",          params->devnum      );
-    printf("address:    %d\n",          params->sad         );
-    printf("function:   %d\n",          params->nf          );
-    printf("tries:      %d\n",          params->tries       );
+    printf("ip:          %s\n",          params->host        );
+    printf("port:        %s\n",          params->mport       );
+    printf("serial:      %s\n",          params->serial      );
+    printf("serial_mode: %s\n",          (params->serial_mode == MODBUS_RTU_RS232) ? "MODBUS_RTU_RS232" : "MODBUS_RTU_RS485" );
+    printf("serial_bps:  %d\n",          params->serial_bps  );
     printf("\n");
-    printf("inverse:    %d\n",          params->inverse_words);
-    printf("format:     %d\n",          params->format      );
-    printf("swap bytes: %d\n",          params->swap_bytes  );
+    
+    printf("device:      %d\n",          params->devnum      );
+    printf("address:     %d\n",          params->sad         );
+    printf("function:    %d\n",          params->nf          );
+    printf("tries:       %d\n",          params->tries       );
     printf("\n");
-    printf("warning:    %lf\n",         params->warn_range  );
-    printf("critical:   %lf\n",         params->crit_range  );
-    printf("null:       %d\n",          params->nc          );
-    printf("not null:   %d\n",          params->nnc         );
+    printf("inverse:     %d\n",          params->inverse_words);
+    printf("format:      %d\n",          params->format      );
+    printf("swap bytes:  %d\n",          params->swap_bytes  );
+    printf("\n");
+    printf("warning:     %lf\n",         params->warn_range  );
+    printf("critical:    %lf\n",         params->crit_range  );
+    printf("null:        %d\n",          params->nc          );
+    printf("not null:    %d\n",          params->nnc         );
     printf("\n");
     printf("perf_data:   %d\n",         params->perf_data   );
 
@@ -89,8 +99,8 @@ void print_settings(modbus_params_t* params)
     else
     printf("perf_data:   NULL\n"                            );
 
-    printf("perf_min:   %lf\n",         params->perf_min    );
-    printf("perf_max:   %lf\n",         params->perf_max    );
+    printf("perf_min:    %lf\n",         params->perf_min    );
+    printf("perf_max:    %lf\n",         params->perf_max    );
     printf("---------------------------------------------\n");
 }
 
@@ -100,6 +110,9 @@ void    load_defaults(modbus_params_t* params)
         static char  mport_default[] = "502";
 
         params->mport       = mport_default;
+	params->serial      = NULL;
+	params->serial_mode = MODBUS_RTU_RS232;
+	params->serial_bps  = 9600;
         params->sad         = 1;
         params->devnum      = 1;		           
         params->host        = NULL;
@@ -146,11 +159,14 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
     int rs;
     int option_index;
 
-    const char* short_options = "hH:p:d:a:f:w:c:nNt:F:isvPm:M:L:";
+    const char* short_options = "hH:p:S:r:b:d:a:f:w:c:nNt:F:isvPm:M:L:";
     const struct option long_options[] = {
         {"help"         ,no_argument            ,NULL,  'h'   },
         {"ip"           ,required_argument      ,NULL,  'H'   },
         {"port"         ,required_argument      ,NULL,  'p'   },
+	{"serial"       ,required_argument      ,NULL,  'S'   },
+        {"serial_mode"  ,required_argument      ,NULL,  'r'   },
+        {"serial_bps"   ,required_argument      ,NULL,  'b'   },
         {"device"       ,required_argument      ,NULL,  'd'   },
         {"address"      ,required_argument      ,NULL,  'a'   },
         {"try"          ,required_argument      ,NULL,  't'   },
@@ -192,12 +208,30 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
             case 'h':
                 print_help(); 
                 return RESULT_PRINT_HELP;
+	// IP
             case 'H':
                 params->host = optarg;
                 break;
             case 'p':
                 params->mport = optarg;
                 break;
+		
+	// RTU
+            case 'S':
+                params->serial = optarg;
+                break;
+            case 'r':
+                params->serial_mode = atoi(optarg); // RS232/RS485
+		if (params->serial_mode < 0 || params->serial_mode > 1) {
+			printf("%s: Wrong value of serial mode parameter!\n", argv[0]);
+			return RESULT_WRONG_ARG; 
+		}
+                break;
+            case 'b':
+                params->serial_bps = atoi(optarg);
+                break;
+	
+	// 
             case 'd':
                 params->devnum = atoi(optarg);
                 break;
@@ -254,9 +288,9 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
         };
     };  /* while(1) */
     
-    if (params->host== NULL) 
+    if (params->host == NULL && params->serial == NULL) 
     {
-        printf("Could not parse host address: %s\n", argv[0]);
+        printf("Not provided or unable to parse host address/serial port name: %s\n", argv[0]);
         return RESULT_WRONG_ARG; 
     };
 
@@ -424,14 +458,30 @@ int     process(modbus_params_t* params )
         data_t          data;
         int             rc;
 
-        mb = modbus_new_tcp_pi(params->host, params->mport);
-        if (mb == NULL) 
-        {
-            printf( "Unable to allocate libmodbus context\n");
-            return RESULT_ERROR;
-        }
+	if (params->host != NULL) {
+		mb = modbus_new_tcp_pi(params->host, params->mport);
+	} else if (params->serial != NULL) {
+		mb = modbus_new_rtu(params->serial, params->serial_bps, 'N', 8, 1);
+		if (mb != NULL) {
+			rc = modbus_rtu_set_serial_mode(mb, params->serial_mode);
+			if (rc == -1) {
+				fprintf(stderr, "%d %s (%d)\n", rc, modbus_strerror(errno), errno);
+				return RESULT_ERROR;
+			}
+		}
+	} else {
+//			printf( "Unable to allocate libmodbus context\n");
+			return RESULT_ERROR;
+	}
 
-	    /* set short timeout */
+	
+	if (mb == NULL) 
+	{
+		printf( "Unable to allocate libmodbus context\n");
+		return RESULT_ERROR;
+	}
+
+	/* set short timeout */
         response_timeout.tv_sec = 1;
         response_timeout.tv_usec = 0;
         modbus_set_response_timeout( mb, &response_timeout );

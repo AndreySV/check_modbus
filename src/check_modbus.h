@@ -27,6 +27,9 @@ typedef struct
     double  warn_range;		            // Warning range
     double  crit_range;		            // Critical range
     char    *host; 		                // IP address or host name
+    char    *serial;				// serial port name
+    int     serial_mode;			// serial port mode (RS232/RS485)
+    int     serial_bps;				// serial port speed
     int     nc;			                // Null flag
     int     nnc;		                // No null flag
     int     tries;		                // tries 
