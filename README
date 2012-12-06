@@ -5,7 +5,7 @@ http://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/Chec
 Added many useful features:
 - support of IPv6 / IPv4 
 - support of DNS names
-- serial port connections (RS232 and RS485) with Modbus RTU
+- serial port connections (RS232 and RS485) with Modbus RTU (if compiled with libmodbus >= 3.0.0)
 - support of many data formats  (unsigned/signed int16_t, int32_t, float, double)
 - support of several data orders (LSB, MSB and some others)
 - retries can be sent to get reliable answer
@@ -33,7 +33,8 @@ Using
 
     check_modbus [options]
 
-    -v  --verbose       Print settings before working
+    -v  --verbose       Print additional (debug) information (settings, modbus debug etc).
+                        Specify multiple times to increase verbosity level.
     -h  --help          Print this help
     -H  --ip=           IP address or hostname 
     -p  --port=         [ TCP Port number. Default 502 ]  
@@ -43,7 +44,7 @@ Using
                                 0 - RS232
                                 1 - RS485
         --serial_parity=  [ Serial port parity settings. Default none ]
-                                Allowed values: none, even, odd
+                                Allowed values: none/N, even/E, odd/O
         --serial_data_bits=  [ Serial port number of data bits. Default 8 ]
                                 Allowed values: 5, 6, 7, 8
         --serial_stop_bits=  [ Serial port number of stop bits. Default 1 ]
