@@ -88,20 +88,22 @@ void print_settings(modbus_params_t* params)
     printf("---------------------------------------------\n");
     printf("Settings:\n");
     
-    if (params->host != NULL) {
+    if (params->host != NULL) 
+    {
         printf("ip:          %s\n",          params->host        );
         printf("port:        %s\n",          params->mport       );
-
+    }
 #if LIBMODBUS_VERSION_MAJOR >= 3
-    } else if (params->serial != NULL) {
+    else if (params->serial != NULL) 
+    {
         printf("serial:           %s\n",     params->serial      );
         printf("serial_mode:      %s\n",     (params->serial_mode == MODBUS_RTU_RS232) ? "MODBUS_RTU_RS232" : "MODBUS_RTU_RS485" );
         printf("serial_bps:       %d\n",     params->serial_bps  );
         printf("serial_parity:    %c (N: none, E: even, O: odd)\n",     params->serial_parity  );
         printf("serial_data_bits: %d\n",     params->serial_data_bits  );
         printf("serial_stop_bits: %d\n",     params->serial_stop_bits  );
-#endif
     }
+#endif
     printf("\n");
 
     printf("verbosity:   %d\n",          params->verbose     );
@@ -123,9 +125,9 @@ void print_settings(modbus_params_t* params)
     printf("perf_data:   %d\n",         params->perf_data   );
 
     if (params->perf_label)
-    printf("perf_label:  %s\n",         params->perf_label  );
+        printf("perf_label:  %s\n",         params->perf_label  );
     else
-    printf("perf_data:   NULL\n"                            );
+        printf("perf_data:   NULL\n"                            );
 
     printf("perf_min:    %lf\n",         params->perf_min    );
     printf("perf_max:    %lf\n",         params->perf_max    );
@@ -282,9 +284,12 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
                 params->serial_bps = atoi(optarg);
                 break;
             case OPT_SERIAL_PARITY:
-                if (optarg > 0) {
+                if (optarg > 0) 
+                {
                   params->serial_parity = toupper( *optarg );
-                } else {
+                }
+                else 
+                {
                   params->serial_parity = '\0';
                 }
                 break;
@@ -367,20 +372,25 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
 #endif
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
-    if (params->serial != NULL) {
-        if (params->serial_mode != MODBUS_RTU_RS232 && params->serial_mode != MODBUS_RTU_RS485) {
+    if (params->serial != NULL) 
+    {
+        if (params->serial_mode != MODBUS_RTU_RS232 && params->serial_mode != MODBUS_RTU_RS485) 
+        {
             printf("%s: Invalid value of serial port mode parameter!\n", argv[0]);
             return RESULT_WRONG_ARG; 
         }
-        if (check_serial_parity(params->serial_parity)) {
+        if (check_serial_parity(params->serial_parity)) 
+        {
             printf("%s: Invalid value of serial port parity mode parameter!\n", argv[0]);
             return RESULT_WRONG_ARG;
         }
-        if (params->serial_data_bits < 5 || params->serial_data_bits > 8) {
+        if (params->serial_data_bits < 5 || params->serial_data_bits > 8) 
+        {
             printf("%s: Invalid value of serial port mode data length parameter!\n", argv[0]);
             return RESULT_WRONG_ARG;
         }
-        if (params->serial_stop_bits < 1 || params->serial_stop_bits > 2) {
+        if (params->serial_stop_bits < 1 || params->serial_stop_bits > 2) 
+        {
             printf("%s: Invalid value of serial port stop bits parameter!\n", argv[0]);
             return RESULT_WRONG_ARG;
         }
@@ -501,7 +511,7 @@ int print_result(modbus_params_t* params, data_t* data)
     {
         if (params->nc  == 1 )  rc = ( result == 0 ) ? RESULT_CRITICAL : RESULT_OK; 
         if (params->nnc == 1 )  rc = ( result != 0 ) ? RESULT_CRITICAL : RESULT_OK; 
-	}
+    }
     else
     {
         if ( warn_range <= crit_range) 
@@ -552,10 +562,13 @@ int     process(modbus_params_t* params )
         data_t          data;
         int             rc;
 
-        if (params->host != NULL) {
+        if (params->host != NULL) 
+        {
             mb = modbus_new_tcp_pi(params->host, params->mport);
+        }
 #if LIBMODBUS_VERSION_MAJOR >= 3
-        } else if (params->serial != NULL) {
+        else if (params->serial != NULL) 
+        {
             mb = modbus_new_rtu(params->serial, params->serial_bps, params->serial_parity, params->serial_data_bits, params->serial_stop_bits);
             if (mb != NULL) 
             {
@@ -573,8 +586,10 @@ int     process(modbus_params_t* params )
                     if (params->verbose) printf("Serial port already in requested mode.\n");
                 }    
             }
+        }
 #endif
-        } else {
+        else 
+        {
 #if LIBMODBUS_VERSION_MAJOR >= 3
             printf( "Unable to allocate libmodbus context - unknown connection parameters: neither host nor serial port specified.\n");
 #else
