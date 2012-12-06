@@ -5,7 +5,7 @@ http://exchange.nagios.org/directory/Plugins/Network-and-Systems-Management/Chec
 Added many useful features:
 - support of IPv6 / IPv4 
 - support of DNS names
-- serial port connections (RS232 and RS485) with Modbus RTU (if compiled with libmodbus >= 3.0.0)
+- serial port connections (RS232 and RS485) with Modbus RTU (when compiled with libmodbus >= 3.0.0)
 - support of many data formats  (unsigned/signed int16_t, int32_t, float, double)
 - support of several data orders (LSB, MSB and some others)
 - retries can be sent to get reliable answer
@@ -18,8 +18,7 @@ make
 make install
 
 
-When you are trying to build plugin under MinGW, then maybe you will need to define path for
-libmodbus explicitly.
+When you are trying to build plugin under MinGW, then maybe you will need to define path for libmodbus explicitly.
 
 libmodbus is installed by default in /usr/local/lib. In MinGW you will need to run 
 
@@ -29,7 +28,7 @@ instead of just ./configure
 
 
 
-Using
+Usage:
 
     check_modbus [options]
 
