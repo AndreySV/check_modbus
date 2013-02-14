@@ -152,7 +152,7 @@ void    load_defaults(modbus_params_t* params)
         params->serial_stop_bits = 1;
 #endif
         
-        params->sad         = 1;
+        params->sad         = 0;
         params->devnum      = 1;		           
         params->host        = NULL;
         params->nf          = 0;
