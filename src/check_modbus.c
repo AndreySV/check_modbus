@@ -176,7 +176,14 @@ void    load_defaults(modbus_params_t* params)
 }
 
 
-
+int     check_swap_inverse( modbus_params_t* params)
+{
+	int rc = 0;
+	if ( ((params->nf == 1) || (params->nf == 2)) && /* bit operations */
+		 ((params->swap_bytes ) || (params->inverse_words)) )
+		 rc = 1;
+	return rc;
+}
 
 int     check_function_num(int fn)
 {
@@ -192,6 +199,7 @@ int     check_format_type(int ft)
     rc =  (ft>FORMAT_MIN_SUPPORTED) && (ft<FORMAT_MAX_SUPPORTED) ? 0 : 1 ;
     return rc;
 }
+
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
 int     check_serial_parity(char parity)
@@ -396,7 +404,12 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
         }
     }
 #endif
-    
+    if (check_swap_inverse( params ))
+    {
+	  printf("Swap bytes and inverse words functionality not acceptable ");
+	  printf("for modbus functions 1 and 2 operated with bits.\n");
+	  return RESULT_WRONG_ARG;
+	}
     
     if (check_function_num( params->nf ))
     {
