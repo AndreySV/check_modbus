@@ -139,4 +139,15 @@ void    reorder_data_t(data_t* data, int swap, int inverse_words)
     
 }
 
+int     equal_data_t(data_t* data1,data_t* data2)
+{
+    int         size = sizeof_data_t( data1 );
+    int         i;
+
+	if ( data1->format != data2->format ) return 0;
+	for( i=0; i<size; i++)
+			if (data1->val.bytes[i] != data2->val.bytes[i]) return 0;
+	return 1;
+}
+
 

@@ -51,6 +51,7 @@ double  value_data_t(data_t*  data);
 void    init_data_t(data_t* data, int8_t format);
 void    clear_data_t(data_t* data);
 void    reorder_data_t(data_t* data, int swap_bytes, int inverse_words);
+int     equal_data_t(data_t* data1, data_t* data2);
 
 #endif
 

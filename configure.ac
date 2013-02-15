@@ -7,8 +7,10 @@ AM_INIT_AUTOMAKE(check_modbus,0.4)
 
 AC_CONFIG_SRCDIR([src/check_modbus.c])
 
+
 # Checks for programs.
 AC_PROG_CC
+AC_LANG_C
 AC_PROG_MAKE_SET
 
 # Checks for libraries.
@@ -32,6 +34,6 @@ AC_TYPE_UINT8_T
 AC_CHECK_FUNCS([modbus_new_tcp_pi],,AC_MSG_ERROR([echo Function modbus_new_tcp_pi is not found]))
 
 # Output files
-AC_CONFIG_FILES([Makefile src/Makefile ])
+AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile ])
 
 AC_OUTPUT
