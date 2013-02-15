@@ -8,8 +8,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "modbus/modbus.h"
 #include <errno.h>
+#include "check_modbus.h"
 #include "compile_date_time.h"
 #include "command_line.h"
 
@@ -154,7 +154,7 @@ int     process(modbus_params_t* params )
         struct timeval  response_timeout;
         int             try_cnt;
         data_t          data;
-        int             rc;
+        int             rc = RESULT_OK;
 
         if (params->host != NULL) 
         {
@@ -206,11 +206,11 @@ int     process(modbus_params_t* params )
         modbus_set_response_timeout( mb, &response_timeout );
 
         /* calculate retry timeout : random from 1.0 to 1.3 of base timeout */
-        retry_timeout_us = (1 + (rand() % 30)/100.0 )* ( retry_max_timeout_us*(try_cnt+1) );
+        retry_timeout_us = (1 + (rand() % 30)/100.0 )* ( retry_max_timeout_us*(try_cnt+1 ) );
         
         modbus_set_slave(mb,params->devnum);
 
-        init_data_t( &data, params->format );
+        init_data_t( &data, params->format, params->dump_size);
         for(try_cnt=0; try_cnt<params->tries; try_cnt++)
         {
             /* start new try */
@@ -222,7 +222,6 @@ int     process(modbus_params_t* params )
                 rc = RESULT_ERROR_CONNECT;
                 continue;
             }
-
             rc = read_data( mb, params, &data);
             if (rc != RESULT_OK )
             {
@@ -237,7 +236,11 @@ int     process(modbus_params_t* params )
 
         print_error( rc ); 
 
-        if (rc==RESULT_OK) rc = print_result( params, &data );
+        if (rc==RESULT_OK)
+		{
+			if (params->dump) printf_data_t( &data );
+			else  rc = print_result( params, &data );
+		}
         
 	    modbus_close(mb);
     	modbus_free(mb);
@@ -250,11 +253,11 @@ int     process(modbus_params_t* params )
 int main(int argc, char **argv)
 
 {
+	int              rc;
     modbus_params_t  params;
-    int                     rc;
 
     srand( time(NULL) );
-    rc = parse_command_line(&params, argc, argv );
-    return  ( rc != RESULT_OK ) ? rc : process( &params );
+	rc = parse_command_line(&params, argc, argv );
+	return  ( rc != RESULT_OK ) ? rc : process( &params );
 }
 

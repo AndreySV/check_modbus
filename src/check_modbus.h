@@ -2,6 +2,7 @@
 #define _CHECK_MODBUS_H_
 
 #include "variant.h"
+#include "modbus/modbus.h"
 
 	
 #if LIBMODBUS_VERSION_MAJOR >= 3

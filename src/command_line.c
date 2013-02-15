@@ -129,7 +129,7 @@ void print_settings(modbus_params_t* params)
     if (params->perf_label)
         printf("perf_label:  %s\n",         params->perf_label  );
     else
-        printf("perf_data:   NULL\n"                            );
+        printf("perf_label:  NULL\n"                            );
 
     printf("perf_min:    %lf\n",         params->perf_min    );
     printf("perf_max:    %lf\n",         params->perf_max    );
@@ -183,7 +183,7 @@ void    load_defaults(modbus_params_t* params)
         params->perf_max    = 0;
 
 		params->dump        = 0;
-		params->dump_format = DUMP_FMT_BIN;
+		params->dump_format = 0;
 		params->dump_size   = 0;
 }
 
@@ -279,7 +279,7 @@ int      check_command_line(modbus_params_t* params, int argc, char** argv)
         return RESULT_WRONG_ARG; 
     };
 #else
-    if (params->host == NULL && params->file )
+    if (params->host == NULL && params->file == NULL )
     {
         printf("Not provided or unable to parse host address or filename: %s\n", argv[0]);
         return RESULT_WRONG_ARG; 
@@ -344,7 +344,6 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
     int rs;
     int option_index;
 
-	
     /* no short option char wasted for rarely used options */
 	enum
 	{
@@ -540,8 +539,6 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
                 return RESULT_PRINT_HELP;
         };
     };  /* while(1) */
-
-	return check_command_line( params, argc, argv );
+	
+ 	return check_command_line( params, argc, argv );
 }
-
-
