@@ -74,6 +74,8 @@ void print_help(void)
     printf(" Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 13 -f 4 -w 123.4 -c 234.5\n");
     printf(" Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 15 -f 4 -w 2345 -c 1234\n");
     printf(" Example: ./check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n\n");
+	printf(" Example: ./check_modbus --ip=plc01 --try=5 -d 2 -a 1 -f 4 --dump --dump_format 1 --dump_size 20\n"	);
+	printf(" Example: ./check_modbus --file=file.dump -F 7 -f 4 -a 20 -w 100\n");
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
     printf(" Example: ./check_modbus --serial=/dev/ttyS0 -d 2 -a 7 -f 4 -n\n");

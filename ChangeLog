@@ -8,8 +8,8 @@
 	IPv4 and IPv6 are supported
 	host name can be used instead of IP address
 	float, long, int formats can be read from device
-	
-	
+
+
 2012-06-20 version 0.3
 	fixed bug with null and not_null processing
 	added verbose mode
@@ -25,4 +25,8 @@
 	additional configuration parameters (parity, data bits, stop bits) support
 	for Modbus RTU. Multiple fixes. (Mirosław Lach)
 
-
+2013-02-16 version 0.42
+	added man page
+	added dump mode
+	added support of binary file as an input source
+	added some unit tests and the target check

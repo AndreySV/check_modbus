@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 #AC_PREREQ([2.67])
-AC_INIT(check_modbus, 0.4, Skvortsov-at-kipspb.ru)
-AM_INIT_AUTOMAKE(check_modbus,0.4)
+AC_INIT(check_modbus, 0.42, Skvortsov-at-kipspb.ru)
+AM_INIT_AUTOMAKE(check_modbus,0.42)
 
 AC_CONFIG_SRCDIR([src/check_modbus.c])
 
@@ -37,3 +37,5 @@ AC_CHECK_FUNCS([modbus_new_tcp_pi],,AC_MSG_ERROR([echo Function modbus_new_tcp_p
 AC_CONFIG_FILES([Makefile src/Makefile tests/Makefile ])
 
 AC_OUTPUT
+
+

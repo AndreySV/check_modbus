@@ -1,0 +1,302 @@
+.TH check_modbus 1 "February 2013" ""   ""
+.SH NAME
+check_modbus - tool to monitor state of different devices in Nagios using Modbus-TCP/RTU protocols.
+
+.SH SYNOPSIS
+.TP
+\fBcheck_modbus\fR [ options ] [ \-\-ip= | \-H ] hostname \-f function 
+.TP
+\fBcheck_modbus\fR [ options ] [ \-\-serial= | \-S ] serial_port \-f function
+.TP
+\fBcheck_modbus\fR [ options ] \-\-file filename \-f function
+.SH DESCRIPTION
+.SS Dump mode
+ Dump mode allows to save up to 127 16-bit registers as a binary file and process this file later using \fBcheck_modbus\fR or any other program.
+ It can used in following cases:
+.RS
+.TP
+- slave device can not handle several TCP/IP connections,
+.TP
+- slave device use RS232/RS485 interface.  Therefore only one connection is allowed,
+.TP
+- slave devices uses non-standard data format.
+.RE
+.TP
+Firstly the binary dump file should be created.
+.RS
+.TP
+check_modbus --ip=plc01 -a 1 -f 4 --dump --dump_format 1 --dump_size 60 > file.dump
+.RE
+.TP
+Afterwards many parameters can be analyzed from created dump file. 
+.RS
+.TP
+.PD 0
+check_modbus --file=file.dump -F 7 -f 4 -a 20 -w 100 -c 150
+.TP
+check_modbus --file=file.dump -F 7 -f 4 -a 18 -w 100 -c 150
+.TP
+check_modbus --file=file.dump -F 7 -f 4 -a 16 -w 100 -c 150
+.TP
+check_modbus --file=file.dump -F 1 -f 4 -a 1  -w 100 -c 150
+.TP
+check_modbus --file=file.dump -F 2 -f 4 -a 2  -w 100 -c 150
+.RE
+.PD
+.TP
+Only \fBbinary\fR dump format can by used as an input source for \fBcheck_modbus\fR. Other formats (hexadecimal and decimal) may be useful for other programs. 
+.SH OPTIONS
+.TP
+.B \-v, \-\-verbose
+turn on verbose mode. Additional debug information (settings, modbus debug ) will be printed 
+.TP
+.B \-h, \-\-help
+print help for a command
+.TP
+.B \-H, \-\-ip
+IP address or hostname. IPv6 address can be used here as well. 
+.TP
+.B \-p, \-\-port
+TCP port number used for Modbus-TCP. By default is 502.
+.TP
+.B \-S, \-\-serial
+Serial port to use
+.TP
+.B \-b, \-\-serial_bps
+Serial port speed. Default is 9600 bps.
+.TP
+.B \-\-serial_mode
+RS mode of serial port. Default is 0.
+.RS
+.PD 0
+.TP
+0
+-
+RS232
+.TP
+1
+-
+RS485
+.RE
+.PD
+.TP
+.B \-\-serial_parity
+Serial port parity settings. Default none. Allowed values: none/N, even/E, odd/O
+.TP
+.B \-\-serial_data_bits
+Serial port number of data bits. Default 8. Allowed values: 5, 6, 7, 8.
+.TP
+.B \-\-serial_stop_bits
+Serial port number of stop bits. Default 1. Allowed values: 1, 2
+.TP
+.B \-\-file     
+Use binary input file as a source for data instead of communicating with device using TCP/IP or serial ports.
+.TP
+.B \-d, \-\-device
+Device modbus number. Default 1
+.TP
+.B \-a, \-\-adress
+Register or bit address. Default 1
+.TP
+.B \-t, \-\-try
+Number of tries to connect modbus device. It's useful to get reliable answer from the device in noisy environment. Default 1.
+.TP
+.B \-F, \-\-format
+Data format. Default 1 (signed word)
+.RS
+.PD 0
+.TP 
+1
+- int16_t
+.TP
+2
+- uint16_t
+.TP
+3
+- int32_t
+.TP
+4
+- uint32_t
+.TP
+5
+- int64_t
+.TP
+6
+- uint64_t
+.TP
+7
+- float
+.TP
+8
+- double
+.PD
+.RE
+.TP
+.B \-s, \-\-swapbytes
+Swap bytes in each incomming word
+.TP
+.B \-i, \-\-inverse
+Inverse order of \fBwords\fR in the packet. To convert data from big-endian to little-endian or the other way use both options \fB-i\f\R and \fB-s\fR at the same time.
+.TP
+.B \-f, \-\-function
+Used modbus function. 
+.RS
+.PD 0
+.TP
+1
+- Read coils
+.TP
+2
+- Read input discretes
+.TP
+3
+- Read holding registers
+.TP
+4
+- Read input registers
+.PD
+.RE
+.TP
+.B \-n, \-\-null
+If the query will get zero, program returns the critical signal
+.TP
+.B \-N, \-\-not_null
+If the query will get non-zero valur, program returns the critical signal
+.TP
+.B \-w, \-\-warning
+Warning range
+.TP
+.B \-c, \-\-critical
+Critical range. Warning range and critical range parameters works together. 
+.RS
+.PD 0
+.TP
+.TP
+1. warning range < critical range
+.PD 
+.TP
+.PD 0
+.TP
+                  x < warning range     - OK
+.TP
+warning range  <= x < critical range    - warning signal
+.TP
+critical range <= x                     - critical signal
+.PD
+
+.TP
+.TP
+2. warning range > critical range
+.PD 
+.TP
+.PD 0
+.TP
+                  x < critical range    - critical signal
+.TP
+critical range <= x < warning range     - warning signal
+.TP
+warning range  <= x                     - OK
+.PD
+.RE
+
+.TP
+.B \-m, \-\-perf_min
+Minimum value for performance data
+.TP
+.B \-M, \-\-perf_max
+Maximum value for performance data
+.TP
+.B \-P, \-\-perf_data
+Enable showing performance data. By default performance data is disabled
+.TP
+.B \-L, \-\-perf_label
+Label for performance data
+.TP
+.B \-\-dump
+Dump incomming registers and bits to stdout instead of analyze their values. Dump mode disables showing performances data as well as critical/warning signalization.
+.TP
+.B \-\-dump_format
+Format of output dump. Default 1 (binary).
+.RS
+.PD 0
+.TP
+1
+- binary
+.TP
+2
+- hexadecimal
+.TP
+3
+- decimal
+.PD
+.RE
+
+.TP
+.B \-\-dump_size
+Number of registers/bits in output dump. The dump starts from address given by parameter \fB\-a, \-\-address\fR.
+.SH EXIT STATUS
+Program can return the following codes:
+.TP
+0
+- value is OK
+.TP
+1
+- warning level
+.TP
+2
+- critical level
+.TP
+3 
+- general error
+.TP
+4
+- unknown error)
+.TP
+5 
+- help information were returned
+.TP
+6
+- wrong arguments
+.TP
+7
+- connection error
+.TP
+8
+- read error
+.TP
+9 
+- unsupported function
+.TP
+10
+- unsupported format
+
+.SH EXAMPLES
+.TP
+check_modbus --ip=192.168.1.123 -a 13 -f 4 -F 7 -w 123.4 -c 234.5
+read float value from modbus address 13 using Modbus-TCP
+.TP
+check_modbus --ip=192.168.1.123 -a 15 -f 4 -w 2345 -c 1234
+read signed integer value from modbus address 15
+.TP
+check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n 
+.TP
+check_modbus --ip=plc01 -a 1 -f 4 --dump --dump_format 1 --dump_size 60 > file.dump
+save 60 registers from plc01 to the file.dump in binary format. All these registers can be analyzed later off-line or even on the other machine. See next example.
+.TP
+check_modbus --file=file.dump -F 7 -f 4 -a 20 -w 100 -c 150
+Off-line analization of data from a dump file.
+.TP
+check_modbus --serial=/dev/ttyS0 -d 2 -a 7 -f 4 -n
+.SH AUTHORS
+.PD 0
+.TP
+Andrey Skvortsov <Skvortsov@kipspb.ru>
+.TP
+Mirosław Lach    <m.github@lach.waw.pl>
+.SH NOTES
+All bug reports can be posted on the GitHub page https://github.com/AndreySV/check_modbus
+.SH COPYRIGHT
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
