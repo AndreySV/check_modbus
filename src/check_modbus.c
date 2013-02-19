@@ -24,6 +24,7 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
     int size = sizeof_data_t( data );
     int sad  = params->sad;
 
+	if (params->verbose) printf("read_data\n");
     clear_data_t( data );
 	if (mb != NULL)
 	{
@@ -51,6 +52,7 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
 		}
 	}
 
+
 	if (f != NULL )
 	{
 		int read;
@@ -69,6 +71,8 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
 	}
 	
 	if (rc == RESULT_OK)  reorder_data_t( data, params->swap_bytes, params->inverse_words );
+
+	if (params->verbose) printf("read_data rc: %d\n", rc);
     return rc;
 }
 
@@ -76,7 +80,7 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
 
 
 
-int     print_error( int rc )
+void     print_error( int rc )
 {
     switch( rc )
     {
@@ -119,6 +123,8 @@ int print_result(modbus_params_t* params, data_t* data)
     double   result, warn_range, crit_range;
 
 
+	if (params->verbose) printf("print_result\n");
+	
     result      = value_data_t(data);
     warn_range  = params->warn_range;
     crit_range  = params->crit_range;
@@ -159,6 +165,7 @@ int print_result(modbus_params_t* params, data_t* data)
             break;
     }
 
+	if (params->verbose) printf("print_result rc: %d\n", rc);
     printf_data_t( data ); 
     print_performance_data( params, data );
 
@@ -174,6 +181,9 @@ int     init_connection(modbus_params_t* params,modbus_t** mb,FILE** f)
 
 	*mb = NULL;
 	*f  = NULL;
+
+	rc = RESULT_OK;
+	if (params->verbose) printf("init_connection\n");
 
 	/*******************************************************************/
 	/*                       Modbus-TCP                                */
@@ -245,6 +255,8 @@ int     init_connection(modbus_params_t* params,modbus_t** mb,FILE** f)
 		
 		modbus_set_slave(*mb,params->devnum);
 	}
+
+    if (params->verbose)	printf("init_connection rc: %d\n", rc);
 	return rc;
 }
 
@@ -297,7 +309,8 @@ int     process(modbus_params_t* params )
 	int             try_cnt;
 	data_t          data;
 	int             rc;
-		
+
+	if (params->verbose) printf("process\n");
 	if (rc = init_connection(params, &mb, &f)) return rc;
 
         
@@ -326,7 +339,7 @@ int     process(modbus_params_t* params )
 	}
 
 	deinit_connection( &mb, &f);
-
+	if (params->verbose) printf("process rc: %d\n", rc);
 	return rc;
 }
 
