@@ -407,7 +407,7 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
         {"dump_size"    ,required_argument      ,NULL,   OPT_DUMP_SIZE   },
         {"dump_format"  ,required_argument      ,NULL,   OPT_DUMP_FORMAT },
         {NULL           ,0                      ,NULL,   0    }
-        };
+    };
 
     //************************************************************
     if (argc < 2)
@@ -433,7 +433,7 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
                 print_help();
                 return RESULT_PRINT_HELP;
 
-            // MODBUS TCP
+                // MODBUS TCP
             case 'H':
                 params->host = optarg;
                 break;
@@ -442,7 +442,7 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
                 break;
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
-            // MODBUS RTU
+                // MODBUS RTU
             case 'S':
                 params->serial = optarg;
                 break;
@@ -455,11 +455,11 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
             case OPT_SERIAL_PARITY:
                 if (optarg > 0)
                 {
-                  params->serial_parity = toupper( *optarg );
+                    params->serial_parity = toupper( *optarg );
                 }
                 else
                 {
-                  params->serial_parity = '\0';
+                    params->serial_parity = '\0';
                 }
                 break;
             case OPT_SERIAL_DATA_BITS:
@@ -530,15 +530,15 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
                 params->dump_format = atoi(optarg);
                 switch(params->dump_format)
                 {
-                case DUMP_FMT_BIN:
-                    params->format = FORMAT_DUMP_BIN;
-                    break;
-                case DUMP_FMT_HEX:
-                    params->format = FORMAT_DUMP_HEX;
-                    break;
-                case DUMP_FMT_DEC:
-                    params->format = FORMAT_DUMP_DEC;
-                    break;
+                    case DUMP_FMT_BIN:
+                        params->format = FORMAT_DUMP_BIN;
+                        break;
+                    case DUMP_FMT_HEX:
+                        params->format = FORMAT_DUMP_HEX;
+                        break;
+                    case DUMP_FMT_DEC:
+                        params->format = FORMAT_DUMP_DEC;
+                        break;
                 }
                 break;
 

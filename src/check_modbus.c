@@ -24,25 +24,25 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
     {
         switch (params->nf)
         {
-        case MBF001_READ_COIL_STATUS:
-            rc = modbus_read_bits(mb, sad, size , data->val.bytes);
-            rc =  ((rc == -1) || (rc!=size)) ? RESULT_ERROR_READ : RESULT_OK;
-            break;
-        case MBF002_READ_INPUT_STATUS:
-            rc = modbus_read_input_bits(mb, sad, size, data->val.bytes);
-            rc =  ((rc == -1) || (rc!=size)) ? RESULT_ERROR_READ : RESULT_OK;
-            break;
-        case MBF003_READ_HOLDING_REGISTERS:
-            rc = modbus_read_registers(mb, sad, size, data->val.words);
-            rc =  ((rc == -1) || (rc!=size)) ? RESULT_ERROR_READ : RESULT_OK;
-            break;
-        case MBF004_READ_INPUT_REGISTERS:
-            rc = modbus_read_input_registers(mb, sad, size, data->val.words);
-            rc =  ((rc == -1) || (rc!=size)) ? RESULT_ERROR_READ : RESULT_OK;
-            break;
-        default:
-            rc = RESULT_UNSUPPORTED_FUNCTION;
-            break;
+            case MBF001_READ_COIL_STATUS:
+                rc = modbus_read_bits(mb, sad, size , data->val.bytes);
+                rc =  ((rc == -1) || (rc!=size)) ? RESULT_ERROR_READ : RESULT_OK;
+                break;
+            case MBF002_READ_INPUT_STATUS:
+                rc = modbus_read_input_bits(mb, sad, size, data->val.bytes);
+                rc =  ((rc == -1) || (rc!=size)) ? RESULT_ERROR_READ : RESULT_OK;
+                break;
+            case MBF003_READ_HOLDING_REGISTERS:
+                rc = modbus_read_registers(mb, sad, size, data->val.words);
+                rc =  ((rc == -1) || (rc!=size)) ? RESULT_ERROR_READ : RESULT_OK;
+                break;
+            case MBF004_READ_INPUT_REGISTERS:
+                rc = modbus_read_input_registers(mb, sad, size, data->val.words);
+                rc =  ((rc == -1) || (rc!=size)) ? RESULT_ERROR_READ : RESULT_OK;
+                break;
+            default:
+                rc = RESULT_UNSUPPORTED_FUNCTION;
+                break;
         }
     }
 
@@ -55,7 +55,9 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
             fprintf( stderr, "Can not seek in file\n");
             return RESULT_ERROR;
         }
+
         read = fread( data->val.words, sizeof(data->val.words[0]), size, f);
+
         if (read != size)
         {
             fprintf( stderr, "Read only %d words from file, but need %\nd", read, size);
@@ -231,7 +233,7 @@ int     init_connection(modbus_params_t* params,modbus_t** mb,FILE** f)
         if (*f == NULL )
         {
             fprintf(stderr,"Unable to open binary dump file %s (%s)\n", \
-                   params->file, strerror(errno));
+                    params->file, strerror(errno));
             return RESULT_ERROR;
         }
         if ( check_lockfile( fileno(*f) ) ) return RESULT_ERROR;
@@ -318,16 +320,16 @@ int     check_lockfile(int fd)
             i = flock( fd, LOCK_EX );
             switch(i)
             {
-            case 0:
-                rc = RESULT_OK;
-                quit = 1;
-                break;
-            case EINTR:
-                break;
-            default:
-                fprintf(stderr,"flock() failed (%s)\n", strerror( errno ) );
-                quit = 1;
-                break;
+                case 0:
+                    rc = RESULT_OK;
+                    quit = 1;
+                    break;
+                case EINTR:
+                    break;
+                default:
+                    fprintf(stderr,"flock() failed (%s)\n", strerror( errno ) );
+                    quit = 1;
+                    break;
             }
         }
     }
