@@ -3,13 +3,13 @@
 
 #include <stdint.h>
 
-typedef struct 
+typedef struct
 {
     union
     {
         uint8_t     bytes[256];
         uint16_t    words[128];
-		
+
         uint8_t     byte;
         int8_t      sbyte;
 
@@ -26,7 +26,7 @@ typedef struct
         double      long_real;
     } val;
     int8_t      format;
-	uint8_t     arr_size;
+    uint8_t     arr_size;
 } data_t;
 
 
@@ -41,13 +41,13 @@ enum
     FORMAT_UNSIGNED_QWORD,
     FORMAT_FLOAT,
     FORMAT_DOUBLE,
-	FORMAT_DUMP_BIN,
-	FORMAT_DUMP_HEX,
-	FORMAT_DUMP_DEC,
-	FORMAT_MAX,
-	FORMAT_MAX_SUPPORTED = FORMAT_DOUBLE+1,
-	FORMAT_DUMP_MIN = FORMAT_DUMP_BIN-1,
-	FORMAT_DUMP_MAX = FORMAT_DUMP_DEC+1
+    FORMAT_DUMP_BIN,
+    FORMAT_DUMP_HEX,
+    FORMAT_DUMP_DEC,
+    FORMAT_MAX,
+    FORMAT_MAX_SUPPORTED = FORMAT_DOUBLE+1,
+    FORMAT_DUMP_MIN = FORMAT_DUMP_BIN-1,
+    FORMAT_DUMP_MAX = FORMAT_DUMP_DEC+1
 };
 
 
@@ -61,4 +61,3 @@ void    reorder_data_t(data_t* data, int swap_bytes, int inverse_words);
 int     equal_data_t(data_t* data1, data_t* data2);
 
 #endif
-

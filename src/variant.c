@@ -8,11 +8,11 @@ int     sizeof_data_t(data_t* data)
     int size = 0;
     switch( data->format )
     {
-	    case FORMAT_DUMP_BIN:
-	    case FORMAT_DUMP_HEX:
-	    case FORMAT_DUMP_DEC:
-	    	size = data->arr_size/2;
-		    break;
+        case FORMAT_DUMP_BIN:
+        case FORMAT_DUMP_HEX:
+        case FORMAT_DUMP_DEC:
+            size = data->arr_size/2;
+            break;
         case FORMAT_SIGNED_WORD:
         case FORMAT_UNSIGNED_WORD:
             size = 1;
@@ -51,7 +51,7 @@ void    init_data_t(data_t* data, int8_t format,uint8_t size)
 {
     clear_data_t( data );
     data->format = format;
-	data->arr_size = size;
+    data->arr_size = size;
 }
 
 
@@ -91,7 +91,7 @@ double  value_data_t(data_t*  data)
 void    printf_data_t(data_t* data)
 {
     int size = 0;
-	int i;
+    int i;
     switch( data->format )
     {
         case FORMAT_SIGNED_WORD:
@@ -118,26 +118,26 @@ void    printf_data_t(data_t* data)
         case FORMAT_DOUBLE:
             printf("%Lf", data->val.long_real);
             break;
-    	case FORMAT_DUMP_BIN:
-	    	fwrite( data->val.bytes, 1, data->arr_size, stdout);
-		    break;
-	    case FORMAT_DUMP_HEX:
-	    	for( i=0; i<data->arr_size;)
-	    	{
-	    		printf("%X ", data->val.bytes[i++]);
-	     		if ( (i%16) == 0) printf("\n");
-   			}
-	     	printf("\n");
-	    	break;
-	    case FORMAT_DUMP_DEC:
-	    	for( i=0; i<data->arr_size;)
-	    	{
-	    		printf("%d ", data->val.bytes[i++]);
-	     		if ( (i%16) == 0) printf("\n");
-			}
-	    	printf("\n");
-			break;
-			
+        case FORMAT_DUMP_BIN:
+            fwrite( data->val.bytes, 1, data->arr_size, stdout);
+            break;
+        case FORMAT_DUMP_HEX:
+            for( i=0; i<data->arr_size;)
+            {
+                printf("%X ", data->val.bytes[i++]);
+                if ( (i%16) == 0) printf("\n");
+            }
+            printf("\n");
+            break;
+        case FORMAT_DUMP_DEC:
+            for( i=0; i<data->arr_size;)
+            {
+                printf("%d ", data->val.bytes[i++]);
+                if ( (i%16) == 0) printf("\n");
+            }
+            printf("\n");
+            break;
+
         default:
             printf("Printf_data_t(): Unsupported format (%d)\n", data->format);
     }
@@ -154,8 +154,8 @@ void    reorder_data_t(data_t* data, int swap, int inverse_words)
     int         size = sizeof_data_t( data );
     int         i, j;
     uint16_t    word;
-    data_t      tmp;  
-    
+    data_t      tmp;
+
     tmp  = *data;
     for( i = 0; i<size; i++)
     {
@@ -163,7 +163,7 @@ void    reorder_data_t(data_t* data, int swap, int inverse_words)
         word = tmp.val.words[j];
         data->val.words[i] = swap ? swap_bytes(word) : word;
     }
-    
+
 }
 
 int     equal_data_t(data_t* data1,data_t* data2)
@@ -171,10 +171,8 @@ int     equal_data_t(data_t* data1,data_t* data2)
     int         size = sizeof_data_t( data1 );
     int         i;
 
-	if ( data1->format != data2->format ) return 0;
-	for( i=0; i<size; i++)
-			if (data1->val.bytes[i] != data2->val.bytes[i]) return 0;
-	return 1;
+    if ( data1->format != data2->format ) return 0;
+    for( i=0; i<size; i++)
+            if (data1->val.bytes[i] != data2->val.bytes[i]) return 0;
+    return 1;
 }
-
-
