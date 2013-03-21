@@ -61,6 +61,7 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
         if (read != size)
         {
             fprintf( stderr, "Read only %d words from file, but need %\nd", read, size);
+            
             return RESULT_ERROR_READ;
         }
         rc = RESULT_OK;

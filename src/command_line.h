@@ -4,6 +4,6 @@
 #include "check_modbus.h"
 
 int     parse_command_line(modbus_params_t* params, int argc, char **argv);
-void    print_settings(modbus_params_t* params);
+void    print_settings(FILE* fd, modbus_params_t* params);
 
 #endif

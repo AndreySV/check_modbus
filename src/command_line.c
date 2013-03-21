@@ -85,61 +85,61 @@ void print_help(void)
     printf("\n");
 }
 
-void print_settings(modbus_params_t* params)
+void print_settings(FILE* fd, modbus_params_t* params)
 {
-    printf("---------------------------------------------\n");
-    printf("Settings:\n");
+    fprintf(fd, "---------------------------------------------\n");
+    fprintf(fd, "Settings:\n");
 
     if (params->host != NULL)
     {
-        printf("ip:          %s\n",          params->host        );
-        printf("port:        %s\n",          params->mport       );
+        fprintf(fd, "ip:          %s\n",          params->host        );
+        fprintf(fd, "port:        %s\n",          params->mport       );
     }
 #if LIBMODBUS_VERSION_MAJOR >= 3
     else if (params->serial != NULL)
     {
-        printf("serial:           %s\n",     params->serial      );
-        printf("serial_mode:      %s\n",     (params->serial_mode == MODBUS_RTU_RS232) ? "MODBUS_RTU_RS232" : "MODBUS_RTU_RS485" );
-        printf("serial_bps:       %d\n",     params->serial_bps  );
-        printf("serial_parity:    %c (N: none, E: even, O: odd)\n",     params->serial_parity  );
-        printf("serial_data_bits: %d\n",     params->serial_data_bits  );
-        printf("serial_stop_bits: %d\n",     params->serial_stop_bits  );
+        fprintf(fd, "serial:           %s\n",     params->serial      );
+        fprintf(fd, "serial_mode:      %s\n",     (params->serial_mode == MODBUS_RTU_RS232) ? "MODBUS_RTU_RS232" : "MODBUS_RTU_RS485" );
+        fprintf(fd, "serial_bps:       %d\n",     params->serial_bps  );
+        fprintf(fd, "serial_parity:    %c (N: none, E: even, O: odd)\n",     params->serial_parity  );
+        fprintf(fd, "serial_data_bits: %d\n",     params->serial_data_bits  );
+        fprintf(fd, "serial_stop_bits: %d\n",     params->serial_stop_bits  );
     }
 #endif
     else if (params->file != NULL )
-        printf("file:             %s\n",     params->file       );
+        fprintf(fd, "file:             %s\n",     params->file       );
 
-    printf("\n");
+    fprintf(fd, "\n");
 
-    printf("verbosity:   %d\n",          params->verbose     );
+    fprintf(fd, "verbosity:   %d\n",          params->verbose     );
 
-    printf("device:      %d\n",          params->devnum      );
-    printf("address:     %d\n",          params->sad         );
-    printf("function:    %d\n",          params->nf          );
-    printf("tries:       %d\n",          params->tries       );
-    printf("\n");
-    printf("inverse:     %d\n",          params->inverse_words);
-    printf("format:      %d\n",          params->format      );
-    printf("swap bytes:  %d\n",          params->swap_bytes  );
-    printf("\n");
-    printf("warning:     %lf\n",         params->warn_range  );
-    printf("critical:    %lf\n",         params->crit_range  );
-    printf("null:        %d\n",          params->nc          );
-    printf("not null:    %d\n",          params->nnc         );
-    printf("\n");
-    printf("perf_data:   %d\n",          params->perf_data   );
+    fprintf(fd, "device:      %d\n",          params->devnum      );
+    fprintf(fd, "address:     %d\n",          params->sad         );
+    fprintf(fd, "function:    %d\n",          params->nf          );
+    fprintf(fd, "tries:       %d\n",          params->tries       );
+    fprintf(fd, "\n");
+    fprintf(fd, "inverse:     %d\n",          params->inverse_words);
+    fprintf(fd, "format:      %d\n",          params->format      );
+    fprintf(fd, "swap bytes:  %d\n",          params->swap_bytes  );
+    fprintf(fd, "\n");
+    fprintf(fd, "warning:     %lf\n",         params->warn_range  );
+    fprintf(fd, "critical:    %lf\n",         params->crit_range  );
+    fprintf(fd, "null:        %d\n",          params->nc          );
+    fprintf(fd, "not null:    %d\n",          params->nnc         );
+    fprintf(fd, "\n");
+    fprintf(fd, "perf_data:   %d\n",          params->perf_data   );
 
 
-    printf("perf_label:  %s\n",          params->perf_label ? params->perf_label : "NULL"  );
+    fprintf(fd, "perf_label:  %s\n",          params->perf_label ? params->perf_label : "NULL"  );
 
-    printf("perf_min:    %lf\n",         params->perf_min    );
-    printf("perf_max:    %lf\n",         params->perf_max    );
+    fprintf(fd, "perf_min:    %lf\n",         params->perf_min    );
+    fprintf(fd, "perf_max:    %lf\n",         params->perf_max    );
 
-    printf("\n");
-    printf("dump:        %d\n",          params->dump       );
-    printf("dump_format: %d\n",          params->dump_format);
-    printf("dump_size:   %d\n",          params->dump_size  );
-    printf("---------------------------------------------\n");
+    fprintf(fd, "\n");
+    fprintf(fd, "dump:        %d\n",          params->dump       );
+    fprintf(fd, "dump_format: %d\n",          params->dump_format);
+    fprintf(fd, "dump_size:   %d\n",          params->dump_size  );
+    fprintf(fd, "---------------------------------------------\n");
 }
 
 
@@ -339,7 +339,7 @@ int      check_command_line(modbus_params_t* params, int argc, char** argv)
     if (check_source( params ) )          return RESULT_WRONG_ARG;
     if (check_dump_param( params ))       return RESULT_WRONG_ARG;
 
-    if (params->verbose) print_settings( params );
+    if (params->verbose) print_settings( stdout, params );
 
     return RESULT_OK;
 }
