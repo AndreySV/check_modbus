@@ -55,8 +55,8 @@ void save_dump_file(FILE* fd, FILE* dump)
         return;
     }
     
-    fprintf( fd, "---------------------------\n");
     fprintf( fd, "Dump of file:\n");
+    fprintf( fd, "---------------------------\n");
     
     clearerr( dump );
     rc = fseek( dump, 0, SEEK_SET );
@@ -105,25 +105,67 @@ int  is_process_directory(struct dirent* d)
     if (d->d_type != DT_DIR )    return 0;
 
     id = strtol( d->d_name, &p, 10);
-    if (p) return 0;
+
+    if ( *p !='\0' ) return 0;
         
     return id;
 }
+
+
+
+int get_state_of_process(FILE* fout, int id)
+{
+    const char find_str[]="State:";
+    char str[255];
+    char* res;
+    FILE* fd;
+    
+    if (!id) return 0;
+
+    snprintf( str, sizeof(str), "/proc/%d/status", id);
+    fd = fopen( str, "rt");
+    if (!fd) return 0;
+
+    do
+    {
+        res = fgets( str, sizeof(str), fd);
+        if (res)
+        {
+            char* found;
+            found = strstr( str, find_str );
+            if (found)
+            {
+                fprintf( fout, "%s\n", str );
+                break;
+            }
+        }
+    }
+    while( res );
+    fclose( fd );
+    
+    fprintf( fout, "\n");
+    
+    return 0;
+}
+
 
 int is_check_modbus_process(FILE* fout, int id)
 {
     char str[255];
     FILE* fd;
     char* res;
-    
-    if (!id) return 0;
+    int   ret;
+    int   ch;
+
+    ret = 0;
+    if (!id) return ret;
+
 
     snprintf( str, sizeof(str), "/proc/%d/cmdline", id);
     fd = fopen( str, "rt");
-    if (!fd) return 0;
+    if (!fd) return ret;
 
     res = fgets( str, sizeof(str), fd);
-    fclose(fd);
     if (res)
     {
         const char ps_name[]="check_modbus";
@@ -132,12 +174,30 @@ int is_check_modbus_process(FILE* fout, int id)
         {
             // check_modbus process is found
             fprintf( fout, "---------------------------\n");
-            fprintf( fout, "Command %s\n", str );
+            fprintf( fout, "Command: \t");
+
+            fseek( fd, 0, SEEK_SET );
+            do
+            {
+                ch = fgetc( fd );
+                if (ch != EOF)
+                {
+                    if (!ch) ch=' ';
+                    fprintf( fout, "%c", (char)ch );
+                }
+            }
+            while( ch != EOF );
+
+            fprintf( fout, "\n");
             fprintf( fout, "PID %d\n", id );
-            return 1;
+
+            get_state_of_process(fout, id);
+                
+            ret = 1;
         }
     }
-    return 0;
+    fclose(fd);
+    return ret;
 }
 
 void get_pids_of_other_processes(FILE* fd)
@@ -152,7 +212,7 @@ void get_pids_of_other_processes(FILE* fd)
         while ((dir = readdir(d)) != NULL)
         {
             id = is_process_directory( dir );
-
+            
             is_check_modbus_process( fd, id );
         }
     }
@@ -169,8 +229,8 @@ void save_debug_information(modbus_params_t* params,FILE* infile, int read, int 
 {
     FILE* fd;
 
-    /* fd = open_file(); */
-    fd = stdout;
+    fd = open_file();
+    /* fd = stdout; */
     if (!fd) return;
 
     fprintf(fd, "Command line settings:\n");
@@ -181,17 +241,25 @@ void save_debug_information(modbus_params_t* params,FILE* infile, int read, int 
     fprintf( fd, "\n" );
     fprintf( fd, "---------------------------\n");
     fprintf( fd, "read: %d\n", read);
-    fprintf( fd, "written: %d\n", size);
+    fprintf( fd, "need: %d\n", size);
     fprintf( fd, "FILE pointer: %p\n", infile);
     fprintf( fd, "current file position: %ld\n", ftell( infile ) );
+    fprintf( fd, "\n");
     
 
     save_dump_file( fd, infile );
+
+    /* save information about pid of current process */
+    fprintf( fd, "---------------------------\n");
+    fprintf( fd, "pid of current process: %d\n", getpid() );
+
     
+   /* save information about other running check_modbus processes  */
     get_pids_of_other_processes( fd );
     
     fprintf( fd, "---------------------------\n");
     fclose(fd);
+
     return;
 }
 
