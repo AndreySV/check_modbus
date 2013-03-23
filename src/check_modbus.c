@@ -4,9 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+
 #include "check_modbus.h"
 #include "compile_date_time.h"
 #include "command_line.h"
+#include "debug.h"
 
 
 
@@ -60,8 +62,8 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
 
         if (read != size)
         {
-            fprintf( stderr, "Read only %d words from file, but need %\nd", read, size);
-            
+            fprintf( stderr, "Read only %d words from file, but need %d \n", read, size);
+            save_debug_information( params, f, read, size);
             return RESULT_ERROR_READ;
         }
         rc = RESULT_OK;
