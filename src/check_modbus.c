@@ -108,7 +108,7 @@ void print_performance_data(modbus_params_t* params, data_t* data)
     if (params->perf_data)
     {
         printf("\t\t|'%s'=", params->perf_label);
-        printf_data_t( data );
+        printf_data_t( stdout, data );
         printf(";%lf;%lf;", params->warn_range, params->crit_range);
         if (params->perf_min_en) printf("%lf", params->perf_min );
         printf(";");
@@ -165,7 +165,7 @@ int print_result(modbus_params_t* params, data_t* data)
     }
 
     if (params->verbose) printf("print_result rc: %d\n", rc);
-    printf_data_t( data );
+    printf_data_t( stdout, data );
     print_performance_data( params, data );
 
     printf("\n");
@@ -256,10 +256,7 @@ int     init_connection(modbus_params_t* params,modbus_t** mb,FILE** f)
         modbus_set_slave(*mb,params->devnum);
     }
 
-    /* Set exclusive lock for stdout. It's needed in dump mode to be
-       sure that noone can access unfinished file. Because
-       the dump file is created using stdout.  */
-    rc = check_lockfile( STDOUT_FILENO );
+
 
     if (params->verbose)    printf("init_connection rc: %d\n", rc);
     return rc;
@@ -340,7 +337,38 @@ int     check_lockfile(int fd)
 }
 
 
-
+int     save_dump_file(modbus_params_t* params, data_t* data)
+{
+    /* Set exclusive lock for stdout. It's needed in dump mode to be
+       sure that noone can access unfinished file. Because
+       the dump file is created using stdout.  */
+    
+    FILE* fout;
+    int   rc;
+    
+    fout = fopen(params->dump_file,"wb");
+    if (fout)
+    {
+        rc = check_lockfile( fileno( fout ) );
+        if (rc)
+        {
+            fprintf( stderr, "Can't set lock on file %s\n", params->dump_file);
+            rc = RESULT_ERROR;
+        }
+        else
+        {
+            printf_data_t( fout, data );
+            rc = RESULT_OK;
+        }
+        fclose( fout );
+    }
+    else
+    {
+        fprintf( stderr, "Can't create file %s\n", params->dump_file);
+        rc= RESULT_ERROR;
+    }
+    return rc;
+}
 
 
 int     process(modbus_params_t* params )
@@ -375,7 +403,7 @@ int     process(modbus_params_t* params )
 
     if (rc==RESULT_OK)
     {
-        if (params->dump) printf_data_t( &data );
+        if (params->dump) rc = save_dump_file( params, &data );
         else  rc = print_result( params, &data );
     }
 

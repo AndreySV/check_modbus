@@ -70,6 +70,7 @@ void print_help(void)
     printf("                        1 - binary\n");
     printf("                        2 - hex\n");
     printf("                        3 - decimal\n");
+    printf("--dump_file=        [ Output dump file ]\n");
     printf("\n");
     printf(" Examples:\n");
     printf("          ./check_modbus --ip=192.168.1.123 -d 1 -a 13 -f 4 -w 123.4 -c 234.5\n");
@@ -139,6 +140,7 @@ void print_settings(FILE* fd, modbus_params_t* params)
     fprintf(fd, "dump:        %d\n",          params->dump       );
     fprintf(fd, "dump_format: %d\n",          params->dump_format);
     fprintf(fd, "dump_size:   %d\n",          params->dump_size  );
+    fprintf(fd, "perf_label:  %s\n",          params->dump_file ? params->dump_file : "NULL"  );
     fprintf(fd, "---------------------------------------------\n");
 }
 
@@ -186,6 +188,7 @@ void    load_defaults(modbus_params_t* params)
     params->dump        = 0;
     params->dump_format = 0;
     params->dump_size   = 0;
+    params->dump_file   = NULL;
 }
 
 
@@ -208,7 +211,14 @@ int     check_dump_param( modbus_params_t* params)
     int rc = 0;
     int ft = params->dump_format;
 
+    if ((!params->dump_file) && (params->dump) )
+    {
+        fprintf( stderr, "No output dump file was defined (--dump_file)\n");
+        return RESULT_WRONG_ARG;
+    }
+    
     rc =  (ft>DUMP_FMT_MIN_SUPPORTED) && (ft<DUMP_FMT_MAX_SUPPORTED) ? 0 : params->dump ;
+    
     return rc;
 }
 
@@ -365,6 +375,7 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
 #endif
         OPT_FILE,
         OPT_DUMP,
+        OPT_DUMP_FILE,
         OPT_DUMP_FORMAT,
         OPT_DUMP_SIZE
     };
@@ -406,6 +417,7 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
         {"dump"         ,no_argument            ,NULL,   OPT_DUMP        },
         {"dump_size"    ,required_argument      ,NULL,   OPT_DUMP_SIZE   },
         {"dump_format"  ,required_argument      ,NULL,   OPT_DUMP_FORMAT },
+        {"dump_file"    ,required_argument      ,NULL,   OPT_DUMP_FILE   },        
         {NULL           ,0                      ,NULL,   0    }
     };
 
@@ -519,6 +531,9 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
                 break;
             case 'P':
                 params->perf_data = 1;
+                break;
+            case OPT_DUMP_FILE:
+                params->dump_file=optarg;
                 break;
             case OPT_DUMP:
                 params->dump = 1;

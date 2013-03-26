@@ -42,7 +42,7 @@ FILE* open_file(void)
     return fd;
 }
 
-void save_dump_file(FILE* fd, FILE* dump)
+void save_dump_file_to_debug_log(FILE* fd, FILE* dump)
 {
     int rc;
     int cnt;
@@ -247,7 +247,7 @@ void save_debug_information(modbus_params_t* params,FILE* infile, int read, int 
     fprintf( fd, "\n");
     
 
-    save_dump_file( fd, infile );
+    save_dump_file_to_debug_log( fd, infile );
 
     /* save information about pid of current process */
     fprintf( fd, "---------------------------\n");

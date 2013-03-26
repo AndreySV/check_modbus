@@ -63,6 +63,7 @@ typedef struct
     int     dump;                       // enable dump mode
     int     dump_format;                // output format of the dump
     int     dump_size;                  // number of input registers/bits included in the dump
+    char*   dump_file;
 }   modbus_params_t;
 
 

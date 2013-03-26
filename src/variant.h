@@ -53,7 +53,7 @@ enum
 
 
 int     sizeof_data_t(data_t* data);    /* returns size in words */
-void    printf_data_t(data_t* data);
+void    printf_data_t(FILE* fd, data_t* data);
 double  value_data_t(data_t*  data);
 void    init_data_t(data_t* data, int8_t format,uint8_t size);
 void    clear_data_t(data_t* data);

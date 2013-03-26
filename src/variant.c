@@ -88,58 +88,58 @@ double  value_data_t(data_t*  data)
     return tmp;
 }
 
-void    printf_data_t(data_t* data)
+void    printf_data_t(FILE* fd, data_t* data)
 {
     int size = 0;
     int i;
     switch( data->format )
     {
         case FORMAT_SIGNED_WORD:
-            printf("%d", data->val.word);
+            fprintf( fd, "%d", data->val.word);
             break;
         case FORMAT_UNSIGNED_WORD:
-            printf("%u", data->val.word);
+            fprintf(fd, "%u", data->val.word);
             break;
         case FORMAT_SIGNED_DWORD:
-            printf("%ld", data->val.sdword);
+            fprintf(fd, "%ld", data->val.sdword);
             break;
         case FORMAT_UNSIGNED_DWORD:
-            printf("%lu", data->val.dword);
+            fprintf(fd, "%lu", data->val.dword);
             break;
         case FORMAT_SIGNED_QWORD:
-            printf("%lld", data->val.sqword);
+            fprintf(fd, "%lld", data->val.sqword);
             break;
         case FORMAT_UNSIGNED_QWORD:
-            printf("%llu", data->val.qword);
+            fprintf(fd, "%llu", data->val.qword);
             break;
         case FORMAT_FLOAT:
-            printf("%f", data->val.real);
+            fprintf(fd, "%f", data->val.real);
             break;
         case FORMAT_DOUBLE:
-            printf("%Lf", data->val.long_real);
+            fprintf(fd, "%Lf", data->val.long_real);
             break;
         case FORMAT_DUMP_BIN:
-            fwrite( data->val.bytes, 1, data->arr_size, stdout);
+            fwrite( data->val.bytes, 1, data->arr_size, fd);
             break;
         case FORMAT_DUMP_HEX:
             for( i=0; i<data->arr_size;)
             {
-                printf("%X ", data->val.bytes[i++]);
-                if ( (i%16) == 0) printf("\n");
+                fprintf(fd, "%X ", data->val.bytes[i++]);
+                if ( (i%16) == 0) fprintf(fd, "\n");
             }
-            printf("\n");
+            fprintf(fd, "\n");
             break;
         case FORMAT_DUMP_DEC:
             for( i=0; i<data->arr_size;)
             {
-                printf("%d ", data->val.bytes[i++]);
-                if ( (i%16) == 0) printf("\n");
+                fprintf(fd, "%d ", data->val.bytes[i++]);
+                if ( (i%16) == 0) fprintf(fd, "\n");
             }
-            printf("\n");
+            fprintf(fd, "\n");
             break;
 
         default:
-            printf("Printf_data_t(): Unsupported format (%d)\n", data->format);
+            fprintf(stderr, "Printf_data_t(): Unsupported format (%d)\n", data->format);
     }
 }
 
