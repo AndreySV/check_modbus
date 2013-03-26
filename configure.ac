@@ -2,8 +2,9 @@
 # Process this file with autoconf to produce a configure script.
 
 #AC_PREREQ([2.67])
-AC_INIT(check_modbus, 0.43, Skvortsov-at-kipspb.ru)
-AM_INIT_AUTOMAKE(check_modbus,0.43)
+AC_INIT(check_modbus, 0.44, Skvortsov-at-kipspb.ru)
+AM_INIT_AUTOMAKE(check_modbus,0.44
+)
 
 AC_CONFIG_SRCDIR([src/check_modbus.c])
 

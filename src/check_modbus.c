@@ -345,28 +345,31 @@ int     save_dump_file(modbus_params_t* params, data_t* data)
     
     FILE* fout;
     int   rc;
-    
-    fout = fopen(params->dump_file,"wb");
-    if (fout)
+
+    if (params->dump_file)
     {
-        rc = check_lockfile( fileno( fout ) );
-        if (rc)
-        {
-            fprintf( stderr, "Can't set lock on file %s\n", params->dump_file);
-            rc = RESULT_ERROR;
-        }
-        else
-        {
-            printf_data_t( fout, data );
-            rc = RESULT_OK;
-        }
-        fclose( fout );
+        fout = fopen(params->dump_file,"wb");
+        fprintf( stderr, "Can't create file %s\n", params->dump_file);
+        return RESULT_ERROR;
+    }
+    {
+        fout = stdout;
+    }
+
+
+    rc = check_lockfile( fileno( fout ) );
+    if (rc)
+    {
+        fprintf( stderr, "Can't set lock on the dump file\n");
+        rc = RESULT_ERROR;
     }
     else
     {
-        fprintf( stderr, "Can't create file %s\n", params->dump_file);
-        rc= RESULT_ERROR;
+        printf_data_t( fout, data );
+        rc = RESULT_OK;
     }
+    fclose( fout );
+
     return rc;
 }
 

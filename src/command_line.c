@@ -140,7 +140,7 @@ void print_settings(FILE* fd, modbus_params_t* params)
     fprintf(fd, "dump:        %d\n",          params->dump       );
     fprintf(fd, "dump_format: %d\n",          params->dump_format);
     fprintf(fd, "dump_size:   %d\n",          params->dump_size  );
-    fprintf(fd, "perf_label:  %s\n",          params->dump_file ? params->dump_file : "NULL"  );
+    fprintf(fd, "dump_file :  %s\n",          params->dump_file ? params->dump_file : "stdout"  );
     fprintf(fd, "---------------------------------------------\n");
 }
 
@@ -211,12 +211,6 @@ int     check_dump_param( modbus_params_t* params)
     int rc = 0;
     int ft = params->dump_format;
 
-    if ((!params->dump_file) && (params->dump) )
-    {
-        fprintf( stderr, "No output dump file was defined (--dump_file)\n");
-        return RESULT_WRONG_ARG;
-    }
-    
     rc =  (ft>DUMP_FMT_MIN_SUPPORTED) && (ft<DUMP_FMT_MAX_SUPPORTED) ? 0 : params->dump ;
     
     return rc;
