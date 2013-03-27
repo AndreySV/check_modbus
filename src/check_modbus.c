@@ -349,9 +349,13 @@ int     save_dump_file(modbus_params_t* params, data_t* data)
     if (params->dump_file)
     {
         fout = fopen(params->dump_file,"wb");
-        fprintf( stderr, "Can't create file %s\n", params->dump_file);
-        return RESULT_ERROR;
+        if (!fout)
+        {
+            fprintf( stderr, "Can't create file %s\n", params->dump_file);
+            return RESULT_ERROR;
+        }
     }
+    else
     {
         fout = stdout;
     }
