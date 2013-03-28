@@ -72,6 +72,9 @@ void print_help(void)
     printf("                        3 - decimal\n");
     printf("--dump_file=        [ Output dump file ]\n");
     printf("\n");
+    printf("--lock_file_in =    [ Lock file for input operation (access to dump file or serial device ]\n");
+    printf("--lock_file_out =   [ Lock file for output operations (for example to access dump file) ]\n");
+    printf("\n");
     printf(" Examples:\n");
     printf("          ./check_modbus --ip=192.168.1.123 -d 1 -a 13 -f 4 -w 123.4 -c 234.5\n");
     printf("          ./check_modbus --ip=192.168.1.123 -d 1 -a 15 -f 4 -w 2345 -c 1234\n");
@@ -141,6 +144,9 @@ void print_settings(FILE* fd, modbus_params_t* params)
     fprintf(fd, "dump_format: %d\n",          params->dump_format);
     fprintf(fd, "dump_size:   %d\n",          params->dump_size  );
     fprintf(fd, "dump_file :  %s\n",          params->dump_file ? params->dump_file : "stdout"  );
+    fprintf(fd, "\n");
+    fprintf(fd, "lock_file_in :%s\n",          params->lock_file_in ? params->lock_file_in : "NULL" );
+    fprintf(fd, "lock_file_out:%s\n",          params->lock_file_out ? params->lock_file_out : "NULL" );
     fprintf(fd, "---------------------------------------------\n");
 }
 
@@ -189,6 +195,12 @@ void    load_defaults(modbus_params_t* params)
     params->dump_format = 0;
     params->dump_size   = 0;
     params->dump_file   = NULL;
+
+    params->lock_file_in = NULL;
+    params->lock_file_in_fd = 0;
+    
+    params->lock_file_out = NULL;
+    params->lock_file_out_fd = 0;
 }
 
 
@@ -368,10 +380,15 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
         OPT_SERIAL_STOP_BITS,
 #endif
         OPT_FILE,
+        
         OPT_DUMP,
         OPT_DUMP_FILE,
         OPT_DUMP_FORMAT,
-        OPT_DUMP_SIZE
+        OPT_DUMP_SIZE,
+        
+        OPT_LOCK_FILE_IN,
+        OPT_LOCK_FILE_OUT,
+
     };
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
@@ -411,7 +428,9 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
         {"dump"         ,no_argument            ,NULL,   OPT_DUMP        },
         {"dump_size"    ,required_argument      ,NULL,   OPT_DUMP_SIZE   },
         {"dump_format"  ,required_argument      ,NULL,   OPT_DUMP_FORMAT },
-        {"dump_file"    ,required_argument      ,NULL,   OPT_DUMP_FILE   },        
+        {"dump_file"    ,required_argument      ,NULL,   OPT_DUMP_FILE   },
+        {"lock_file_in" ,required_argument      ,NULL,   OPT_LOCK_FILE_IN   },
+        {"lock_file_out",required_argument      ,NULL,   OPT_LOCK_FILE_OUT  },
         {NULL           ,0                      ,NULL,   0    }
     };
 
@@ -550,7 +569,13 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
                         break;
                 }
                 break;
-
+            case OPT_LOCK_FILE_IN:
+                params->lock_file_in = optarg;
+                break;
+            case OPT_LOCK_FILE_OUT:
+                params->lock_file_out = optarg;
+                break;
+                
             case '?':
             default:
                 print_help();

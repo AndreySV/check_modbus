@@ -14,6 +14,8 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -33,7 +35,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 check_PROGRAMS = test_swap$(EXEEXT) test_inverse$(EXEEXT)
 subdir = tests
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(dist_noinst_DATA) $(dist_noinst_SCRIPTS) \
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -47,6 +50,7 @@ test_inverse_LDADD = $(LDADD)
 am_test_swap_OBJECTS = test_swap.$(OBJEXT) variant.$(OBJEXT)
 test_swap_OBJECTS = $(am_test_swap_OBJECTS)
 test_swap_LDADD = $(LDADD)
+SCRIPTS = $(dist_noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -57,6 +61,7 @@ CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(test_inverse_SOURCES) $(test_swap_SOURCES)
 DIST_SOURCES = $(test_inverse_SOURCES) $(test_swap_SOURCES)
+DATA = $(dist_noinst_DATA)
 ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
@@ -150,7 +155,9 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 test_swap_SOURCES = test_swap.c ../src/variant.h ../src/variant.c
 test_inverse_SOURCES = test_inverse.c ../src/variant.h ../src/variant.c
-TESTS = $(check_PROGRAMS)
+dist_noinst_SCRIPTS = test_lock.sh
+dist_noinst_DATA = dump_src.bin
+TESTS = $(check_PROGRAMS) test_lock.sh
 all: all-am
 
 .SUFFIXES:
@@ -411,7 +418,7 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-am
-all-am: Makefile
+all-am: Makefile $(SCRIPTS) $(DATA)
 installdirs:
 install: install-am
 install-exec: install-exec-am

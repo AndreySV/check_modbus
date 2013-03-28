@@ -1,16 +1,15 @@
 #include <unistd.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <sys/file.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 
-#include "check_modbus.h"
+#include "lock.h"
 #include "compile_date_time.h"
 #include "command_line.h"
 #include "debug.h"
-
-
 
 
 
@@ -67,8 +66,11 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
             return RESULT_ERROR_READ;
         }
         rc = RESULT_OK;
-    }
+        /* fprintf( stderr, "end of reading (%d)\n", params->sad ); */
 
+    }
+    release_lock( params, LOCK_INPUT  );        
+    
     if (rc == RESULT_OK)  reorder_data_t( data, params->swap_bytes, params->inverse_words );
 
     if (params->verbose) printf("read_data rc: %d\n", rc);
@@ -183,7 +185,8 @@ int     init_connection(modbus_params_t* params,modbus_t** mb,FILE** f)
 
     rc = RESULT_OK;
     if (params->verbose) printf("init_connection\n");
-
+    
+    set_lock( params, LOCK_INPUT );
     /*******************************************************************/
     /*                       Modbus-TCP                                */
     /*******************************************************************/
@@ -232,14 +235,17 @@ int     init_connection(modbus_params_t* params,modbus_t** mb,FILE** f)
     /*******************************************************************/
     if (params->file != NULL)
     {
+
         *f = fopen( params->file, "rb");
+        /* fprintf( stderr, "open for reading (%d)\n", params->sad ); */
         if (*f == NULL )
         {
             fprintf(stderr,"Unable to open binary dump file %s (%s)\n", \
                     params->file, strerror(errno));
             return RESULT_ERROR;
         }
-        if ( check_lockfile( fileno(*f) ) ) return RESULT_ERROR;
+        /* if ( check_lockfile( fileno(*f) ) ) return RESULT_ERROR; */
+        /* fprintf( stderr, "Locked (%d)\n", params->sad ); */
     }
 
 
@@ -346,9 +352,14 @@ int     save_dump_file(modbus_params_t* params, data_t* data)
     FILE* fout;
     int   rc;
 
+    set_lock( params, LOCK_OUTPUT );
+    
+    exit(0);
     if (params->dump_file)
     {
+
         fout = fopen(params->dump_file,"wb");
+        /* fprintf(stderr, "opened for writing\n"); */
         if (!fout)
         {
             fprintf( stderr, "Can't create file %s\n", params->dump_file);
@@ -361,19 +372,21 @@ int     save_dump_file(modbus_params_t* params, data_t* data)
     }
 
 
-    rc = check_lockfile( fileno( fout ) );
-    if (rc)
-    {
-        fprintf( stderr, "Can't set lock on the dump file\n");
-        rc = RESULT_ERROR;
-    }
-    else
+    /* rc = check_lockfile( fileno( fout ) ); */
+    /* fprintf(stderr, "File locked\n"); */
+    /* if (rc) */
+    /* { */
+    /*     fprintf( stderr, "Can't set lock on the dump file\n"); */
+    /*     rc = RESULT_ERROR; */
+    /* } */
+    /* else */
     {
         printf_data_t( fout, data );
         rc = RESULT_OK;
     }
     fclose( fout );
-
+    /* fprintf( stderr, "File unlocked\n"); */
+    release_lock( params, LOCK_OUTPUT );
     return rc;
 }
 

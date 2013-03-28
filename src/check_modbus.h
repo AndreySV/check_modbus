@@ -64,6 +64,13 @@ typedef struct
     int     dump_format;                // output format of the dump
     int     dump_size;                  // number of input registers/bits included in the dump
     char*   dump_file;
+    
+    char*   lock_file_in;               // name of lock file for inputs
+    int     lock_file_in_fd;
+    
+    char*   lock_file_out;              // name of lock file for
+    int     lock_file_out_fd;
+    
 }   modbus_params_t;
 
 
