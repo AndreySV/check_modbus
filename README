@@ -10,8 +10,9 @@ Added many useful features:
 - support of several data orders (LSB, MSB and some others)
 - retries can be sent to get reliable answer
 - supports performance data
-- supports creation dump of the registers (binary, hexadecimal, decimal)
+- supports creation dump of the registers in different formats (binary, hexadecimal, decimal)
 - support binary dump as an input source for data (useful for off-line data)
+- separate lock files for input and output
 
 
 In general, plugin can be build as usual

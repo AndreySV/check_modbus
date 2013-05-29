@@ -22,11 +22,17 @@ check_modbus - tool to monitor state of different devices in Nagios using Modbus
 - slave devices uses non-standard data format.
 .RE
 .TP
-Firstly the binary dump file should be created.
+Firstly the binary dump file should be created. To avoid read/write concurrency is recommended to use lock files (see options \fB--lock_file_in\fR and \fB--lock_file_out\fR).
 .RS
 .TP
 check_modbus --ip=plc01 -a 1 -f 4 --dump --dump_format 1 --dump_size 60 > file.dump
 .RE
+.RS
+check_modbus --ip=plc01 -a 1 -f 4 --dump --dump_format 1 --dump_size 60 --dump_file file.dump
+.RE
+.TP
+
+
 .TP
 Afterwards many parameters can be analyzed from created dump file. 
 .RS
@@ -233,7 +239,25 @@ Format of output dump. Default 1 (binary).
 
 .TP
 .B \-\-dump_size
-Number of registers/bits in output dump. The dump starts from address given by parameter \fB\-a, \-\-address\fR.
+Number of registers (2 bytes) or bits in output dump. The dump starts
+from address given by parameter \fB\-a, \-\-address\fR.
+.TP 
+.B \-\-dump_file
+Save dump to the file. If no dump file was specified in the dump mode,
+then stdout will be used for output.
+.TP
+.B \-\-lock_file_in
+Name of lock file used with input source. If the specified lock file
+exists and process created it is still running, input source will not be
+opened. This lock file is useful if several checks may access  input
+source at the same time, but the source does not support this. For
+example, serial ports can be opened by several programs simultaneously, some simple Ethernet devices can't handle
+more than one request at the same time or by using dump file as input
+source may exist concurrency between read and write process (see
+\fB\-\-lock_file_out\fR).
+.TP
+.B \-\-lock_file_out
+Name of lock file used by creating output dump file. 
 .SH EXIT STATUS
 Program can return the following codes:
 .TP
@@ -280,7 +304,7 @@ read signed integer value from modbus address 15
 .TP
 check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n 
 .TP
-check_modbus --ip=plc01 -a 1 -f 4 --dump --dump_format 1 --dump_size 60 > file.dump
+check_modbus --ip=plc01 -a 1 -f 4 --dump --dump_format 1 --dump_size 60 --dump_file file.dump
 save 60 registers from plc01 to the file.dump in binary format. All these registers can be analyzed later off-line or even on the other machine. See next example.
 .TP
 check_modbus --file=file.dump -F 7 -f 4 -a 20 -w 100 -c 150

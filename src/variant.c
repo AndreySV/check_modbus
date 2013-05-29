@@ -11,7 +11,7 @@ int     sizeof_data_t(data_t* data)
         case FORMAT_DUMP_BIN:
         case FORMAT_DUMP_HEX:
         case FORMAT_DUMP_DEC:
-            size = data->arr_size/2;
+            size = data->arr_size;
             break;
         case FORMAT_SIGNED_WORD:
         case FORMAT_UNSIGNED_WORD:
@@ -116,13 +116,13 @@ void    printf_data_t(FILE* fd, data_t* data)
             fprintf(fd, "%f", data->val.real);
             break;
         case FORMAT_DOUBLE:
-            fprintf(fd, "%Lf", data->val.long_real);
+            fprintf(fd, "%f", data->val.long_real);
             break;
         case FORMAT_DUMP_BIN:
-            fwrite( data->val.bytes, 1, data->arr_size, fd);
+            fwrite( data->val.words, sizeof(data->val.words[0]), data->arr_size, fd);
             break;
         case FORMAT_DUMP_HEX:
-            for( i=0; i<data->arr_size;)
+            for( i=0; i<(2*data->arr_size);)
             {
                 fprintf(fd, "%X ", data->val.bytes[i++]);
                 if ( (i%16) == 0) fprintf(fd, "\n");
@@ -130,7 +130,7 @@ void    printf_data_t(FILE* fd, data_t* data)
             fprintf(fd, "\n");
             break;
         case FORMAT_DUMP_DEC:
-            for( i=0; i<data->arr_size;)
+            for( i=0; i<(2*data->arr_size);)
             {
                 fprintf(fd, "%d ", data->val.bytes[i++]);
                 if ( (i%16) == 0) fprintf(fd, "\n");

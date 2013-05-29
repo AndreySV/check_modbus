@@ -51,17 +51,22 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
     if (f != NULL )
     {
         int read;
+        int need_bytes;
         if (fseek(f, sad*sizeof(data->val.words[0]), SEEK_SET))
         {
+            if ( ferror(f) ) fprintf( stderr, "Error: %d error string: %s\n", errno, strerror( errno ));
             fprintf( stderr, "Can not seek in file\n");
             return RESULT_ERROR;
         }
 
-        read = fread( data->val.words, sizeof(data->val.words[0]), size, f);
+        need_bytes=sizeof(data->val.words[0])*size;
+        read = fread( data->val.words, 1, need_bytes, f);
 
-        if (read != size)
+        if (read != need_bytes )
         {
-            fprintf( stderr, "Read only %d words from file, but need %d \n", read, size);
+            if ( ferror(f) ) fprintf( stderr, "Error: %d, error string: %s\n", errno, strerror( errno ));
+            if ( feof(f)   ) fprintf( stderr, "Error: end of file\n");
+            fprintf( stderr, "Read only %d bytes from file, but need %d \n", read, need_bytes);
             save_debug_information( params, f, read, size);
             return RESULT_ERROR_READ;
         }
@@ -345,16 +350,16 @@ int     check_lockfile(int fd)
 
 int     save_dump_file(modbus_params_t* params, data_t* data)
 {
+
     /* Set exclusive lock for stdout. It's needed in dump mode to be
        sure that noone can access unfinished file. Because
        the dump file is created using stdout.  */
-    
+
     FILE* fout;
     int   rc;
 
     set_lock( params, LOCK_OUTPUT );
-    
-    exit(0);
+
     if (params->dump_file)
     {
 

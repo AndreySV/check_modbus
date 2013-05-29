@@ -69,6 +69,8 @@ void    control_lock(modbus_params_t* params,int lock_type, bool enable)
 
     if (enable)
     {
+        const max_cnt=5000;
+        int cnt = 0;
         do
         {
             /* create lock */
@@ -82,7 +84,12 @@ void    control_lock(modbus_params_t* params,int lock_type, bool enable)
                 }
                 else
                 {
-                    fprintf( stderr, "Can't create lock file %s\n", lock_file);
+                    cnt++;
+                    if (cnt>max_cnt)
+                    {
+                        fprintf( stderr, "Can't create lock file %s\n", lock_file);
+                        exit(RESULT_ERROR);
+                    }
                     usleep( 100000 );
                }
             }

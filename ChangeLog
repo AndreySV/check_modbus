@@ -1,3 +1,9 @@
+2013-04-02 version 0.46
+	fixed bug with number of written bytes into the dump file
+	fixed bug with output of double
+	added separate lock files for input and for output
+	added more tests for checking program functionality
+
 2013-03-16 version 0.43
 	added using exclusive lock to output/input dump files
 	all error are printed out to stderr

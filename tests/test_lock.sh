@@ -10,10 +10,10 @@
 #******************************************************************************
 function run_create_dumpfile()
 {
-    delay=$1
-    max_cnt=$2
-    rm $QUIT_FLAG > /dev/null 2>&1
-
+    local delay=$1
+    local max_cnt=$2
+    rm -f $QUIT_FLAG > /dev/null 2>&1
+    rm -f $DUMP_FILE_DST > /dev/null 2>&1
     echo > $LOG_FILE # clear log file
 
     while true; do
@@ -30,11 +30,12 @@ function run_create_dumpfile()
         if [ "$max_cnt" != "" ]; then
             if [ $cnt_cd -gt $max_cnt ]; then break; fi
         fi
+        
 
         # check_modbus --ip $MODBUS_TCP_SERVER   -f 3 --dump --dump_format=1 --dump_size=10 --dump_file=$DUMP_FILE_DST
         check_modbus --file $DUMP_FILE_SRC --lock_file_out $LOCK_FILE   -f 3 --dump --dump_format=1 --dump_size=100 --dump_file=$DUMP_FILE_DST >> $LOG_FILE 2>&1
 
-        rc_create_dump=$?
+        local rc_create_dump=$?
         if [ $rc_create_dump -ne 0 ]; then
             echo "ERROR: in run_create_dumpfile( $rc_create_dump )" >> $LOG_FILE
             err_create_dump=$(( ${err_create_dump:=0} + 1 ))
@@ -57,9 +58,9 @@ function run_create_dumpfile()
 #******************************************************************************
 function run_check_dumpfile()
 {
-    addr=$1
-    delay=$2
-    max_cnt=$3
+    local addr=$1
+    local delay=$2
+    local max_cnt=$3
 
     cnt[$addr]=0
     while true; do
@@ -68,7 +69,7 @@ function run_check_dumpfile()
         cnt[$addr]=$(( ${cnt[$addr]} + 1 ))
         
         if [ "$VERBOSE" != "" ]; then
-            show=$(( ${cnt[$addr]} % 100 ))
+            local show=$(( ${cnt[$addr]} % 100 ))
             if [ $show -eq 0 ]; then
             echo "cnt[ $addr ] = ${cnt[$addr]}"
             fi
@@ -79,18 +80,30 @@ function run_check_dumpfile()
         fi
         
         if [ -f $QUIT_FLAG ]; then
+            # end the process and return error counter to the control process
             exit ${err_cnt[$addr]}
         fi
 
+        local params
+        local rc_need
+        if [ "$(( $addr % 2 ))" -eq "0" ]; then
+            # even register address
+            params="-w 4368 -c 4370"
+            rc_need=1
+        else
+            params="-N"
+            rc_need=0
+        fi
 
-        check_modbus --file $DUMP_FILE_DST --lock_file_in $LOCK_FILE -f 3 -a $addr 2>> $LOG_FILE >/dev/null
+
+        check_modbus --file $DUMP_FILE_DST --lock_file_in $LOCK_FILE -f 3 -a $addr $params 2>> $LOG_FILE >/dev/null
         rc[$addr]=$?
         case ${rc[$addr]} in
-            [0-2])
+            $rc_need)
                 continue
                 ;;
             *)
-                echo "ERROR: in run run_check_dumpfile $addr ( ${rc[$addr]} )" >> $LOG_FILE
+                echo "ERROR: in run run_check_dumpfile $addr ( ${rc[$addr]}, but need $rc_need )" >> $LOG_FILE
                 err_cnt[$addr]=$(( ${err_cnt[$addr]:=0} + 1 ))
                 ;;
         esac
@@ -126,16 +139,19 @@ function get_clients_results()
 # path to compiled binary
 PATH=../src/:$PATH  
 
+TEST_NAME=$( basename $0 .sh)
+
 
 # VERBOSE=1
 # MODBUS_TCP_SERnVER=192.168.56.1
-DUMP_FILE_SRC=dump_src.bin
-DUMP_FILE_DST=dump.bin
-QUIT_FLAG=quit.tmp
-LOCK_FILE=test_lock.lock
-LOG_FILE=test_lock.log
-NUMBER_OF_TESTS=500
-NUMBER_OF_CLIENT_STREAMS=25
+DUMP_FILE_SRC=${TEST_NAME}_dump_src.bin
+DUMP_FILE_DST=${TEST_NAME}_dump.bin
+QUIT_FLAG=${TEST_NAME}_quit.tmp
+LOCK_FILE=${TEST_NAME}.lock
+LOG_FILE=${TEST_NAME}.log
+
+NUMBER_OF_TESTS=900
+NUMBER_OF_CLIENT_STREAMS=40
 
 
 # run in background clients
@@ -153,13 +169,19 @@ get_clients_results
 # print results
 echo 
 echo $NUMBER_OF_TESTS times dump file was created
-echo ${client_errs:=0} errors was by reading a dump file
-echo ${err_create_dump:=0} error was by creating a dump file
+echo ${client_errs:=0} errors were by reading a dump file
+echo ${err_create_dump:=0} errors were by creating a dump file
 echo
 
 
 if [[ ( $client_errs = 0 ) && ( $err_create_dump = 0 ) ]]; then 
     ret=0
+    # clear
+
+    rm -f $DUMP_FILE_DST
+    rm -f $QUIT_FLAG
+    rm -f $LOCK_FILE
+    rm -f $LOG_FILE
 else
     ret=1
 fi

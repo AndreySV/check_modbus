@@ -11,11 +11,14 @@
 # will not be executed
 #*********************************************************
 
-function test_1
+function test_check_modbus
 {
-    check_modbus --file $DUMP_FILE_SRC --lock_file_out $LOCK_FILE  -f 3 -a 1 -N  >> $TMP_LOG_FILE 2>&1
-    rc=$?
-    rc_need=0
+    local rc_need=$1
+    local params="$2"
+
+    check_modbus -v --file $DUMP_FILE_SRC --lock_file_out $LOCK_FILE  -f 3 $params  >> $TMP_LOG_FILE 2>&1
+    local rc=$?
+
     if [ $rc -ne $rc_need ]; then
         echo "failed $FUNCNAME(): rc = $rc, but expected $rc_need" >> $TMP_LOG_FILE
         return 1
@@ -24,34 +27,9 @@ function test_1
 }
 
 
-function test_2
-{
-    check_modbus --file $DUMP_FILE_SRC --lock_file_out $LOCK_FILE  -f 3 -a 1 -n  >> $TMP_LOG_FILE 2>&1
-    rc=$?
-    rc_need=2
-    if [ $rc -ne $rc_need ]; then
-        echo "failed $FUNCNAME(): rc = $rc, but expected $rc_need" >> $TMP_LOG_FILE
-        return 1
-    fi
-    return 0
-}
 
-
-function test_3
-{
-    params='-a 3 -w 2 -c 7';
-    check_modbus --file $DUMP_FILE_SRC --lock_file_out $LOCK_FILE  -f 3 $params  >> $TMP_LOG_FILE 2>&1
-    rc=$?
-    rc_need=1
-    if [ $rc -ne $rc_need ]; then
-        echo "failed $FUNCNAME(): rc = $rc, but expected $rc_need" >> $TMP_LOG_FILE
-        return 1
-    fi
-    return 0
-}
 
 #*********************************************************
-
 
 
 function run_all_test
@@ -59,15 +37,14 @@ function run_all_test
     ret=0    
     echo > $LOG_FILE # clear log file
     
-    # find all enabled test in the script
-    all_tests=$( cat $( basename $0 ) | grep -P '^function[ \t]+test_' | grep -v '_disable' | sed 's/.*function[ \t]*//' )
 
-    for test in $all_tests; do 
+    for i in $( seq ${num:=0} ); do 
         
         echo > $TMP_LOG_FILE # clear log file
         echo '------------------------------------' >> $TMP_LOG_FILE
+        echo "Test number:  $i  " >> $TMP_LOG_FILE
         echo $0 >> $TMP_LOG_FILE    
-        eval $test
+        test_check_modbus "${arr_rc[$i]}"  "${arr_params[$i]}"
         if [ $? -ne 0 ]; then
             ret=1
             cat $TMP_LOG_FILE >> $LOG_FILE
@@ -79,7 +56,7 @@ function run_all_test
 
     rm $TMP_LOG_FILE >> /dev/null
     if [ $ret -ne 0 ]; then
-        echo "Some tests failed. For additional information see $LOCK_FILE"
+        echo "Some tests failed. For additional information see $LOG_FILE"
     else
         rm  $LOG_FILE >> /dev/null
     fi
@@ -88,7 +65,18 @@ function run_all_test
 
 
 
+function add_test()
+{
+    local rc=$1
+    local params="$2"
 
+    if [ "$rc"     == "" ]; then return; fi
+    if [ "$params" == "" ]; then return; fi;
+
+    num=$(( ${num:=0}  + 1 ))
+    arr_params[$num]="$params"
+    arr_rc[$num]=$rc
+}
 
 #******************************************************************************
 # settings
@@ -102,9 +90,24 @@ PATH=../src/:$PATH
 
 # VERBOSE=1
 DUMP_FILE_SRC=${TEST_NAME}_dump.bin
-LOCK_FILE=${TEST_NAME}.lock
 LOG_FILE=${TEST_NAME}.log
+LOCK_FILE=${TEST_NAME}.lock
 TMP_LOG_FILE=${TEST_NAME}_tmp.log
 
+
+# fill tests
+add_test 0 '-a 1 -N'
+add_test 2 '-a 1 -n'
+add_test 1 '-a 3 -w 3 -c 7'
+add_test 1 '-a 3 -w 7 -c 3'
+add_test 2 '-a 3 -w 1 -c 3'
+add_test 0 '-a 3 -w 3 -c 1'
+add_test 1 '-a 6 -w 100 -c 102 -F 7 -i -s'
+add_test 1 '-a 8 -w 100 -c 102 -F 7'
+add_test 1 '-a 10 -w 100 -c 102 -F 7 -s'
+# add_test 1 '-a 12 -w 100 -c 102 -F 8 -i -s'
+# add_test 1 '-a 16 -w 100 -c 102 -F 8'
+
+# check software
 run_all_test
 exit $?
