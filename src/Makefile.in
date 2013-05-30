@@ -46,8 +46,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_check_modbus_OBJECTS = command_line.$(OBJEXT) \
-	check_modbus.$(OBJEXT) variant.$(OBJEXT) debug.$(OBJEXT) \
-	lock.$(OBJEXT)
+	check_modbus.$(OBJEXT) variant.$(OBJEXT) lock.$(OBJEXT)
 check_modbus_OBJECTS = $(am_check_modbus_OBJECTS)
 check_modbus_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -176,7 +175,7 @@ top_srcdir = @top_srcdir@
 
 # man1_MANS=check_modbus.1
 dist_man_MANS = check_modbus.1
-check_modbus_SOURCES = compile_date_time.h command_line.c command_line.h check_modbus.c variant.h variant.c check_modbus.h global_macro.h debug.c debug.h lock.c lock.h
+check_modbus_SOURCES = compile_date_time.h command_line.c command_line.h check_modbus.c variant.h variant.c check_modbus.h global_macro.h lock.c lock.h
 all: all-am
 
 .SUFFIXES:
@@ -260,7 +259,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_modbus.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/command_line.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/debug.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lock.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/variant.Po@am__quote@
 

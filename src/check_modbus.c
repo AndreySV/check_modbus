@@ -9,7 +9,6 @@
 #include "lock.h"
 #include "compile_date_time.h"
 #include "command_line.h"
-#include "debug.h"
 
 
 
@@ -67,7 +66,6 @@ int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    dat
             if ( ferror(f) ) fprintf( stderr, "Error: %d, error string: %s\n", errno, strerror( errno ));
             if ( feof(f)   ) fprintf( stderr, "Error: end of file\n");
             fprintf( stderr, "Read only %d bytes from file, but need %d \n", read, need_bytes);
-            save_debug_information( params, f, read, size);
             return RESULT_ERROR_READ;
         }
         rc = RESULT_OK;
