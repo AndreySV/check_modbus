@@ -38,7 +38,7 @@ print_settings()
 read_modbus()
 {
     # read modbus value
-    result=$(./check_modbus --ip=$IP -a $REG_ADDR -f 4 -w $WARNING -c $CRITICAL)
+    result=$(check_modbus --ip=$IP -a $REG_ADDR -f 4 -w $WARNING -c $CRITICAL)
     rc=$?
     
     # 0 - OK
