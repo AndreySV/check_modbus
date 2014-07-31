@@ -60,20 +60,20 @@ void print_help(void)
 	printf("                            Allowed values: 1, 2\n");
 #endif
 
-	printf("--file=             use binary dump file as input source \n");
+	printf("--file=             use binary dump file as input source\n");
 
 	printf("-d  --device=       [ Device modbus number. Default 1 ]\n");
 	printf("-a  --address=      [ Register/bit address reference. Default 1 ]\n");
 	printf("-t  --try=          [ Number of tries. Default 1 ]\n");
 	printf("-F  --format=       [ Data format. Default 1 ]\n");
-	printf("                        1 -  int16_t \n");
-	printf("                        2 - uint16_t \n");
-	printf("                        3 -  int32_t \n");
-	printf("                        4 - uint32_t \n");
-	printf("                        5 -  int64_t \n");
-	printf("                        6 - uint64_t \n");
-	printf("                        7 -  float   \n");
-	printf("                        8 -  double  \n");
+	printf("                        1 -  int16_t\n");
+	printf("                        2 - uint16_t\n");
+	printf("                        3 -  int32_t\n");
+	printf("                        4 - uint32_t\n");
+	printf("                        5 -  int64_t\n");
+	printf("                        6 - uint64_t\n");
+	printf("                        7 -  float\n");
+	printf("                        8 -  double\n");
 	printf("-s  --swapbytes     [ Swap bytes in each incomming word ]\n");
 	printf("-i  --inverse       [ Use inversed words order ]\n");
 	printf("-f  --function=     Number of functions\n");
@@ -296,7 +296,7 @@ int     check_format_type(modbus_params_t *params)
 	if (rc)	{
 		fprintf(stderr, "Invalid data format: %d\n", params->format);
 		if (params->dump)
-			fprintf(stderr, "-F (--format) parameter can not be used in dump mode \n");
+			fprintf(stderr, "-F (--format) parameter can not be used in dump mode\n");
 	}
 	return rc;
 }
@@ -340,7 +340,7 @@ int      check_command_line(modbus_params_t *params, int argc, char **argv)
 			fprintf(stderr, "%s: Invalid value of serial port mode parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
-		if (check_serial_parity(params->serial_parity)) 	{
+		if (check_serial_parity(params->serial_parity)) {
 			fprintf(stderr, "%s: Invalid value of serial port parity mode parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
