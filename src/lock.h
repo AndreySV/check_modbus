@@ -31,8 +31,7 @@
 
 #include "check_modbus.h"
 
-enum
-{
+enum {
 	LOCK_INPUT,
 	LOCK_OUTPUT
 };

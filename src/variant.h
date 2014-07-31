@@ -30,10 +30,8 @@
 
 #include <stdint.h>
 
-typedef struct
-{
-	union
-	{
+typedef struct {
+	union {
 		uint8_t     bytes[256];
 		uint16_t    words[128];
 
@@ -57,8 +55,7 @@ typedef struct
 } data_t;
 
 
-enum
-{
+enum {
 	FORMAT_MIN_SUPPORTED = 0,
 	FORMAT_SIGNED_WORD,
 	FORMAT_UNSIGNED_WORD,

@@ -121,14 +121,12 @@ void print_settings(FILE *fd, modbus_params_t *params)
 	fprintf(fd, "---------------------------------------------\n");
 	fprintf(fd, "Settings:\n");
 
-	if (params->host != NULL)
-	{
+	if (params->host != NULL) {
 		fprintf(fd, "ip:          %s\n",          params->host);
 		fprintf(fd, "port:        %s\n",          params->mport);
 	}
 #if LIBMODBUS_VERSION_MAJOR >= 3
-	else if (params->serial != NULL)
-	{
+	else if (params->serial != NULL) {
 		fprintf(fd, "serial:           %s\n",     params->serial);
 		fprintf(fd, "serial_mode:      %s\n",     (params->serial_mode == MODBUS_RTU_RS232) ? "MODBUS_RTU_RS232" : "MODBUS_RTU_RS485");
 		fprintf(fd, "serial_bps:       %d\n",     params->serial_bps);
@@ -237,8 +235,7 @@ int check_swap_inverse(modbus_params_t *params)
 	if (((params->nf == 1) || (params->nf == 2)) && /* bit operations */
 		((params->swap_bytes) || (params->inverse_words)))
 		rc = 1;
-	if (rc)
-	{
+	if (rc)	{
 		fprintf(stderr, "Swap bytes and inverse words functionality not acceptable ");
 		fprintf(stderr, "for modbus functions 1 and 2 operated with bits.\n");
 	}
@@ -274,8 +271,7 @@ int check_source(modbus_params_t *params)
 #endif
 	cnt = params->file   ? cnt++ : cnt;
 
-	if (cnt > 1)
-	{
+	if (cnt > 1) {
 		fprintf(stderr, "Several modbus input interfaces were declared\n");
 		return 1;
 	}
@@ -293,9 +289,8 @@ int     check_format_type(modbus_params_t *params)
 	max_format = params->dump ? FORMAT_DUMP_MAX  : FORMAT_MAX_SUPPORTED;
 	ft = params->format;
 
-	rc =  (ft > min_format) && (ft < max_format) ? 0 : 1 ;
-	if (rc)
-	{
+	rc =  (ft > min_format) && (ft < max_format) ? 0 : 1;
+	if (rc)	{
 		fprintf(stderr, "Invalid data format: %d\n", params->format);
 		if (params->dump)
 			fprintf(stderr, "-F (--format) parameter can not be used in dump mode \n");
@@ -317,8 +312,7 @@ int     check_serial_parity(char parity)
 int      check_command_line(modbus_params_t *params, int argc, char **argv)
 {
 #if LIBMODBUS_VERSION_MAJOR >= 3
-	if (params->host == NULL && params->serial == NULL && params->file == NULL)
-	{
+	if (params->host == NULL && params->serial == NULL && params->file == NULL) {
 		fprintf(                                                        \
 			stderr,                                                     \
 			"Not provided or unable to parse host address/serial port name/filename: %s\n", \
@@ -327,8 +321,7 @@ int      check_command_line(modbus_params_t *params, int argc, char **argv)
 		return RESULT_WRONG_ARG;
 	};
 #else
-	if (params->host == NULL && params->file == NULL)
-	{
+	if (params->host == NULL && params->file == NULL) {
 		fprintf(                                                        \
 			stderr,                                                     \
 			"Not provided or unable to parse host address or filename: %s\n", \
@@ -339,38 +332,31 @@ int      check_command_line(modbus_params_t *params, int argc, char **argv)
 #endif
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
-	if (params->serial != NULL)
-	{
-		if (params->serial_mode != MODBUS_RTU_RS232 && params->serial_mode != MODBUS_RTU_RS485)
-		{
+	if (params->serial != NULL) {
+		if (params->serial_mode != MODBUS_RTU_RS232 && params->serial_mode != MODBUS_RTU_RS485)	{
 			fprintf(stderr, "%s: Invalid value of serial port mode parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
-		if (check_serial_parity(params->serial_parity))
-		{
+		if (check_serial_parity(params->serial_parity)) 	{
 			fprintf(stderr, "%s: Invalid value of serial port parity mode parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
-		if (params->serial_data_bits < 5 || params->serial_data_bits > 8)
-		{
+		if (params->serial_data_bits < 5 || params->serial_data_bits > 8) {
 			fprintf(stderr, "%s: Invalid value of serial port mode data length parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
-		if (params->serial_stop_bits < 1 || params->serial_stop_bits > 2)
-		{
+		if (params->serial_stop_bits < 1 || params->serial_stop_bits > 2) {
 			fprintf(stderr, "%s: Invalid value of serial port stop bits parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
 	}
 #endif
-	if (params->perf_data && (params->perf_label == NULL))
-	{
+	if (params->perf_data && (params->perf_label == NULL)) {
 		fprintf(stderr, "Label parameter is required, when performance data is enabled\n");
 		return RESULT_WRONG_ARG;
 	}
 
-	if (params->dump_size > 127)
-	{
+	if (params->dump_size > 127) {
 		fprintf(stderr, "The maximal number of registers in one dump is 127\n");
 		return RESULT_WRONG_ARG;
 	}
@@ -397,8 +383,7 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 	int option_index;
 
 	/* no short option char wasted for rarely used options */
-	enum
-	{
+	enum {
 		OPT_LONG_OPTIONS_ONLY = 0x100,
 #if LIBMODBUS_VERSION_MAJOR >= 3
 		OPT_SERIAL_MODE,
@@ -462,22 +447,19 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 	};
 
 	//************************************************************
-	if (argc < 2)
-	{
+	if (argc < 2) {
 		fprintf(stderr, "%s: Could not parse arguments\n", argv[0]);
 		print_help();
 		return RESULT_WRONG_ARG;
 	};
 
 	load_defaults(params);
-	while (1)
-	{
+	while (1) {
 		rs = getopt_long(argc, argv, short_options, long_options, &option_index);
 		if (rs == -1) break;
 
 
-		switch (rs)
-		{
+		switch (rs) {
 		case 'v':
 			params->verbose++;
 			break;
@@ -505,14 +487,7 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 			params->serial_bps = atoi(optarg);
 			break;
 		case OPT_SERIAL_PARITY:
-			if (optarg > 0)
-			{
-				params->serial_parity = toupper(*optarg);
-			}
-			else
-			{
-				params->serial_parity = '\0';
-			}
+			params->serial_parity = (optarg > 0) ? toupper(*optarg) : '\0';
 			break;
 		case OPT_SERIAL_DATA_BITS:
 			params->serial_data_bits = atoi(optarg);
@@ -583,8 +558,7 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 			break;
 		case OPT_DUMP_FORMAT:
 			params->dump_format = atoi(optarg);
-			switch (params->dump_format)
-			{
+			switch (params->dump_format) {
 			case DUMP_FMT_BIN:
 				params->format = FORMAT_DUMP_BIN;
 				break;

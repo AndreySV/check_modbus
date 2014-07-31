@@ -41,15 +41,14 @@
 int    lock_file_old(char *file)
 {
 	// check correctness of lock file
-	FILE *f;
+	FILE  *f;
 	pid_t pid;
 	int rc;
 	int ret;
 
 	ret = 0;
 	f = fopen(file, "rt");
-	if (f)
-	{
+	if (f) {
 		if (fscanf(f, "%d", &pid) == 1)
 			if ((kill(pid, 0) == -1) && (errno == ESRCH)) ret = 1;
 		fclose(f);
@@ -76,8 +75,7 @@ void    control_lock(modbus_params_t *params, int lock_type, bool enable)
 	int   fd;
 	char *lock_file;
 
-	switch (lock_type)
-	{
+	switch (lock_type) {
 	case LOCK_INPUT:
 		pfd = &params->lock_file_in_fd;
 		lock_file = params->lock_file_in;
@@ -95,38 +93,28 @@ void    control_lock(modbus_params_t *params, int lock_type, bool enable)
 
 	if (!lock_file) return;
 
-	if (enable)
-	{
+	if (enable) {
 		const max_cnt = 5000;
 		int cnt = 0;
-		do
-		{
+		do {
 			/* create lock */
 			fd = open(lock_file , O_CREAT | O_EXCL | O_WRONLY, S_IRUSR);
-			if (fd == -1)
-			{
-				if (lock_file_old(lock_file))
-				{
+			if (fd == -1) {
+				if (lock_file_old(lock_file)) {
 					/* delete old lock file */
 					unlink(lock_file);
-				}
-				else
-				{
+				} else {
 					cnt++;
-					if (cnt > max_cnt)
-					{
+					if (cnt > max_cnt) {
 						fprintf(stderr, "Can't create lock file %s\n", lock_file);
 						exit(RESULT_ERROR);
 					}
 					usleep(100000);
 				}
 			}
-		}
-		while (fd == -1);
+		} while (fd == -1);
 		write_lock_file(fd);
-	}
-	else
-	{
+	} else {
 		close(fd);
 		unlink(lock_file);
 		fd = 0;

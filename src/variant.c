@@ -33,8 +33,7 @@
 int sizeof_data_t(data_t *data)
 {
 	int size = 0;
-	switch (data->format)
-	{
+	switch (data->format) {
 	case FORMAT_DUMP_BIN:
 	case FORMAT_DUMP_HEX:
 	case FORMAT_DUMP_DEC:
@@ -66,10 +65,8 @@ int sizeof_data_t(data_t *data)
 void clear_data_t(data_t *data)
 {
 	int i;
-	for (i = 0; i < sizeof(data->val); i++)
-	{
+	for (i = 0; i < sizeof(data->val); i++)	
 		data->val.bytes[i] = 0;
-	}
 }
 
 
@@ -86,8 +83,7 @@ void init_data_t(data_t *data, int8_t format, uint8_t size)
 double value_data_t(data_t *data)
 {
 	double tmp;
-	switch (data->format)
-	{
+	switch (data->format) {
 	case FORMAT_SIGNED_WORD:
 		tmp = data->val.sword;
 		break;
@@ -119,8 +115,7 @@ void printf_data_t(FILE *fd, data_t *data)
 {
 	int size = 0;
 	int i;
-	switch (data->format)
-	{
+	switch (data->format) {
 	case FORMAT_SIGNED_WORD:
 		fprintf(fd, "%d", data->val.word);
 		break;
@@ -149,16 +144,14 @@ void printf_data_t(FILE *fd, data_t *data)
 		fwrite(data->val.words, sizeof(data->val.words[0]), data->arr_size, fd);
 		break;
 	case FORMAT_DUMP_HEX:
-		for (i = 0; i < (2*data->arr_size);)
-		{
+		for (i = 0; i < (2*data->arr_size);) {
 			fprintf(fd, "%X ", data->val.bytes[i++]);
 			if ((i%16) == 0) fprintf(fd, "\n");
 		}
 		fprintf(fd, "\n");
 		break;
 	case FORMAT_DUMP_DEC:
-		for (i = 0; i < (2*data->arr_size);)
-		{
+		for (i = 0; i < (2*data->arr_size);) {
 			fprintf(fd, "%d ", data->val.bytes[i++]);
 			if ((i%16) == 0) fprintf(fd, "\n");
 		}
@@ -184,8 +177,7 @@ void reorder_data_t(data_t *data, int swap, int inverse_words)
 	data_t	    tmp;
 
 	tmp  = *data;
-	for (i = 0; i < size; i++)
-	{
+	for (i = 0; i < size; i++) {
 		j = inverse_words ? size-i-1 : i;
 		word = tmp.val.words[j];
 		data->val.words[i] = swap ? swap_bytes(word) : word;

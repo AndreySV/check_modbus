@@ -36,8 +36,7 @@
 #define SERIAL_PARITY_DEFAULT 'N'
 #endif
 
-enum
-{
+enum {
 	RESULT_OK   =   0,
 	RESULT_WARNING,
 	RESULT_CRITICAL,
@@ -51,8 +50,7 @@ enum
 	RESULT_UNSUPPORTED_FORMAT
 };
 
-typedef struct
-{
+typedef struct {
 	char    *mport;                     // Port number
 	int     devnum;                     // Device modbus address
 	int     sad;                        // register/bit address
@@ -102,8 +100,7 @@ typedef struct
 
 
 
-enum
-{
+enum {
 	MBF_MIN_SUPPORTED = 0,
 	MBF001_READ_COIL_STATUS,            // 0x01 <- STD CODES
 	MBF002_READ_INPUT_STATUS,           // 0x02
@@ -112,8 +109,7 @@ enum
 	MBF_MAX_SUPPORTED
 };
 
-enum
-{
+enum {
 	DUMP_FMT_MIN_SUPPORTED = 0,
 	DUMP_FMT_BIN,
 	DUMP_FMT_HEX,
