@@ -316,20 +316,16 @@ int      check_command_line(modbus_params_t *params, int argc, char **argv)
 {
 #if LIBMODBUS_VERSION_MAJOR >= 3
 	if (params->host == NULL && params->serial == NULL && params->file == NULL) {
-		fprintf(                                                        \
-			stderr,                                                     \
-			"Not provided or unable to parse host address/serial port name/filename: %s\n", \
-			argv[0]                                                     \
-			);
+		fprintf(stderr,
+			"Not provided or unable to parse host address/serial port name/filename: %s\n",
+			argv[0]);
 		return RESULT_WRONG_ARG;
 	};
 #else
 	if (params->host == NULL && params->file == NULL) {
-		fprintf(                                                        \
-			stderr,                                                     \
-			"Not provided or unable to parse host address or filename: %s\n", \
-			argv[0]                                                     \
-			);
+		fprintf(stderr,
+			"Not provided or unable to parse host address or filename: %s\n",
+			argv[0]);
 		return RESULT_WRONG_ARG;
 	};
 #endif
