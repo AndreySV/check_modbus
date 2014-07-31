@@ -27,6 +27,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <inttypes.h>
 #include "variant.h"
 
 /* returns size in words */
@@ -127,16 +128,16 @@ void printf_data_t(FILE *fd, struct data_t *data)
 		fprintf(fd, "%u", data->val.word);
 		break;
 	case FORMAT_SIGNED_DWORD:
-		fprintf(fd, "%ld", data->val.sdword);
+		fprintf(fd, "%"PRId32, data->val.sdword);
 		break;
 	case FORMAT_UNSIGNED_DWORD:
-		fprintf(fd, "%lu", data->val.dword);
+		fprintf(fd, "%"PRIu32, data->val.dword);
 		break;
 	case FORMAT_SIGNED_QWORD:
-		fprintf(fd, "%lld", data->val.sqword);
+		fprintf(fd, "%"PRId64, data->val.sqword);
 		break;
 	case FORMAT_UNSIGNED_QWORD:
-		fprintf(fd, "%llu", data->val.qword);
+		fprintf(fd, "%"PRIu64, data->val.qword);
 		break;
 	case FORMAT_FLOAT:
 		fprintf(fd, "%f", data->val.real);
