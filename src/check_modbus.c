@@ -78,6 +78,7 @@ int     read_data(modbus_t *mb, FILE *f, modbus_params_t *params, data_t *data)
 	if (f != NULL) {
 		int read;
 		int need_bytes;
+
 		if (fseek(f, sad*sizeof(data->val.words[0]), SEEK_SET))	{
 			if (ferror(f))
 				fprintf(stderr, "Error: %d error string: %s\n", errno, strerror(errno));
@@ -303,7 +304,7 @@ void     sleep_between_tries(int try)
 	int             retry_timeout_us;
 
 	/* calculate retry timeout : random from 1.0 to 1.3 of base timeout */
-	retry_timeout_us = (1 + (rand() % 30)/100.0)* (retry_max_timeout_us*(try+1));
+	retry_timeout_us = (1 + (rand() % 30)/100.0) * (retry_max_timeout_us * (try+1));
 
 	usleep(retry_timeout_us);
 }
@@ -324,6 +325,7 @@ void    deinit_connection(modbus_t **mb, FILE **f)
 int     open_modbus_connection(modbus_t *mb)
 {
 	int rc = RESULT_OK;
+
 	if (mb != NULL)
 		if (modbus_connect(mb) == -1)
 			rc = RESULT_ERROR_CONNECT;

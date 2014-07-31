@@ -232,6 +232,7 @@ void    load_defaults(modbus_params_t *params)
 int check_swap_inverse(modbus_params_t *params)
 {
 	int rc = 0;
+
 	if (((params->nf == 1) || (params->nf == 2)) && /* bit operations */
 		((params->swap_bytes) || (params->inverse_words)))
 		rc = 1;
@@ -255,6 +256,7 @@ int check_dump_param(modbus_params_t *params)
 int check_function_num(modbus_params_t *params)
 {
 	int rc;
+
 	rc =  (params->nf > MBF_MIN_SUPPORTED) && (params->nf < MBF_MAX_SUPPORTED) ? 0 : 1;
 	if (rc)
 		fprintf(stderr, "Invalid function number: %d\n", params->nf);
