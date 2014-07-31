@@ -27,12 +27,12 @@
 # Andrej . Skvortzov [at] gmail . com
 #******************************************************************************
 
-aclocal
-autoconf
-touch README AUTHORS NEWS ChangeLog
-# autoheader
-automake -a
-./configure
+aclocal -I m4 \
+    && autoconf \
+    && automake --add-missing --copy  \
+    && echo "Ready to run ./configure" 
+
+# ./configure
 # ./configure LDFLAGS=-L/usr/local/lib CPPFLAGS=-I/usr/local/include
 # make
 # make dist

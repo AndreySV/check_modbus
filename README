@@ -17,7 +17,8 @@ Added many useful features:
 
 In general, plugin can be build as usual
 
-./configure 
+./autogen.sh
+./configure
 make
 make install
 
