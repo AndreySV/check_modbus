@@ -271,15 +271,12 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 	if (params->file != NULL) {
 
 		*f = fopen(params->file, "rb");
-		/* fprintf( stderr, "open for reading (%d)\n", params->sad ); */
 		if (*f == NULL) {
 			fprintf(stderr,
 				"Unable to open binary dump file %s (%s)\n",
 				params->file, strerror(errno));
 			return RESULT_ERROR;
 		}
-		/* if ( check_lockfile( fileno(*f) ) ) return RESULT_ERROR; */
-		/* fprintf( stderr, "Locked (%d)\n", params->sad ); */
 	}
 
 
@@ -346,36 +343,6 @@ static void close_modbus_connection(modbus_t *mb)
 }
 
 
-#if 0
-static int check_lockfile(int fd)
-{
-	int rc  = RESULT_ERROR;
-	int i;
-	int quit;
-
-	if (fd == -1)
-		fprintf(stderr, "Can't get fd of opened file (%s)\n", strerror(errno));
-	else {
-		for (quit = 0; !quit;) {
-			i = flock(fd, LOCK_EX);
-			switch (i) {
-			case 0:
-				rc = RESULT_OK;
-				quit = 1;
-				break;
-			case EINTR:
-				break;
-			default:
-				fprintf(stderr, "flock() failed (%s)\n", strerror(errno));
-				quit = 1;
-				break;
-			}
-		}
-	}
-	return rc;
-}
-#endif
-
 static int     save_dump_file(struct modbus_params_t *params, struct data_t *data)
 {
 
@@ -391,7 +358,6 @@ static int     save_dump_file(struct modbus_params_t *params, struct data_t *dat
 	if (params->dump_file) {
 
 		fout = fopen(params->dump_file, "wb");
-		/* fprintf(stderr, "opened for writing\n"); */
 		if (!fout) {
 			fprintf(stderr, "Can't create file %s\n", params->dump_file);
 			return RESULT_ERROR;
@@ -399,21 +365,11 @@ static int     save_dump_file(struct modbus_params_t *params, struct data_t *dat
 	} else
 		fout = stdout;
 
+	printf_data_t(fout, data);
+	rc = RESULT_OK;
 
-	/* rc = check_lockfile( fileno( fout ) ); */
-	/* fprintf(stderr, "File locked\n"); */
-	/* if (rc) */
-	/* { */
-	/*     fprintf( stderr, "Can't set lock on the dump file\n"); */
-	/*     rc = RESULT_ERROR; */
-	/* } */
-	/* else */
-	{
-		printf_data_t(fout, data);
-		rc = RESULT_OK;
-	}
 	fclose(fout);
-	/* fprintf( stderr, "File unlocked\n"); */
+
 	release_lock(params, LOCK_OUTPUT);
 	return rc;
 }
