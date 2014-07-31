@@ -4,21 +4,21 @@
 
   Copyright (C) 2011 2012 2013 2014 Andrey Skvortsov
 
-  
-  This program is free software; you can redistribute it and/or modify 
-  it under the terms of the GNU General Public License as published by 
-  the Free Software Foundation; either version 3, or (at your  option)  
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3, or (at your  option)
   any later version.
-  
-  This program is distributed in the hope that it will be useful, but  
-  WITHOUT ANY WARRANTY; without even the implied warranty of  
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU    
+
+  This program is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU
   General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software  
+  along with this program; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  02110-1301, USA. 
+  02110-1301, USA.
 
 
   Andrey Skvortsov
@@ -225,7 +225,7 @@ void    load_defaults(modbus_params_t* params)
 
     params->lock_file_in = NULL;
     params->lock_file_in_fd = 0;
-    
+
     params->lock_file_out = NULL;
     params->lock_file_out_fd = 0;
 }
@@ -251,7 +251,7 @@ int     check_dump_param( modbus_params_t* params)
     int ft = params->dump_format;
 
     rc =  (ft>DUMP_FMT_MIN_SUPPORTED) && (ft<DUMP_FMT_MAX_SUPPORTED) ? 0 : params->dump ;
-    
+
     return rc;
 }
 
@@ -407,12 +407,12 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
         OPT_SERIAL_STOP_BITS,
 #endif
         OPT_FILE,
-        
+
         OPT_DUMP,
         OPT_DUMP_FILE,
         OPT_DUMP_FORMAT,
         OPT_DUMP_SIZE,
-        
+
         OPT_LOCK_FILE_IN,
         OPT_LOCK_FILE_OUT,
 
@@ -602,7 +602,7 @@ int     parse_command_line(modbus_params_t* params, int argc, char **argv)
             case OPT_LOCK_FILE_OUT:
                 params->lock_file_out = optarg;
                 break;
-                
+
             case '?':
             default:
                 print_help();
