@@ -94,7 +94,7 @@ int     read_data(modbus_t *mb, FILE *f, modbus_params_t *params, data_t *data)
 				fprintf(stderr, "Error: %d, error string: %s\n", errno, strerror(errno));
 			if (feof(f))
 				fprintf(stderr, "Error: end of file\n");
-			fprintf(stderr, "Read only %d bytes from file, but need %d \n", read, need_bytes);
+			fprintf(stderr, "Read only %d bytes from file, but need %d\n", read, need_bytes);
 			return RESULT_ERROR_READ;
 		}
 		rc = RESULT_OK;
@@ -268,8 +268,9 @@ int init_connection(modbus_params_t *params, modbus_t **mb, FILE **f)
 
 		*f = fopen(params->file, "rb");
 		/* fprintf( stderr, "open for reading (%d)\n", params->sad ); */
-		if (*f == NULL)	{
-			fprintf(stderr, "Unable to open binary dump file %s (%s)\n", \
+		if (*f == NULL) {
+			fprintf(stderr,
+				"Unable to open binary dump file %s (%s)\n",
 				params->file, strerror(errno));
 			return RESULT_ERROR;
 		}
@@ -425,16 +426,16 @@ int process(modbus_params_t *params)
 	if (params->verbose)
 		printf("process\n");
 
-	if (rc = init_connection(params, &mb, &f))
+	rc = init_connection(params, &mb, &f);
+	if (rc)
 		return rc;
 
 
 	init_data_t(&data, params->format, params->dump_size);
 	for (try_cnt = 0; try_cnt < params->tries; try_cnt++) {
 		/* start new try */
-		rc = RESULT_OK;
-
-		if ((rc = open_modbus_connection(mb)) == RESULT_OK) {
+		rc = open_modbus_connection(mb);
+		if (rc == RESULT_OK) {
 			rc = read_data(mb, f, params, &data);
 			if (rc == RESULT_OK)
 				break;
