@@ -31,6 +31,8 @@
 #include <stdbool.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <signal.h>
+#include <unistd.h>
 #include <errno.h>
 
 
@@ -38,12 +40,11 @@
 
 
 
-int    lock_file_old(char *file)
+static int    lock_file_old(char *file)
 {
 	/* check correctness of lock file */
 	FILE  *f;
 	pid_t pid;
-	int rc;
 	int ret;
 
 	ret = 0;
@@ -58,7 +59,7 @@ int    lock_file_old(char *file)
 }
 
 
-void    write_lock_file(int fd)
+static void    write_lock_file(int fd)
 {
 	char  str[10];
 	pid_t pid;
@@ -67,12 +68,11 @@ void    write_lock_file(int fd)
 	pid = getpid();
 	rc = snprintf(str, sizeof(str), "%d\n", pid);
 	if (rc > 0)
-		write(fd, str, rc);
+		rc = write(fd, str, rc);
 }
 
-void    control_lock(struct modbus_params_t *params, int lock_type, bool enable)
+static void    control_lock(struct modbus_params_t *params, int lock_type, bool enable)
 {
-	/* const char filename[]="lock.pid"; */
 	int  *pfd;
 	int   fd;
 	char *lock_file;
@@ -97,7 +97,7 @@ void    control_lock(struct modbus_params_t *params, int lock_type, bool enable)
 		return;
 
 	if (enable) {
-		const max_cnt = 5000;
+		const int max_cnt = 5000;
 		int cnt = 0;
 
 		do {
@@ -119,7 +119,7 @@ void    control_lock(struct modbus_params_t *params, int lock_type, bool enable)
 		} while (fd == -1);
 		write_lock_file(fd);
 	} else {
-		close(fd);
+		close(*pfd);
 		unlink(lock_file);
 		fd = 0;
 	}

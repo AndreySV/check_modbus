@@ -30,12 +30,15 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <errno.h>
+#include <ctype.h>
+
+#include "command_line.h"
 #include "compile_date_time.h"
 #include "global_macro.h"
 #include "check_modbus.h"
 
 
-void print_help(void)
+static void print_help(void)
 {
 	printf("Check ModBus version %s\n", PACKAGE_VERSION);
 	printf("Build date: %02d.%02d.%04d\n", COMPILE_DAY, COMPILE_MONTH, COMPILE_YEAR);
@@ -151,8 +154,8 @@ void print_settings(FILE *fd, struct modbus_params_t *params)
 	fprintf(fd, "format:      %d\n",          params->format);
 	fprintf(fd, "swap bytes:  %d\n",          params->swap_bytes);
 	fprintf(fd, "\n");
-	fprintf(fd, "warning:     %lf\n",         params->warn_range);
-	fprintf(fd, "critical:    %lf\n",         params->crit_range);
+	fprintf(fd, "warning:     %f\n",          params->warn_range);
+	fprintf(fd, "critical:    %f\n",          params->crit_range);
 	fprintf(fd, "null:        %d\n",          params->nc);
 	fprintf(fd, "not null:    %d\n",          params->nnc);
 	fprintf(fd, "\n");
@@ -161,8 +164,8 @@ void print_settings(FILE *fd, struct modbus_params_t *params)
 
 	fprintf(fd, "perf_label:  %s\n",          params->perf_label ? params->perf_label : "NULL");
 
-	fprintf(fd, "perf_min:    %lf\n",         params->perf_min);
-	fprintf(fd, "perf_max:    %lf\n",         params->perf_max);
+	fprintf(fd, "perf_min:    %f\n",          params->perf_min);
+	fprintf(fd, "perf_max:    %f\n",          params->perf_max);
 
 	fprintf(fd, "\n");
 	fprintf(fd, "dump:        %d\n",          params->dump);
@@ -176,11 +179,9 @@ void print_settings(FILE *fd, struct modbus_params_t *params)
 }
 
 
-void    load_defaults(struct modbus_params_t *params)
+static void    load_defaults(struct modbus_params_t *params)
 {
 	static char  mport_default[] = XSTR(MODBUS_TCP_DEFAULT_PORT);
-
-	params->mport       = mport_default;
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
 	static char  serial_parity_default = SERIAL_PARITY_DEFAULT;
@@ -192,6 +193,8 @@ void    load_defaults(struct modbus_params_t *params)
 	params->serial_data_bits = 8;
 	params->serial_stop_bits = 1;
 #endif
+	params->mport       = mport_default;
+
 	params->file        = NULL;
 
 	params->sad         = 0;
@@ -229,7 +232,7 @@ void    load_defaults(struct modbus_params_t *params)
 }
 
 
-int check_swap_inverse(struct modbus_params_t *params)
+static int check_swap_inverse(struct modbus_params_t *params)
 {
 	int rc = 0;
 
@@ -243,7 +246,7 @@ int check_swap_inverse(struct modbus_params_t *params)
 	return rc;
 }
 
-int check_dump_param(struct modbus_params_t *params)
+static int check_dump_param(struct modbus_params_t *params)
 {
 	int rc = 0;
 	int ft = params->dump_format;
@@ -253,7 +256,7 @@ int check_dump_param(struct modbus_params_t *params)
 	return rc;
 }
 
-int check_function_num(struct modbus_params_t *params)
+static int check_function_num(struct modbus_params_t *params)
 {
 	int rc;
 
@@ -264,15 +267,17 @@ int check_function_num(struct modbus_params_t *params)
 }
 
 
-int check_source(struct modbus_params_t *params)
+static int check_source(struct modbus_params_t *params)
 {
 	int cnt;
 
 	cnt = params->host   ? 1 : 0;
 #if LIBMODBUS_VERSION_MAJOR >= 3
-	cnt = params->serial ? cnt++ : cnt;
+	if (params->serial)
+		cnt++;
 #endif
-	cnt = params->file   ? cnt++ : cnt;
+	if (params->file)
+		cnt++;
 
 	if (cnt > 1) {
 		fprintf(stderr, "Several modbus input interfaces were declared\n");
@@ -282,7 +287,7 @@ int check_source(struct modbus_params_t *params)
 }
 
 
-int     check_format_type(struct modbus_params_t *params)
+static int     check_format_type(struct modbus_params_t *params)
 {
 	int rc;
 	int ft;
@@ -303,7 +308,7 @@ int     check_format_type(struct modbus_params_t *params)
 
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
-int     check_serial_parity(char parity)
+static int     check_serial_parity(char parity)
 {
 	return ((parity == 'N') || (parity == 'E') || (parity == 'O')) ? 0 : 1;
 }
@@ -312,8 +317,10 @@ int     check_serial_parity(char parity)
 
 
 
-int      check_command_line(struct modbus_params_t *params, int argc, char **argv)
+static int      check_command_line(struct modbus_params_t *params, int argc, char **argv)
 {
+	(void)argc;
+	
 #if LIBMODBUS_VERSION_MAJOR >= 3
 	if (params->host == NULL && params->serial == NULL && params->file == NULL) {
 		fprintf(stderr,
@@ -408,7 +415,7 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 		OPT_DUMP_SIZE,
 
 		OPT_LOCK_FILE_IN,
-		OPT_LOCK_FILE_OUT,
+		OPT_LOCK_FILE_OUT
 
 	};
 
@@ -496,7 +503,7 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			params->serial_bps = atoi(optarg);
 			break;
 		case OPT_SERIAL_PARITY:
-			params->serial_parity = (optarg > 0) ? toupper(*optarg) : '\0';
+			params->serial_parity = (optarg) ? toupper(*optarg) : '\0';
 			break;
 		case OPT_SERIAL_DATA_BITS:
 			params->serial_data_bits = atoi(optarg);

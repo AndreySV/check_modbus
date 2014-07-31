@@ -66,7 +66,7 @@ int sizeof_data_t(struct data_t *data)
 
 void clear_data_t(struct data_t *data)
 {
-	int i;
+	size_t i;
 
 	for (i = 0; i < sizeof(data->val); i++)
 		data->val.bytes[i] = 0;
@@ -117,7 +117,6 @@ double value_data_t(struct data_t *data)
 
 void printf_data_t(FILE *fd, struct data_t *data)
 {
-	int size = 0;
 	int i;
 
 	switch (data->format) {
@@ -170,7 +169,7 @@ void printf_data_t(FILE *fd, struct data_t *data)
 	}
 }
 
-uint16_t swap_bytes(uint16_t word)
+static uint16_t swap_bytes(uint16_t word)
 {
 	return ((word & 0xFF00)>>8) | ((word & 0x00FF)<<8);
 }

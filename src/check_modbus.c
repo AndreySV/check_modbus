@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <time.h>
 
 #include "lock.h"
 #include "compile_date_time.h"
@@ -40,9 +41,9 @@
 
 
 
-int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, struct data_t *data)
+static int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, struct data_t *data)
 {
-	int rc;
+	int rc = RESULT_OK;
 	int size = sizeof_data_t(data);
 	int sad  = params->sad;
 
@@ -50,6 +51,11 @@ int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, struct 
 		printf("read_data\n");
 
 	clear_data_t(data);
+
+	/* no source is specified */
+	if ((!mb) && (!f))
+		return RESULT_ERROR;
+		
 	if (mb != NULL)	{
 		switch (params->nf) {
 		case MBF001_READ_COIL_STATUS:
@@ -98,8 +104,6 @@ int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, struct 
 			return RESULT_ERROR_READ;
 		}
 		rc = RESULT_OK;
-		/* fprintf( stderr, "end of reading (%d)\n", params->sad ); */
-
 	}
 	release_lock(params, LOCK_INPUT);
 
@@ -115,7 +119,7 @@ int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, struct 
 
 
 
-void     print_error(int rc)
+static void     print_error(int rc)
 {
 	switch (rc) {
 	case RESULT_ERROR_CONNECT:
@@ -138,24 +142,24 @@ void     print_error(int rc)
 	}
 }
 
-void print_performance_data(struct modbus_params_t *params, struct data_t *data)
+static void print_performance_data(struct modbus_params_t *params, struct data_t *data)
 {
 	if (params->perf_data) {
 		printf("\t\t|'%s'=", params->perf_label);
 		printf_data_t(stdout, data);
-		printf(";%lf;%lf;", params->warn_range, params->crit_range);
+		printf(";%f;%f;", params->warn_range, params->crit_range);
 
 		if (params->perf_min_en)
-			printf("%lf", params->perf_min);
+			printf("%f", params->perf_min);
 
 		printf(";");
 
 		if (params->perf_max_en)
-			printf("%lf", params->perf_max);
+			printf("%f", params->perf_max);
 	}
 }
 
-int print_result(struct modbus_params_t *params, struct data_t *data)
+static int print_result(struct modbus_params_t *params, struct data_t *data)
 {
 	int rc = RESULT_UNKNOWN;
 	double   result, warn_range, crit_range;
@@ -214,7 +218,7 @@ int print_result(struct modbus_params_t *params, struct data_t *data)
 	return rc;
 }
 
-int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE **f)
+static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE **f)
 {
 	int rc;
 	struct timeval  response_timeout;
@@ -299,18 +303,18 @@ int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE **f)
 	return rc;
 }
 
-void     sleep_between_tries(int try)
+static void     sleep_between_tries(int retry)
 {
 	const int       retry_max_timeout_us    =   100*1000; /* us */
 	int             retry_timeout_us;
 
 	/* calculate retry timeout : random from 1.0 to 1.3 of base timeout */
-	retry_timeout_us = (1 + (rand() % 30)/100.0) * (retry_max_timeout_us * (try+1));
+	retry_timeout_us = (1 + (rand() % 30)/100.0) * (retry_max_timeout_us * (retry+1));
 
 	usleep(retry_timeout_us);
 }
 
-void    deinit_connection(modbus_t **mb, FILE **f)
+static void    deinit_connection(modbus_t **mb, FILE **f)
 {
 	if (*mb != NULL) {
 		modbus_close(*mb);
@@ -323,7 +327,7 @@ void    deinit_connection(modbus_t **mb, FILE **f)
 	}
 }
 
-int     open_modbus_connection(modbus_t *mb)
+static int     open_modbus_connection(modbus_t *mb)
 {
 	int rc = RESULT_OK;
 
@@ -335,15 +339,15 @@ int     open_modbus_connection(modbus_t *mb)
 }
 
 
-int     close_modbus_connection(modbus_t *mb)
+static void close_modbus_connection(modbus_t *mb)
 {
 	if (mb != NULL)
 		modbus_close(mb);
 }
 
 
-
-int     check_lockfile(int fd)
+#if 0
+static int check_lockfile(int fd)
 {
 	int rc  = RESULT_ERROR;
 	int i;
@@ -370,9 +374,9 @@ int     check_lockfile(int fd)
 	}
 	return rc;
 }
+#endif
 
-
-int     save_dump_file(struct modbus_params_t *params, struct data_t *data)
+static int     save_dump_file(struct modbus_params_t *params, struct data_t *data)
 {
 
 	/* Set exclusive lock for stdout. It's needed in dump mode to be
@@ -415,7 +419,7 @@ int     save_dump_file(struct modbus_params_t *params, struct data_t *data)
 }
 
 
-int process(struct modbus_params_t *params)
+static int process(struct modbus_params_t *params)
 {
 	modbus_t        *mb;
 	FILE            *f;
