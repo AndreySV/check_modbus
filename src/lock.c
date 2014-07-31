@@ -40,7 +40,7 @@
 
 int    lock_file_old(char *file)
 {
-	// check correctness of lock file
+	/* check correctness of lock file */
 	FILE  *f;
 	pid_t pid;
 	int rc;

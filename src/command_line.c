@@ -455,7 +455,6 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 		{NULL,            0,                      NULL,   0    },
 	};
 
-	//************************************************************
 	if (argc < 2) {
 		fprintf(stderr, "%s: Could not parse arguments\n", argv[0]);
 		print_help();
@@ -477,7 +476,7 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 			print_help();
 			return RESULT_PRINT_HELP;
 
-			// MODBUS TCP
+			/* MODBUS TCP */
 		case 'H':
 			params->host = optarg;
 			break;
@@ -486,7 +485,7 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 			break;
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
-			// MODBUS RTU
+			/* MODBUS RTU */
 		case 'S':
 			params->serial = optarg;
 			break;
