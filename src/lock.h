@@ -33,8 +33,8 @@
 
 enum
 {
-    LOCK_INPUT,
-    LOCK_OUTPUT
+	LOCK_INPUT,
+	LOCK_OUTPUT
 };
 
 
