@@ -146,14 +146,16 @@ void printf_data_t(FILE *fd, data_t *data)
 	case FORMAT_DUMP_HEX:
 		for (i = 0; i < (2*data->arr_size);) {
 			fprintf(fd, "%X ", data->val.bytes[i++]);
-			if ((i%16) == 0) fprintf(fd, "\n");
+			if ((i%16) == 0)
+				fprintf(fd, "\n");
 		}
 		fprintf(fd, "\n");
 		break;
 	case FORMAT_DUMP_DEC:
 		for (i = 0; i < (2*data->arr_size);) {
 			fprintf(fd, "%d ", data->val.bytes[i++]);
-			if ((i%16) == 0) fprintf(fd, "\n");
+			if ((i%16) == 0)
+				fprintf(fd, "\n");
 		}
 		fprintf(fd, "\n");
 		break;
@@ -190,10 +192,12 @@ int equal_data_t(data_t *data1, data_t *data2)
 	int	    size = sizeof_data_t(data1);
 	int	    i;
 
-	if (data1->format != data2->format) return 0;
+	if (data1->format != data2->format)
+		return 0;
 
 	for (i = 0; i < size; i++)
-		if (data1->val.bytes[i] != data2->val.bytes[i]) return 0;
+		if (data1->val.bytes[i] != data2->val.bytes[i])
+			return 0;
 
 	return 1;
 }

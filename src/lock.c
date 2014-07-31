@@ -50,7 +50,8 @@ int    lock_file_old(char *file)
 	f = fopen(file, "rt");
 	if (f) {
 		if (fscanf(f, "%d", &pid) == 1)
-			if ((kill(pid, 0) == -1) && (errno == ESRCH)) ret = 1;
+			if ((kill(pid, 0) == -1) && (errno == ESRCH))
+				ret = 1;
 		fclose(f);
 	}
 	return ret;
@@ -65,7 +66,8 @@ void    write_lock_file(int fd)
 
 	pid = getpid();
 	rc = snprintf(str, sizeof(str), "%d\n", pid);
-	if (rc > 0)  write(fd, str, rc);
+	if (rc > 0)
+		write(fd, str, rc);
 }
 
 void    control_lock(modbus_params_t *params, int lock_type, bool enable)
@@ -91,7 +93,8 @@ void    control_lock(modbus_params_t *params, int lock_type, bool enable)
 		return;
 	}
 
-	if (!lock_file) return;
+	if (!lock_file)
+		return;
 
 	if (enable) {
 		const max_cnt = 5000;

@@ -256,7 +256,8 @@ int check_function_num(modbus_params_t *params)
 {
 	int rc;
 	rc =  (params->nf > MBF_MIN_SUPPORTED) && (params->nf < MBF_MAX_SUPPORTED) ? 0 : 1;
-	if (rc) fprintf(stderr, "Invalid function number: %d\n", params->nf);
+	if (rc)
+		fprintf(stderr, "Invalid function number: %d\n", params->nf);
 	return rc;
 }
 
@@ -362,13 +363,23 @@ int      check_command_line(modbus_params_t *params, int argc, char **argv)
 	}
 
 
-	if (check_swap_inverse(params))     return RESULT_WRONG_ARG;
-	if (check_function_num(params))     return RESULT_WRONG_ARG;
-	if (check_format_type(params))      return RESULT_WRONG_ARG;
-	if (check_source(params))           return RESULT_WRONG_ARG;
-	if (check_dump_param(params))       return RESULT_WRONG_ARG;
+	if (check_swap_inverse(params))
+		return RESULT_WRONG_ARG;
 
-	if (params->verbose) print_settings(stdout, params);
+	if (check_function_num(params))
+		return RESULT_WRONG_ARG;
+
+	if (check_format_type(params))
+		return RESULT_WRONG_ARG;
+
+	if (check_source(params))
+		return RESULT_WRONG_ARG;
+
+	if (check_dump_param(params))
+		return RESULT_WRONG_ARG;
+
+	if (params->verbose)
+		print_settings(stdout, params);
 
 	return RESULT_OK;
 }
@@ -456,7 +467,8 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 	load_defaults(params);
 	while (1) {
 		rs = getopt_long(argc, argv, short_options, long_options, &option_index);
-		if (rs == -1) break;
+		if (rs == -1)
+			break;
 
 
 		switch (rs) {

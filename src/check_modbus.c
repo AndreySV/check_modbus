@@ -46,7 +46,9 @@ int     read_data(modbus_t *mb, FILE *f, modbus_params_t *params, data_t *data)
 	int size = sizeof_data_t(data);
 	int sad  = params->sad;
 
-	if (params->verbose) printf("read_data\n");
+	if (params->verbose)
+		printf("read_data\n");
+
 	clear_data_t(data);
 	if (mb != NULL)	{
 		switch (params->nf) {
@@ -77,7 +79,8 @@ int     read_data(modbus_t *mb, FILE *f, modbus_params_t *params, data_t *data)
 		int read;
 		int need_bytes;
 		if (fseek(f, sad*sizeof(data->val.words[0]), SEEK_SET))	{
-			if (ferror(f)) fprintf(stderr, "Error: %d error string: %s\n", errno, strerror(errno));
+			if (ferror(f))
+				fprintf(stderr, "Error: %d error string: %s\n", errno, strerror(errno));
 			fprintf(stderr, "Can not seek in file\n");
 			return RESULT_ERROR;
 		}
@@ -86,8 +89,10 @@ int     read_data(modbus_t *mb, FILE *f, modbus_params_t *params, data_t *data)
 		read = fread(data->val.words, 1, need_bytes, f);
 
 		if (read != need_bytes)	{
-			if (ferror(f)) fprintf(stderr, "Error: %d, error string: %s\n", errno, strerror(errno));
-			if (feof(f)) fprintf(stderr, "Error: end of file\n");
+			if (ferror(f))
+				fprintf(stderr, "Error: %d, error string: %s\n", errno, strerror(errno));
+			if (feof(f))
+				fprintf(stderr, "Error: end of file\n");
 			fprintf(stderr, "Read only %d bytes from file, but need %d \n", read, need_bytes);
 			return RESULT_ERROR_READ;
 		}
@@ -97,9 +102,11 @@ int     read_data(modbus_t *mb, FILE *f, modbus_params_t *params, data_t *data)
 	}
 	release_lock(params, LOCK_INPUT);
 
-	if (rc == RESULT_OK)  reorder_data_t(data, params->swap_bytes, params->inverse_words);
+	if (rc == RESULT_OK)
+		reorder_data_t(data, params->swap_bytes, params->inverse_words);
 
-	if (params->verbose) printf("read_data rc: %d\n", rc);
+	if (params->verbose)
+		printf("read_data rc: %d\n", rc);
 	return rc;
 }
 
@@ -136,9 +143,14 @@ void print_performance_data(modbus_params_t *params, data_t *data)
 		printf("\t\t|'%s'=", params->perf_label);
 		printf_data_t(stdout, data);
 		printf(";%lf;%lf;", params->warn_range, params->crit_range);
-		if (params->perf_min_en) printf("%lf", params->perf_min);
+
+		if (params->perf_min_en)
+			printf("%lf", params->perf_min);
+
 		printf(";");
-		if (params->perf_max_en) printf("%lf", params->perf_max);
+
+		if (params->perf_max_en)
+			printf("%lf", params->perf_max);
 	}
 }
 
@@ -148,22 +160,29 @@ int print_result(modbus_params_t *params, data_t *data)
 	double   result, warn_range, crit_range;
 
 
-	if (params->verbose) printf("print_result\n");
+	if (params->verbose)
+		printf("print_result\n");
 
 	result      = value_data_t(data);
 	warn_range  = params->warn_range;
 	crit_range  = params->crit_range;
 
 	if (params->nc != params->nnc) {
-		if (params->nc  == 1)  rc = (result == 0) ? RESULT_CRITICAL : RESULT_OK;
-		if (params->nnc == 1)  rc = (result != 0) ? RESULT_CRITICAL : RESULT_OK;
+		if (params->nc  == 1)
+			rc = (result == 0) ? RESULT_CRITICAL : RESULT_OK;
+		if (params->nnc == 1)
+			rc = (result != 0) ? RESULT_CRITICAL : RESULT_OK;
 	} else {
 		if (warn_range <= crit_range) {
-			if (result >= crit_range)      rc = RESULT_CRITICAL;
-			else rc = (result >= warn_range) ? RESULT_WARNING : RESULT_OK;
+			if (result >= crit_range)
+				rc = RESULT_CRITICAL;
+			else
+				rc = (result >= warn_range) ? RESULT_WARNING : RESULT_OK;
 		} else {
-			if (result <= crit_range)      rc = RESULT_CRITICAL;
-			else rc = (result <= warn_range) ?  RESULT_WARNING : RESULT_OK;
+			if (result <= crit_range)
+				rc = RESULT_CRITICAL;
+			else
+				rc = (result <= warn_range) ?  RESULT_WARNING : RESULT_OK;
 		}
 	}
 
@@ -183,7 +202,9 @@ int print_result(modbus_params_t *params, data_t *data)
 		break;
 	}
 
-	if (params->verbose) printf("print_result rc: %d\n", rc);
+	if (params->verbose)
+		printf("print_result rc: %d\n", rc);
+
 	printf_data_t(stdout, data);
 	print_performance_data(params, data);
 
@@ -201,7 +222,8 @@ int init_connection(modbus_params_t *params, modbus_t **mb, FILE **f)
 	*f  = NULL;
 
 	rc = RESULT_OK;
-	if (params->verbose) printf("init_connection\n");
+	if (params->verbose)
+		printf("init_connection\n");
 
 	set_lock(params, LOCK_INPUT);
 	/*******************************************************************/
@@ -229,7 +251,8 @@ int init_connection(modbus_params_t *params, modbus_t **mb, FILE **f)
 					return RESULT_ERROR;
 				}
 			} else {
-				if (params->verbose) printf("Serial port already in requested mode.\n");
+				if (params->verbose)
+					printf("Serial port already in requested mode.\n");
 			}
 		} else {
 			fprintf(stderr, "Unable to allocate libmodbus context\n");
@@ -256,7 +279,8 @@ int init_connection(modbus_params_t *params, modbus_t **mb, FILE **f)
 
 	/*******************************************************************/
 	if (*mb != NULL) {
-		if (params->verbose > 1) modbus_set_debug(*mb, 1);
+		if (params->verbose > 1)
+			modbus_set_debug(*mb, 1);
 
 		/* set short timeout */
 		response_timeout.tv_sec = 1;
@@ -268,7 +292,8 @@ int init_connection(modbus_params_t *params, modbus_t **mb, FILE **f)
 
 
 
-	if (params->verbose)    printf("init_connection rc: %d\n", rc);
+	if (params->verbose)
+		printf("init_connection rc: %d\n", rc);
 	return rc;
 }
 
@@ -299,16 +324,18 @@ void    deinit_connection(modbus_t **mb, FILE **f)
 int     open_modbus_connection(modbus_t *mb)
 {
 	int rc = RESULT_OK;
-	if (mb != NULL) {
-		if (modbus_connect(mb) == -1) rc = RESULT_ERROR_CONNECT;
-	}
+	if (mb != NULL)
+		if (modbus_connect(mb) == -1)
+			rc = RESULT_ERROR_CONNECT;
+
 	return rc;
 }
 
 
 int     close_modbus_connection(modbus_t *mb)
 {
-	if (mb != NULL) modbus_close(mb);
+	if (mb != NULL)
+		modbus_close(mb);
 }
 
 
@@ -319,7 +346,8 @@ int     check_lockfile(int fd)
 	int i;
 	int quit;
 
-	if (fd == -1) fprintf(stderr, "Can't get fd of opened file (%s)\n", strerror(errno));
+	if (fd == -1)
+		fprintf(stderr, "Can't get fd of opened file (%s)\n", strerror(errno));
 	else {
 		for (quit = 0; !quit;) {
 			i = flock(fd, LOCK_EX);
@@ -392,8 +420,11 @@ int process(modbus_params_t *params)
 	data_t          data;
 	int             rc;
 
-	if (params->verbose) printf("process\n");
-	if (rc = init_connection(params, &mb, &f)) return rc;
+	if (params->verbose)
+		printf("process\n");
+
+	if (rc = init_connection(params, &mb, &f))
+		return rc;
 
 
 	init_data_t(&data, params->format, params->dump_size);
@@ -403,7 +434,8 @@ int process(modbus_params_t *params)
 
 		if ((rc = open_modbus_connection(mb)) == RESULT_OK) {
 			rc = read_data(mb, f, params, &data);
-			if (rc == RESULT_OK) break;
+			if (rc == RESULT_OK)
+				break;
 
 			close_modbus_connection(mb);
 		}
@@ -413,12 +445,15 @@ int process(modbus_params_t *params)
 	print_error(rc);
 
 	if (rc == RESULT_OK) {
-		if (params->dump) rc = save_dump_file(params, &data);
-		else  rc = print_result(params, &data);
+		if (params->dump)
+			rc = save_dump_file(params, &data);
+		else
+			rc = print_result(params, &data);
 	}
 
 	deinit_connection(&mb, &f);
-	if (params->verbose) printf("process rc: %d\n", rc);
+	if (params->verbose)
+		printf("process rc: %d\n", rc);
 	return rc;
 }
 
