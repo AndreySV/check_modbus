@@ -33,7 +33,10 @@
 #define COMPILE_SECOND (((__TIME__[6]-'0')*10) + (__TIME__[7]-'0'))
 
 
-#define COMPILE_YEAR ((((__DATE__[7]-'0')*10+(__DATE__[8]-'0'))*10+(__DATE__[9]-'0'))*10+(__DATE__[10]-'0'))
+#define COMPILE_YEAR ((((__DATE__[7]-'0')*10 +    \
+			(__DATE__[8]-'0'))*10 +	  \
+			(__DATE__[9]-'0'))*10 +   \
+			(__DATE__[10]-'0'))
 
 #define COMPILE_MONTH ((__DATE__[2] == 'n' ? (__DATE__[1] == 'a' ? 0 : 5) \
 		      : __DATE__[2] == 'b' ? 1 \
@@ -45,6 +48,7 @@
 		      : __DATE__[2] == 't' ? 9 \
 		      : __DATE__[2] == 'v' ? 10 : 11)+1)
 
-#define COMPILE_DAY ((__DATE__[4] == ' ' ? 0 : __DATE__[4]-'0')*10+(__DATE__[5]-'0'))
+#define COMPILE_DAY    ((__DATE__[4] == ' ' ? 0 : __DATE__[4]-'0')*10 + \
+			(__DATE__[5]-'0'))
 
 #endif
