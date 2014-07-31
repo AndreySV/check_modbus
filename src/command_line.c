@@ -37,12 +37,12 @@
 
 void print_help(void)
 {
-	printf("Check ModBus version %s\n", PACKAGE_VERSION );
-	printf("Build date: %02d.%02d.%04d\n",COMPILE_DAY,COMPILE_MONTH,COMPILE_YEAR);
+	printf("Check ModBus version %s\n", PACKAGE_VERSION);
+	printf("Build date: %02d.%02d.%04d\n", COMPILE_DAY, COMPILE_MONTH, COMPILE_YEAR);
 	printf("\n");
 	printf("-v  --verbose       Print additional (debug) information (settings, modbus debug etc).\n");
-	printf("                    Specify multiple times to increase verbosity level.\n" );
-	printf("-h  --help          Print this help\n" );
+	printf("                    Specify multiple times to increase verbosity level.\n");
+	printf("-h  --help          Print this help\n");
 	printf("-H  --ip=           IP address or hostname\n");
 	printf("-p  --port=         [ TCP Port number. Default %s ]\n", XSTR(MODBUS_TCP_DEFAULT_PORT));
 
@@ -106,7 +106,7 @@ void print_help(void)
 	printf("          ./check_modbus --ip=192.168.1.123 -d 1 -a 13 -f 4 -w 123.4 -c 234.5\n");
 	printf("          ./check_modbus --ip=192.168.1.123 -d 1 -a 15 -f 4 -w 2345 -c 1234\n");
 	printf("          ./check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n\n");
-	printf("          ./check_modbus --ip=plc01 --try=5 -d 2 -a 1 -f 4 --dump --dump_format 1 --dump_size 20\n" );
+	printf("          ./check_modbus --ip=plc01 --try=5 -d 2 -a 1 -f 4 --dump --dump_format 1 --dump_size 20\n");
 	printf("          ./check_modbus --file=file.dump -F 7 -f 4 -a 20 -w 100\n");
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
@@ -123,57 +123,57 @@ void print_settings(FILE *fd, modbus_params_t *params)
 
 	if (params->host != NULL)
 	{
-		fprintf(fd, "ip:          %s\n",          params->host        );
-		fprintf(fd, "port:        %s\n",          params->mport       );
+		fprintf(fd, "ip:          %s\n",          params->host);
+		fprintf(fd, "port:        %s\n",          params->mport);
 	}
 #if LIBMODBUS_VERSION_MAJOR >= 3
 	else if (params->serial != NULL)
 	{
-		fprintf(fd, "serial:           %s\n",     params->serial      );
-		fprintf(fd, "serial_mode:      %s\n",     (params->serial_mode == MODBUS_RTU_RS232) ? "MODBUS_RTU_RS232" : "MODBUS_RTU_RS485" );
-		fprintf(fd, "serial_bps:       %d\n",     params->serial_bps  );
-		fprintf(fd, "serial_parity:    %c (N: none, E: even, O: odd)\n",     params->serial_parity  );
-		fprintf(fd, "serial_data_bits: %d\n",     params->serial_data_bits  );
-		fprintf(fd, "serial_stop_bits: %d\n",     params->serial_stop_bits  );
+		fprintf(fd, "serial:           %s\n",     params->serial);
+		fprintf(fd, "serial_mode:      %s\n",     (params->serial_mode == MODBUS_RTU_RS232) ? "MODBUS_RTU_RS232" : "MODBUS_RTU_RS485");
+		fprintf(fd, "serial_bps:       %d\n",     params->serial_bps);
+		fprintf(fd, "serial_parity:    %c (N: none, E: even, O: odd)\n",     params->serial_parity);
+		fprintf(fd, "serial_data_bits: %d\n",     params->serial_data_bits);
+		fprintf(fd, "serial_stop_bits: %d\n",     params->serial_stop_bits);
 	}
 #endif
-	else if (params->file != NULL )
-		fprintf(fd, "file:             %s\n",     params->file       );
+	else if (params->file != NULL)
+		fprintf(fd, "file:             %s\n",     params->file);
 
 	fprintf(fd, "\n");
 
-	fprintf(fd, "verbosity:   %d\n",          params->verbose     );
+	fprintf(fd, "verbosity:   %d\n",          params->verbose);
 
-	fprintf(fd, "device:      %d\n",          params->devnum      );
-	fprintf(fd, "address:     %d\n",          params->sad         );
-	fprintf(fd, "function:    %d\n",          params->nf          );
-	fprintf(fd, "tries:       %d\n",          params->tries       );
+	fprintf(fd, "device:      %d\n",          params->devnum);
+	fprintf(fd, "address:     %d\n",          params->sad);
+	fprintf(fd, "function:    %d\n",          params->nf);
+	fprintf(fd, "tries:       %d\n",          params->tries);
 	fprintf(fd, "\n");
 	fprintf(fd, "inverse:     %d\n",          params->inverse_words);
-	fprintf(fd, "format:      %d\n",          params->format      );
-	fprintf(fd, "swap bytes:  %d\n",          params->swap_bytes  );
+	fprintf(fd, "format:      %d\n",          params->format);
+	fprintf(fd, "swap bytes:  %d\n",          params->swap_bytes);
 	fprintf(fd, "\n");
-	fprintf(fd, "warning:     %lf\n",         params->warn_range  );
-	fprintf(fd, "critical:    %lf\n",         params->crit_range  );
-	fprintf(fd, "null:        %d\n",          params->nc          );
-	fprintf(fd, "not null:    %d\n",          params->nnc         );
+	fprintf(fd, "warning:     %lf\n",         params->warn_range);
+	fprintf(fd, "critical:    %lf\n",         params->crit_range);
+	fprintf(fd, "null:        %d\n",          params->nc);
+	fprintf(fd, "not null:    %d\n",          params->nnc);
 	fprintf(fd, "\n");
-	fprintf(fd, "perf_data:   %d\n",          params->perf_data   );
+	fprintf(fd, "perf_data:   %d\n",          params->perf_data);
 
 
-	fprintf(fd, "perf_label:  %s\n",          params->perf_label ? params->perf_label : "NULL"  );
+	fprintf(fd, "perf_label:  %s\n",          params->perf_label ? params->perf_label : "NULL");
 
-	fprintf(fd, "perf_min:    %lf\n",         params->perf_min    );
-	fprintf(fd, "perf_max:    %lf\n",         params->perf_max    );
+	fprintf(fd, "perf_min:    %lf\n",         params->perf_min);
+	fprintf(fd, "perf_max:    %lf\n",         params->perf_max);
 
 	fprintf(fd, "\n");
-	fprintf(fd, "dump:        %d\n",          params->dump       );
+	fprintf(fd, "dump:        %d\n",          params->dump);
 	fprintf(fd, "dump_format: %d\n",          params->dump_format);
-	fprintf(fd, "dump_size:   %d\n",          params->dump_size  );
-	fprintf(fd, "dump_file :  %s\n",          params->dump_file ? params->dump_file : "stdout"  );
+	fprintf(fd, "dump_size:   %d\n",          params->dump_size);
+	fprintf(fd, "dump_file :  %s\n",          params->dump_file ? params->dump_file : "stdout");
 	fprintf(fd, "\n");
-	fprintf(fd, "lock_file_in :%s\n",          params->lock_file_in ? params->lock_file_in : "NULL" );
-	fprintf(fd, "lock_file_out:%s\n",          params->lock_file_out ? params->lock_file_out : "NULL" );
+	fprintf(fd, "lock_file_in :%s\n",          params->lock_file_in ? params->lock_file_in : "NULL");
+	fprintf(fd, "lock_file_out:%s\n",          params->lock_file_out ? params->lock_file_out : "NULL");
 	fprintf(fd, "---------------------------------------------\n");
 }
 
@@ -231,40 +231,40 @@ void    load_defaults(modbus_params_t *params)
 }
 
 
-int     check_swap_inverse( modbus_params_t *params)
+int check_swap_inverse(modbus_params_t *params)
 {
 	int rc = 0;
-	if ( ((params->nf == 1) || (params->nf == 2)) && /* bit operations */
-		((params->swap_bytes ) || (params->inverse_words)) )
+	if (((params->nf == 1) || (params->nf == 2)) && /* bit operations */
+		((params->swap_bytes) || (params->inverse_words)))
 		rc = 1;
 	if (rc)
 	{
-		fprintf( stderr, "Swap bytes and inverse words functionality not acceptable ");
-		fprintf( stderr, "for modbus functions 1 and 2 operated with bits.\n");
+		fprintf(stderr, "Swap bytes and inverse words functionality not acceptable ");
+		fprintf(stderr, "for modbus functions 1 and 2 operated with bits.\n");
 	}
 	return rc;
 }
 
-int     check_dump_param( modbus_params_t *params)
+int check_dump_param(modbus_params_t *params)
 {
 	int rc = 0;
 	int ft = params->dump_format;
 
-	rc =  (ft>DUMP_FMT_MIN_SUPPORTED) && (ft<DUMP_FMT_MAX_SUPPORTED) ? 0 : params->dump ;
+	rc =  (ft > DUMP_FMT_MIN_SUPPORTED) && (ft < DUMP_FMT_MAX_SUPPORTED) ? 0 : params->dump;
 
 	return rc;
 }
 
-int     check_function_num(modbus_params_t *params)
+int check_function_num(modbus_params_t *params)
 {
 	int rc;
-	rc =  (params->nf>MBF_MIN_SUPPORTED) && (params->nf<MBF_MAX_SUPPORTED) ? 0 : 1 ;
-	if (rc) fprintf( stderr, "Invalid function number: %d\n", params->nf );
+	rc =  (params->nf > MBF_MIN_SUPPORTED) && (params->nf < MBF_MAX_SUPPORTED) ? 0 : 1;
+	if (rc) fprintf(stderr, "Invalid function number: %d\n", params->nf);
 	return rc;
 }
 
 
-int     check_source( modbus_params_t *params)
+int check_source(modbus_params_t *params)
 {
 	int cnt;
 
@@ -274,9 +274,9 @@ int     check_source( modbus_params_t *params)
 #endif
 	cnt = params->file   ? cnt++ : cnt;
 
-	if (cnt>1)
+	if (cnt > 1)
 	{
-		fprintf( stderr, "Several modbus input interfaces were declared\n");
+		fprintf(stderr, "Several modbus input interfaces were declared\n");
 		return 1;
 	}
 	return 0;
@@ -287,18 +287,18 @@ int     check_format_type(modbus_params_t *params)
 {
 	int rc;
 	int ft;
-	int max_format,min_format;
+	int max_format, min_format;
 
 	min_format = params->dump ? FORMAT_DUMP_MIN  : FORMAT_MIN_SUPPORTED;
 	max_format = params->dump ? FORMAT_DUMP_MAX  : FORMAT_MAX_SUPPORTED;
 	ft = params->format;
 
-	rc =  (ft>min_format) && (ft<max_format) ? 0 : 1 ;
+	rc =  (ft > min_format) && (ft < max_format) ? 0 : 1 ;
 	if (rc)
 	{
-		fprintf( stderr, "Invalid data format: %d\n", params->format );
+		fprintf(stderr, "Invalid data format: %d\n", params->format);
 		if (params->dump)
-			fprintf( stderr, "-F (--format) parameter can not be used in dump mode \n");
+			fprintf(stderr, "-F (--format) parameter can not be used in dump mode \n");
 	}
 	return rc;
 }
@@ -327,7 +327,7 @@ int      check_command_line(modbus_params_t *params, int argc, char **argv)
 		return RESULT_WRONG_ARG;
 	};
 #else
-	if (params->host == NULL && params->file == NULL )
+	if (params->host == NULL && params->file == NULL)
 	{
 		fprintf(                                                        \
 			stderr,                                                     \
@@ -343,12 +343,12 @@ int      check_command_line(modbus_params_t *params, int argc, char **argv)
 	{
 		if (params->serial_mode != MODBUS_RTU_RS232 && params->serial_mode != MODBUS_RTU_RS485)
 		{
-			fprintf( stderr, "%s: Invalid value of serial port mode parameter!\n", argv[0]);
+			fprintf(stderr, "%s: Invalid value of serial port mode parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
 		if (check_serial_parity(params->serial_parity))
 		{
-			fprintf( stderr, "%s: Invalid value of serial port parity mode parameter!\n", argv[0]);
+			fprintf(stderr, "%s: Invalid value of serial port parity mode parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
 		if (params->serial_data_bits < 5 || params->serial_data_bits > 8)
@@ -363,26 +363,26 @@ int      check_command_line(modbus_params_t *params, int argc, char **argv)
 		}
 	}
 #endif
-	if (params->perf_data && (params->perf_label==NULL))
+	if (params->perf_data && (params->perf_label == NULL))
 	{
-		fprintf( stderr, "Label parameter is required, when performance data is enabled\n");
+		fprintf(stderr, "Label parameter is required, when performance data is enabled\n");
 		return RESULT_WRONG_ARG;
 	}
 
-	if (params->dump_size>127)
+	if (params->dump_size > 127)
 	{
-		fprintf( stderr, "The maximal number of registers in one dump is 127\n");
+		fprintf(stderr, "The maximal number of registers in one dump is 127\n");
 		return RESULT_WRONG_ARG;
 	}
 
 
-	if (check_swap_inverse( params ))     return RESULT_WRONG_ARG;
-	if (check_function_num( params ))     return RESULT_WRONG_ARG;
-	if (check_format_type( params ) )     return RESULT_WRONG_ARG;
-	if (check_source( params ) )          return RESULT_WRONG_ARG;
-	if (check_dump_param( params ))       return RESULT_WRONG_ARG;
+	if (check_swap_inverse(params))     return RESULT_WRONG_ARG;
+	if (check_function_num(params))     return RESULT_WRONG_ARG;
+	if (check_format_type(params))      return RESULT_WRONG_ARG;
+	if (check_source(params))           return RESULT_WRONG_ARG;
+	if (check_dump_param(params))       return RESULT_WRONG_ARG;
 
-	if (params->verbose) print_settings( stdout, params );
+	if (params->verbose) print_settings(stdout, params);
 
 	return RESULT_OK;
 }
@@ -399,7 +399,7 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 	/* no short option char wasted for rarely used options */
 	enum
 	{
-		OPT_LONG_OPTIONS_ONLY=0x100,
+		OPT_LONG_OPTIONS_ONLY = 0x100,
 #if LIBMODBUS_VERSION_MAJOR >= 3
 		OPT_SERIAL_MODE,
 		OPT_SERIAL_PARITY,
@@ -424,59 +424,59 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 	const char *short_options = "hH:p:d:a:f:w:c:nNt:F:isvPm:M:L:";
 #endif
 	const struct option long_options[] = {
-		{"help"         ,no_argument            ,NULL,  'h'   },
-		{"ip"           ,required_argument      ,NULL,  'H'   },
-		{"port"         ,required_argument      ,NULL,  'p'   },
+		{"help",          no_argument,            NULL,  'h'   },
+		{"ip",            required_argument,      NULL,  'H'   },
+		{"port",          required_argument,      NULL,  'p'   },
 #if LIBMODBUS_VERSION_MAJOR >= 3
-		{"serial"       ,required_argument      ,NULL,  'S'   },
-		{"serial_mode"  ,required_argument      ,NULL,  OPT_SERIAL_MODE        },
-		{"serial_bps"   ,required_argument      ,NULL,  'b'                    },
-		{"serial_parity",required_argument      ,NULL,  OPT_SERIAL_PARITY      },
-		{"serial_data_bits"  ,required_argument ,NULL,  OPT_SERIAL_DATA_BITS   },
-		{"serial_stop_bits"  ,required_argument ,NULL,  OPT_SERIAL_STOP_BITS   },
+		{"serial",        required_argument,      NULL,  'S'   },
+		{"serial_mode",   required_argument,      NULL,  OPT_SERIAL_MODE},
+		{"serial_bps",    required_argument,      NULL,  'b'   },
+		{"serial_parity", required_argument,      NULL,  OPT_SERIAL_PARITY},
+		{"serial_data_bits", required_argument,   NULL,  OPT_SERIAL_DATA_BITS},
+		{"serial_stop_bits", required_argument,   NULL,  OPT_SERIAL_STOP_BITS},
 #endif
-		{"file"         ,required_argument      ,NULL,  OPT_FILE               },
-		{"device"       ,required_argument      ,NULL,  'd'   },
-		{"address"      ,required_argument      ,NULL,  'a'   },
-		{"try"          ,required_argument      ,NULL,  't'   },
-		{"function"     ,required_argument      ,NULL,  'f'   },
-		{"format"       ,required_argument      ,NULL,  'F'   },
-		{"function"     ,required_argument      ,NULL,  'f'   },
-		{"critical"     ,required_argument      ,NULL,  'c'   },
-		{"null"         ,no_argument            ,NULL,  'n'   },
-		{"not_null"     ,no_argument            ,NULL,  'N'   },
-		{"swapbytes"    ,no_argument            ,NULL,  's'   },
-		{"inverse"      ,no_argument            ,NULL,  'i'   },
-		{"verbose"      ,no_argument            ,NULL,  'v'   },
-		{"perf_data"    ,no_argument            ,NULL,  'P'   },
-		{"perf_min"     ,required_argument      ,NULL,  'm'   },
-		{"perf_max"     ,required_argument      ,NULL,  'M'   },
-		{"perf_label"   ,required_argument      ,NULL,  'L'   },
-		{"dump"         ,no_argument            ,NULL,   OPT_DUMP        },
-		{"dump_size"    ,required_argument      ,NULL,   OPT_DUMP_SIZE   },
-		{"dump_format"  ,required_argument      ,NULL,   OPT_DUMP_FORMAT },
-		{"dump_file"    ,required_argument      ,NULL,   OPT_DUMP_FILE   },
-		{"lock_file_in" ,required_argument      ,NULL,   OPT_LOCK_FILE_IN   },
-		{"lock_file_out",required_argument      ,NULL,   OPT_LOCK_FILE_OUT  },
-		{NULL           ,0                      ,NULL,   0    }
+		{"file",          required_argument,      NULL,  OPT_FILE},
+		{"device",        required_argument,      NULL,  'd'   },
+		{"address",       required_argument,      NULL,  'a'   },
+		{"try",           required_argument,      NULL,  't'   },
+		{"function",      required_argument,      NULL,  'f'   },
+		{"format",        required_argument,      NULL,  'F'   },
+		{"function",      required_argument,      NULL,  'f'   },
+		{"critical",      required_argument,      NULL,  'c'   },
+		{"null",          no_argument,            NULL,  'n'   },
+		{"not_null",      no_argument,            NULL,  'N'   },
+		{"swapbytes",     no_argument,            NULL,  's'   },
+		{"inverse",       no_argument,            NULL,  'i'   },
+		{"verbose",       no_argument,            NULL,  'v'   },
+		{"perf_data",     no_argument,            NULL,  'P'   },
+		{"perf_min",      required_argument,      NULL,  'm'   },
+		{"perf_max",      required_argument,      NULL,  'M'   },
+		{"perf_label",    required_argument,      NULL,  'L'   },
+		{"dump",          no_argument,            NULL,   OPT_DUMP        },
+		{"dump_size",     required_argument,      NULL,   OPT_DUMP_SIZE   },
+		{"dump_format",   required_argument,      NULL,   OPT_DUMP_FORMAT },
+		{"dump_file",     required_argument,      NULL,   OPT_DUMP_FILE   },
+		{"lock_file_in",  required_argument,      NULL,   OPT_LOCK_FILE_IN   },
+		{"lock_file_out", required_argument,      NULL,   OPT_LOCK_FILE_OUT  },
+		{NULL,            0,                      NULL,   0    },
 	};
 
 	//************************************************************
 	if (argc < 2)
 	{
-		fprintf( stderr, "%s: Could not parse arguments\n", argv[0]);
+		fprintf(stderr, "%s: Could not parse arguments\n", argv[0]);
 		print_help();
 		return RESULT_WRONG_ARG;
 	};
 
-	load_defaults( params );
+	load_defaults(params);
 	while (1)
 	{
-		rs=getopt_long(argc,argv,short_options,long_options,&option_index);
+		rs = getopt_long(argc, argv, short_options, long_options, &option_index);
 		if (rs == -1) break;
 
 
-		switch(rs)
+		switch (rs)
 		{
 		case 'v':
 			params->verbose++;
@@ -507,7 +507,7 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 		case OPT_SERIAL_PARITY:
 			if (optarg > 0)
 			{
-				params->serial_parity = toupper( *optarg );
+				params->serial_parity = toupper(*optarg);
 			}
 			else
 			{
@@ -529,7 +529,7 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 			break;
 		case 'a':
 			params->sad = atoi(optarg);
-			params->sad --; /* register/bit address starts from 0 */
+			params->sad--; /* register/bit address starts from 0 */
 			break;
 		case 'f':
 			params->nf = atoi(optarg);
@@ -573,7 +573,7 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 			params->perf_data = 1;
 			break;
 		case OPT_DUMP_FILE:
-			params->dump_file=optarg;
+			params->dump_file = optarg;
 			break;
 		case OPT_DUMP:
 			params->dump = 1;
@@ -583,7 +583,7 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 			break;
 		case OPT_DUMP_FORMAT:
 			params->dump_format = atoi(optarg);
-			switch(params->dump_format)
+			switch (params->dump_format)
 			{
 			case DUMP_FMT_BIN:
 				params->format = FORMAT_DUMP_BIN;
@@ -610,5 +610,5 @@ int     parse_command_line(modbus_params_t *params, int argc, char **argv)
 		};
 	};  /* while(1) */
 
-	return check_command_line( params, argc, argv );
+	return check_command_line(params, argc, argv);
 }

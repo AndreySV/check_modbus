@@ -59,7 +59,7 @@ typedef struct
 
 enum
 {
-	FORMAT_MIN_SUPPORTED= 0,
+	FORMAT_MIN_SUPPORTED = 0,
 	FORMAT_SIGNED_WORD,
 	FORMAT_UNSIGNED_WORD,
 	FORMAT_SIGNED_DWORD,
@@ -82,7 +82,7 @@ enum
 int     sizeof_data_t(data_t *data);    /* returns size in words */
 void    printf_data_t(FILE *fd, data_t *data);
 double  value_data_t(data_t *data);
-void    init_data_t(data_t *data, int8_t format,uint8_t size);
+void    init_data_t(data_t *data, int8_t format, uint8_t size);
 void    clear_data_t(data_t *data);
 void    reorder_data_t(data_t *data, int swap_bytes, int inverse_words);
 int     equal_data_t(data_t *data1, data_t *data2);
