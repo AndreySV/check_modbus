@@ -116,7 +116,7 @@ void print_help(void)
 	printf("\n");
 }
 
-void print_settings(FILE *fd, modbus_params_t *params)
+void print_settings(FILE *fd, struct modbus_params_t *params)
 {
 	fprintf(fd, "---------------------------------------------\n");
 	fprintf(fd, "Settings:\n");
@@ -176,7 +176,7 @@ void print_settings(FILE *fd, modbus_params_t *params)
 }
 
 
-void    load_defaults(modbus_params_t *params)
+void    load_defaults(struct modbus_params_t *params)
 {
 	static char  mport_default[] = XSTR(MODBUS_TCP_DEFAULT_PORT);
 
@@ -229,7 +229,7 @@ void    load_defaults(modbus_params_t *params)
 }
 
 
-int check_swap_inverse(modbus_params_t *params)
+int check_swap_inverse(struct modbus_params_t *params)
 {
 	int rc = 0;
 
@@ -243,7 +243,7 @@ int check_swap_inverse(modbus_params_t *params)
 	return rc;
 }
 
-int check_dump_param(modbus_params_t *params)
+int check_dump_param(struct modbus_params_t *params)
 {
 	int rc = 0;
 	int ft = params->dump_format;
@@ -253,7 +253,7 @@ int check_dump_param(modbus_params_t *params)
 	return rc;
 }
 
-int check_function_num(modbus_params_t *params)
+int check_function_num(struct modbus_params_t *params)
 {
 	int rc;
 
@@ -264,7 +264,7 @@ int check_function_num(modbus_params_t *params)
 }
 
 
-int check_source(modbus_params_t *params)
+int check_source(struct modbus_params_t *params)
 {
 	int cnt;
 
@@ -282,7 +282,7 @@ int check_source(modbus_params_t *params)
 }
 
 
-int     check_format_type(modbus_params_t *params)
+int     check_format_type(struct modbus_params_t *params)
 {
 	int rc;
 	int ft;
@@ -312,7 +312,7 @@ int     check_serial_parity(char parity)
 
 
 
-int      check_command_line(modbus_params_t *params, int argc, char **argv)
+int      check_command_line(struct modbus_params_t *params, int argc, char **argv)
 {
 #if LIBMODBUS_VERSION_MAJOR >= 3
 	if (params->host == NULL && params->serial == NULL && params->file == NULL) {
@@ -386,7 +386,7 @@ int      check_command_line(modbus_params_t *params, int argc, char **argv)
 
 
 
-int     parse_command_line(modbus_params_t *params, int argc, char **argv)
+int     parse_command_line(struct modbus_params_t *params, int argc, char **argv)
 {
 	int rs;
 	int option_index;

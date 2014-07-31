@@ -37,7 +37,7 @@ enum {
 };
 
 
-void  set_lock(modbus_params_t *params, int lock_type);
-void  release_lock(modbus_params_t *params, int lock_type);
+void  set_lock(struct modbus_params_t *params, int lock_type);
+void  release_lock(struct modbus_params_t *params, int lock_type);
 
 #endif

@@ -50,7 +50,7 @@ enum {
 	RESULT_UNSUPPORTED_FORMAT
 };
 
-typedef struct {
+struct modbus_params_t {
 	char    *mport;                     /* Port number */
 	int     devnum;                     /* Device modbus address */
 	int     sad;                        /* Register/bit address */
@@ -97,7 +97,7 @@ typedef struct {
 	char    *lock_file_out;             /* name of lock file for */
 	int     lock_file_out_fd;
 
-}   modbus_params_t;
+};
 
 
 
