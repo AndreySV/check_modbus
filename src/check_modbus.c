@@ -40,7 +40,7 @@
 
 
 
-int     read_data(modbus_t *mb, FILE *f, modbus_params_t *params, data_t *data)
+int     read_data(modbus_t *mb, FILE *f, modbus_params_t *params, struct data_t *data)
 {
 	int rc;
 	int size = sizeof_data_t(data);
@@ -138,7 +138,7 @@ void     print_error(int rc)
 	}
 }
 
-void print_performance_data(modbus_params_t *params, data_t *data)
+void print_performance_data(modbus_params_t *params, struct data_t *data)
 {
 	if (params->perf_data) {
 		printf("\t\t|'%s'=", params->perf_label);
@@ -155,7 +155,7 @@ void print_performance_data(modbus_params_t *params, data_t *data)
 	}
 }
 
-int print_result(modbus_params_t *params, data_t *data)
+int print_result(modbus_params_t *params, struct data_t *data)
 {
 	int rc = RESULT_UNKNOWN;
 	double   result, warn_range, crit_range;
@@ -372,7 +372,7 @@ int     check_lockfile(int fd)
 }
 
 
-int     save_dump_file(modbus_params_t *params, data_t *data)
+int     save_dump_file(modbus_params_t *params, struct data_t *data)
 {
 
 	/* Set exclusive lock for stdout. It's needed in dump mode to be
@@ -420,7 +420,7 @@ int process(modbus_params_t *params)
 	modbus_t        *mb;
 	FILE            *f;
 	int             try_cnt;
-	data_t          data;
+	struct data_t   data;
 	int             rc;
 
 	if (params->verbose)
