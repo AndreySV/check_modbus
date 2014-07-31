@@ -53,7 +53,7 @@ enum
 
 typedef struct
 {
-	char*   mport;                      // Port number
+	char    *mport;                     // Port number
 	int     devnum;                     // Device modbus address
 	int     sad;                        // register/bit address
 	int     nf;                         // Number of function
@@ -69,7 +69,7 @@ typedef struct
 	int     serial_data_bits;           // serial port data bits
 	int     serial_stop_bits;           // serial port stop bit
 #endif
-	char*   file;                       // input binary dump file
+	char    *file;                      // input binary dump file
 
 	int     nc;                         // Null flag
 	int     nnc;                        // No null flag
@@ -85,17 +85,17 @@ typedef struct
 	double  perf_min;                   // min value for performance data
 	double  perf_max;                   // max value for performance data
 	int     perf_data;                  // enable performance data
-	char*   perf_label;                 // label for performance data
+	char    *perf_label;                // label for performance data
 
 	int     dump;                       // enable dump mode
 	int     dump_format;                // output format of the dump
 	int     dump_size;                  // number of input registers/bits included in the dump
-	char*   dump_file;
+	char    *dump_file;
 
-	char*   lock_file_in;               // name of lock file for inputs
+	char    *lock_file_in;              // name of lock file for inputs
 	int     lock_file_in_fd;
 
-	char*   lock_file_out;              // name of lock file for
+	char    *lock_file_out;             // name of lock file for
 	int     lock_file_out_fd;
 
 }   modbus_params_t;

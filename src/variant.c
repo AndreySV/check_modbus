@@ -30,7 +30,7 @@
 #include "variant.h"
 
 /* returns size in words */
-int sizeof_data_t(data_t* data)
+int sizeof_data_t(data_t *data)
 {
 	int size = 0;
 	switch( data->format )
@@ -63,7 +63,7 @@ int sizeof_data_t(data_t* data)
 
 
 
-void clear_data_t(data_t* data)
+void clear_data_t(data_t *data)
 {
 	int i;
 	for(i=0;i<sizeof(data->val);i++)
@@ -74,7 +74,7 @@ void clear_data_t(data_t* data)
 
 
 
-void init_data_t(data_t* data, int8_t format,uint8_t size)
+void init_data_t(data_t *data, int8_t format,uint8_t size)
 {
 	clear_data_t( data );
 	data->format = format;
@@ -83,7 +83,7 @@ void init_data_t(data_t* data, int8_t format,uint8_t size)
 
 
 
-double value_data_t(data_t*  data)
+double value_data_t(data_t *data)
 {
 	double tmp;
 	switch( data->format )
@@ -115,7 +115,7 @@ double value_data_t(data_t*  data)
 	return tmp;
 }
 
-void printf_data_t(FILE* fd, data_t* data)
+void printf_data_t(FILE *fd, data_t *data)
 {
 	int size = 0;
 	int i;
@@ -176,7 +176,7 @@ uint16_t swap_bytes(uint16_t word)
 }
 
 
-void reorder_data_t(data_t* data, int swap, int inverse_words)
+void reorder_data_t(data_t *data, int swap, int inverse_words)
 {
 	int	    size = sizeof_data_t( data );
 	int	    i, j;
@@ -193,7 +193,7 @@ void reorder_data_t(data_t* data, int swap, int inverse_words)
 
 }
 
-int equal_data_t(data_t* data1,data_t* data2)
+int equal_data_t(data_t *data1,data_t *data2)
 {
 	int	    size = sizeof_data_t( data1 );
 	int	    i;

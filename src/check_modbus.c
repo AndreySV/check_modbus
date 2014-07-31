@@ -40,7 +40,7 @@
 
 
 
-int     read_data(modbus_t* mb, FILE* f, modbus_params_t* params, data_t*    data)
+int     read_data(modbus_t *mb, FILE *f, modbus_params_t *params, data_t *data)
 {
 	int rc;
 	int size = sizeof_data_t( data );
@@ -136,7 +136,7 @@ void     print_error( int rc )
 	}
 }
 
-void print_performance_data(modbus_params_t* params, data_t* data)
+void print_performance_data(modbus_params_t *params, data_t *data)
 {
 	if (params->perf_data)
 	{
@@ -149,7 +149,7 @@ void print_performance_data(modbus_params_t* params, data_t* data)
 	}
 }
 
-int print_result(modbus_params_t* params, data_t* data)
+int print_result(modbus_params_t *params, data_t *data)
 {
 	int rc = RESULT_UNKNOWN;
 	double   result, warn_range, crit_range;
@@ -206,7 +206,7 @@ int print_result(modbus_params_t* params, data_t* data)
 	return rc;
 }
 
-int     init_connection(modbus_params_t* params,modbus_t** mb,FILE** f)
+int     init_connection(modbus_params_t *params,modbus_t **mb,FILE **f)
 {
 	int rc;
 	struct timeval  response_timeout;
@@ -310,7 +310,7 @@ void     sleep_between_tries(int try)
 	usleep( retry_timeout_us );
 }
 
-void    deinit_connection(modbus_t** mb, FILE** f)
+void    deinit_connection(modbus_t **mb, FILE **f)
 {
 	if (*mb != NULL)
 	{
@@ -325,7 +325,7 @@ void    deinit_connection(modbus_t** mb, FILE** f)
 	}
 }
 
-int     open_modbus_connection(modbus_t* mb)
+int     open_modbus_connection(modbus_t *mb)
 {
 	int rc = RESULT_OK;
 	if (mb != NULL)
@@ -336,7 +336,7 @@ int     open_modbus_connection(modbus_t* mb)
 }
 
 
-int     close_modbus_connection(modbus_t* mb)
+int     close_modbus_connection(modbus_t *mb)
 {
 	if (mb != NULL) modbus_close(mb);
 }
@@ -374,14 +374,14 @@ int     check_lockfile(int fd)
 }
 
 
-int     save_dump_file(modbus_params_t* params, data_t* data)
+int     save_dump_file(modbus_params_t *params, data_t *data)
 {
 
 	/* Set exclusive lock for stdout. It's needed in dump mode to be
 	   sure that noone can access unfinished file. Because
 	   the dump file is created using stdout.  */
 
-	FILE* fout;
+	FILE *fout;
 	int   rc;
 
 	set_lock( params, LOCK_OUTPUT );
@@ -422,10 +422,10 @@ int     save_dump_file(modbus_params_t* params, data_t* data)
 }
 
 
-int     process(modbus_params_t* params )
+int     process(modbus_params_t *params )
 {
 	modbus_t        *mb;
-	FILE*           f;
+	FILE            *f;
 	int             try_cnt;
 	data_t          data;
 	int             rc;

@@ -38,10 +38,10 @@
 
 
 
-int    lock_file_old(char* file)
+int    lock_file_old(char *file)
 {
 	// check correctness of lock file
-	FILE* f;
+	FILE *f;
 	pid_t pid;
 	int rc;
 	int ret;
@@ -69,12 +69,12 @@ void    write_lock_file(int fd)
 	if (rc>0)  write( fd, str, rc);
 }
 
-void    control_lock(modbus_params_t* params,int lock_type, bool enable)
+void    control_lock(modbus_params_t *params,int lock_type, bool enable)
 {
 	/* const char filename[]="lock.pid"; */
-	int*  pfd;
+	int  *pfd;
 	int   fd;
-	char* lock_file;
+	char *lock_file;
 
 	switch(lock_type)
 	{
@@ -136,12 +136,12 @@ void    control_lock(modbus_params_t* params,int lock_type, bool enable)
 }
 
 
-void  set_lock(modbus_params_t* params, int lock_type)
+void  set_lock(modbus_params_t *params, int lock_type)
 {
 	control_lock( params, lock_type, true);
 }
 
-void  release_lock(modbus_params_t* params, int lock_type)
+void  release_lock(modbus_params_t *params, int lock_type)
 {
 	control_lock( params, lock_type, false);
 }
