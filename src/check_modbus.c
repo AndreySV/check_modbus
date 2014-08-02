@@ -621,7 +621,10 @@ int     process(modbus_params_t* params )
         {
             /* start new try */
             rc = RESULT_OK;
-
+            
+            /* flush old data from buffer */
+            modbus_flush(mb);
+            
             if (modbus_connect(mb) == -1) 
             {
                 usleep( retry_timeout_us );
