@@ -10,10 +10,15 @@ Added many useful features:
 - support of several data orders (LSB, MSB and some others)
 - retries can be sent to get reliable answer
 - supports performance data
+- supports creation dump of the registers in different formats (binary, hexadecimal, decimal)
+- support binary dump as an input source for data (useful for off-line data)
+- separate lock files for input and output
+
 
 In general, plugin can be build as usual
 
-./configure 
+./autogen.sh
+./configure
 make
 make install
 
@@ -27,60 +32,4 @@ libmodbus is installed by default in /usr/local/lib. In MinGW you will need to r
 instead of just ./configure
 
 
-
-Usage:
-
-    check_modbus [options]
-
-    -v  --verbose       Print additional (debug) information (settings, modbus debug etc).
-                        Specify multiple times to increase verbosity level.
-    -h  --help          Print this help
-    -H  --ip=           IP address or hostname 
-    -p  --port=         [ TCP Port number. Default 502 ]  
-    -S  --serial=       Serial port to use
-    -b  --serial_bps=   [ Serial port speed. Default 9600 ]
-        --serial_mode=  [ RS mode of serial port. Default 0 ]
-                                0 - RS232
-                                1 - RS485
-        --serial_parity=  [ Serial port parity settings. Default none ]
-                                Allowed values: none/N, even/E, odd/O
-        --serial_data_bits=  [ Serial port number of data bits. Default 8 ]
-                                Allowed values: 5, 6, 7, 8
-        --serial_stop_bits=  [ Serial port number of stop bits. Default 1 ]
-                                Allowed values: 1, 2
-    -d  --device=       [ Device modbus number. Default 1 ] 
-    -a  --address=      [ Register/bit address reference. Default 1 ] 
-    -t  --try=          [ Number of tries. Default 1 ] 
-    -F  --format=	    [ Data format. Default 1 ] 
-     		                1 -  int16_t  
-     		                2 - uint16_t  
-     		                3 -  int32_t 
-     		                4 - uint32_t 
-     		                5 -  int64_t 
-     		                6 - uint64_t 
-     		                7 -  float   
-     		                8 -  double  
-    -s  --swapbytes     [ Swap bytes in each incomming word ]
-    -i  --inverse       [ Use inversed words order ]
-    -f  --function=	    Number of functions
-     		                1 - Read coils 
-     		                2 - Read input discretes
-     		                3 - Read multiple registers
-     		                4 - Read input registers
-    -w  --warning=	    [ Warning range ]
-    -c  --critical=	    [ Critical range ]
-    -n  --null          [ If the query will get zero, return the critical signal ]
-    -N  --not_null	    [ If the query will get no zero, return the critical signal ] 
-
-    -m  --perf_min=     [ Minimum value for performance data]
-    -M  --perf_max=     [ Maximum value for performance data]
-    -P  --perf_data     [ Enable to show performance data. By default performance data is disabled]
-    -L  --perf_label=   [ Label for performance data]
-
-
-     Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 13 -f 4 -w 123.4 -c 234.5
-     Example: ./check_modbus --ip=192.168.1.123 -d 1 -a 15 -f 4 -w 2345 -c 1234
-     Example: ./check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n
-     Example: ./check_modbus --serial=/dev/ttyS0 --serial_bps=4800 --try=5 -d 2 -a 20 -f 2 -n
-     Example: ./check_modbus --serial=/dev/ttyS0 -b=4800 --serial_data_bits=7 --serial_stop_bits=2 -d 1 -a 8 -f 2 -n
-
+For usage details see manual page or run ./check_modbus --help.
