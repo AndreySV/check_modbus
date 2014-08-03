@@ -97,6 +97,10 @@ struct modbus_params_t {
 	char    *lock_file_out;             /* name of lock file for */
 	int     lock_file_out_fd;
 
+	double  gain;                       /* value =* gain*value+offset */
+	double  offset;
+
+
 };
 
 

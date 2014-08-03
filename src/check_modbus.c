@@ -55,7 +55,7 @@ static int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, 
 	/* no source is specified */
 	if ((!mb) && (!f))
 		return RESULT_ERROR;
-		
+
 	if (mb != NULL)	{
 		switch (params->nf) {
 		case MBF001_READ_COIL_STATUS:
@@ -159,16 +159,31 @@ static void print_performance_data(struct modbus_params_t *params, struct data_t
 	}
 }
 
+static void adjust_result(struct modbus_params_t *params, struct data_t *data)
+{
+	double value;
+	
+	if ((params->gain==1.0) && (params->offset == 0.0))
+				       return;
+
+	/* if adjust parameters are used change data type to double */
+	value = value_data_t(data);
+	value = params->gain*value + params->offset;
+	init_data_t(data, FORMAT_DOUBLE, 0);
+	data->val.long_real = value;
+}
+
 static int print_result(struct modbus_params_t *params, struct data_t *data)
 {
 	int rc = RESULT_UNKNOWN;
 	double   result, warn_range, crit_range;
 
+	adjust_result(params, data);
+	result      = value_data_t(data);
 
 	if (params->verbose)
-		printf("print_result\n");
+		printf("print_result: %f\n", result);
 
-	result      = value_data_t(data);
 	warn_range  = params->warn_range;
 	crit_range  = params->crit_range;
 
@@ -373,6 +388,8 @@ static int     save_dump_file(struct modbus_params_t *params, struct data_t *dat
 	release_lock(params, LOCK_OUTPUT);
 	return rc;
 }
+
+
 
 
 static int process(struct modbus_params_t *params)
