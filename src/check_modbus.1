@@ -257,7 +257,16 @@ source may exist concurrency between read and write process (see
 \fB\-\-lock_file_out\fR).
 .TP
 .B \-\-lock_file_out
-Name of lock file used by creating output dump file. 
+Name of lock file used by creating output dump file.
+.TP
+.B \-\-gain floating_number
+Gain value. The read value can be adjusted using expression gain*value+offset (see
+\fB\-\-offset\fR). This can be used to convert values with fixed
+floating point to floating point format.
+.TP
+.B \-\-offset floating_number
+Offset value. (for details see \fB\-\-gain\fR description)
+
 .SH EXIT STATUS
 Program can return the following codes:
 .TP
