@@ -109,6 +109,9 @@ double value_data_t(struct data_t *data)
 	case FORMAT_FLOAT:
 		tmp = data->val.real;
 		break;
+	case FORMAT_DOUBLE:
+		tmp = data->val.long_real;
+		break;		
 	default:
 		tmp = 0;
 	}
