@@ -33,9 +33,9 @@
 
 #include "../src/variant.h"
 
-int test_swap(int format)
+static int test_swap(int format)
 {
-	data_t before, after;
+	struct data_t before, after;
 	int size_bytes;
 	int i;
 
@@ -61,8 +61,7 @@ int test_swap(int format)
 
 int main(void)
 {
-	int rc;
-	int i;
+	size_t i;
 	int formats[]=
 		{
 			FORMAT_SIGNED_WORD,

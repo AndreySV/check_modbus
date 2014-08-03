@@ -33,9 +33,9 @@
 
 #include "../src/variant.h"
 
-int test_inverse(int format)
+static int test_inverse(int format)
 {
-	data_t before, after;
+	struct data_t before, after;
 	int size_words;
 	int i;
 
@@ -57,8 +57,7 @@ int test_inverse(int format)
 
 int main(void)
 {
-	int rc;
-	int i;
+	size_t i;
 	int formats[]=
 		{
 			FORMAT_SIGNED_WORD,
