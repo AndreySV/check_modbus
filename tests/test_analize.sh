@@ -132,6 +132,15 @@ add_test 0 '-a 3 -w 3 -c 1'
 add_test 1 '-a 6 -w 100 -c 102 -F 7 -i -s'
 add_test 1 '-a 8 -w 100 -c 102 -F 7'
 add_test 1 '-a 10 -w 100 -c 102 -F 7 -s'
+
+# check swap bytes
+add_test 0 '-a 4 --swapbytes -w 6 -c 7'
+
+# check gain and offset features
+add_test 1 '-a 3 --gain 1.3 -c 6 -w 7'
+add_test 1 '-a 3 --offset 1.5 -c 6 -w 7'
+add_test 1 '-a 3 --gain 1.1 --offset 1.2 -c 6 -w 7'
+
 # add_test 1 '-a 12 -w 100 -c 102 -F 8 -i -s'
 # add_test 1 '-a 16 -w 100 -c 102 -F 8'
 
