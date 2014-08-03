@@ -1,1 +1,1 @@
-EXTRA_DIST = attribute.m4
+EXTRA_DIST = attributes.m4
