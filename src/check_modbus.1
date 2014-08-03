@@ -53,25 +53,25 @@ check_modbus --file=file.dump -F 2 -f 4 -a 2  -w 100 -c 150
 Only \fBbinary\fR dump format can by used as an input source for \fBcheck_modbus\fR. Other formats (hexadecimal and decimal) may be useful for other programs. 
 .SH OPTIONS
 .TP
-.B \-v, \-\-verbose
+\fB \-v, \-\-verbose\fR
 turn on verbose mode. Additional debug information (settings, modbus debug ) will be printed 
 .TP
-.B \-h, \-\-help
+\fB \-h, \-\-help\fR
 print help for a command
 .TP
-.B \-H, \-\-ip
+\fB \-H, \-\-ip\fR=\fIHOSTNAME\fR
 IP address or hostname. IPv6 address can be used here as well. 
 .TP
-.B \-p, \-\-port
+\fB \-p, \-\-port\fR=\fIPORT\fR
 TCP port number used for Modbus-TCP. By default is 502.
 .TP
-.B \-S, \-\-serial
+\fB \-S, \-\-serial\fR=\fISERIAL_DEVICE\fR
 Serial port to use
 .TP
-.B \-b, \-\-serial_bps
+\fB \-b, \-\-serial_bps\fR=\fI=SPEED\fR
 Serial port speed. Default is 9600 bps.
 .TP
-.B \-\-serial_mode
+\fB \-\-serial_mode\fR=\fIMODE\fR
 RS mode of serial port. Default is 0.
 .RS
 .PD 0
@@ -86,28 +86,28 @@ RS485
 .RE
 .PD
 .TP
-.B \-\-serial_parity
+\fB \-\-serial_parity\fR=\fIPARITY\fR
 Serial port parity settings. Default none. Allowed values: none/N, even/E, odd/O
 .TP
-.B \-\-serial_data_bits
+\fB \-\-serial_data_bits\fR=\fIDATA_BITS\fR
 Serial port number of data bits. Default 8. Allowed values: 5, 6, 7, 8.
 .TP
-.B \-\-serial_stop_bits
+\fB \-\-serial_stop_bits\fR=\fISTOP_BITS\fR
 Serial port number of stop bits. Default 1. Allowed values: 1, 2
 .TP
-.B \-\-file     
+\fB \-\-file\fR=\fIFILE\fR
 Use binary input file as a source for data instead of communicating with device using TCP/IP or serial ports.
 .TP
-.B \-d, \-\-device
+\fB \-d, \-\-device\fR=\fINUMBER\fR
 Device modbus number. Default 1
 .TP
-.B \-a, \-\-adress
+\fB \-a, \-\-adress\fR=\fINUMBER\fR
 Register or bit address. Default 1
 .TP
-.B \-t, \-\-try
+\fB \-t, \-\-try\fR=\fINUMBER\fR
 Number of tries to connect modbus device. It's useful to get reliable answer from the device in noisy environment. Default 1.
 .TP
-.B \-F, \-\-format
+\fB \-F, \-\-format\fR=\fIFORMAT\fR
 Data format. Default 1 (signed word)
 .RS
 .PD 0
@@ -138,13 +138,13 @@ Data format. Default 1 (signed word)
 .PD
 .RE
 .TP
-.B \-s, \-\-swapbytes
+\fB \-s, \-\-swapbytes\fR
 Swap bytes in each incomming word
 .TP
-.B \-i, \-\-inverse
-Inverse order of \fBwords\fR in the packet. To convert data from big-endian to little-endian or the other way use both options \fB-i\f\R and \fB-s\fR at the same time.
+\fB \-i, \-\-inverse\fR
+Inverse order of \fBwords\fR in the packet. To convert data from big-endian to little-endian or the other way use both options \fB-i\fR and \fB-s\fR at the same time.
 .TP
-.B \-f, \-\-function
+\fB \-f, \-\-function\fR=\fIFUNCTION\fR
 Used modbus function. 
 .RS
 .PD 0
@@ -163,65 +163,35 @@ Used modbus function.
 .PD
 .RE
 .TP
-.B \-n, \-\-null
+\fB \-n, \-\-null\fR
 If the query will get zero, program returns the critical signal
 .TP
-.B \-N, \-\-not_null
+\fB \-N, \-\-not_null\fR
 If the query will get non-zero valur, program returns the critical signal
 .TP
-.B \-w, \-\-warning
-Warning range
+\fB \-w, \-\-warning\fR=\fIRANGE\fR
+Warning range. (see "Threshold and ranges" in Nagios documentation).
 .TP
-.B \-c, \-\-critical
-Critical range. Warning range and critical range parameters works together. 
-.RS
-.PD 0
-.TP
-.TP
-1. warning range < critical range
-.PD 
-.TP
-.PD 0
-.TP
-                  x < warning range     - OK
-.TP
-warning range  <= x < critical range    - warning signal
-.TP
-critical range <= x                     - critical signal
-.PD
+\fB \-c, \-\-critical\fR=\fIRANGE\fR
+Critical range. Format is the same as for warning range.
 
 .TP
-.TP
-2. warning range > critical range
-.PD 
-.TP
-.PD 0
-.TP
-                  x < critical range    - critical signal
-.TP
-critical range <= x < warning range     - warning signal
-.TP
-warning range  <= x                     - OK
-.PD
-.RE
-
-.TP
-.B \-m, \-\-perf_min
+\fB \-m, \-\-perf_min\fR=\fINUMBER\fR
 Minimum value for performance data
 .TP
-.B \-M, \-\-perf_max
+\fB \-M, \-\-perf_max\fR=\fINUMBER\fR
 Maximum value for performance data
 .TP
-.B \-P, \-\-perf_data
+\fB \-P, \-\-perf_data\fR
 Enable showing performance data. By default performance data is disabled
 .TP
-.B \-L, \-\-perf_label
+\fB \-L, \-\-perf_label\fR=\fILABEL_STRING\fR
 Label for performance data
 .TP
-.B \-\-dump
+\fB \-\-dump\fR
 Dump incomming registers and bits to stdout instead of analyze their values. Dump mode disables showing performances data as well as critical/warning signalization.
 .TP
-.B \-\-dump_format
+\fB \-\-dump_format\fR=\fIDUMP_FORMAT\fR
 Format of output dump. Default 1 (binary).
 .RS
 .PD 0
@@ -238,15 +208,15 @@ Format of output dump. Default 1 (binary).
 .RE
 
 .TP
-.B \-\-dump_size
+\fB \-\-dump_size\fR=\fINUMBER\fR
 Number of registers (2 bytes) or bits in output dump. The dump starts
 from address given by parameter \fB\-a, \-\-address\fR.
 .TP 
-.B \-\-dump_file
+\fB \-\-dump_file\fR=\fIFILE\fR
 Save dump to the file. If no dump file was specified in the dump mode,
 then stdout will be used for output.
 .TP
-.B \-\-lock_file_in
+\fB \-\-lock_file_in\fR=\fIFILE\fR
 Name of lock file used with input source. If the specified lock file
 exists and process created it is still running, input source will not be
 opened. This lock file is useful if several checks may access  input
@@ -256,15 +226,15 @@ more than one request at the same time or by using dump file as input
 source may exist concurrency between read and write process (see
 \fB\-\-lock_file_out\fR).
 .TP
-.B \-\-lock_file_out
+\fB \-\-lock_file_out\fR=\fIFILE\fR
 Name of lock file used by creating output dump file.
 .TP
-.B \-\-gain floating_number
+\fB \-\-gain\fR=\fIFLOAT\fR
 Gain value. The read value can be adjusted using expression gain*value+offset (see
 \fB\-\-offset\fR). This can be used to convert values with fixed
 floating point to floating point format.
 .TP
-.B \-\-offset floating_number
+\fB \-\-offset\fR=\fIFLOAT\fR
 Offset value. (for details see \fB\-\-gain\fR description)
 
 .SH EXIT STATUS
@@ -283,7 +253,7 @@ Program can return the following codes:
 - general error
 .TP
 4
-- unknown error)
+- unknown error
 .TP
 5 
 - help information were returned
@@ -305,10 +275,10 @@ Program can return the following codes:
 
 .SH EXAMPLES
 .TP
-check_modbus --ip=192.168.1.123 -a 13 -f 4 -F 7 -w 123.4 -c 234.5
+check_modbus --ip=192.168.1.123 -a 13 -f 4 -F 7 -w 10:123.4 -c -20:234.5
 read float value from modbus address 13 using Modbus-TCP
 .TP
-check_modbus --ip=192.168.1.123 -a 15 -f 4 -w 2345 -c 1234
+check_modbus --ip=192.168.1.123 -a 15 -f 4 -w ~:2345 -c ~:1234
 read signed integer value from modbus address 15
 .TP
 check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n 
@@ -316,14 +286,14 @@ check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n
 check_modbus --ip=plc01 -a 1 -f 4 --dump --dump_format 1 --dump_size 60 --dump_file file.dump
 save 60 registers from plc01 to the file.dump in binary format. All these registers can be analyzed later off-line or even on the other machine. See next example.
 .TP
-check_modbus --file=file.dump -F 7 -f 4 -a 20 -w 100 -c 150
+check_modbus --file=file.dump -F 7 -f 4 -a 20 -c @30:150
 Off-line analization of data from a dump file.
 .TP
 check_modbus --serial=/dev/ttyS0 -d 2 -a 7 -f 4 -n
 .SH AUTHORS
 .PD 0
 .TP
-Andrey Skvortsov <Skvortsov@kipspb.ru>
+Andrey Skvortsov <Andrej.Skvortzov@gmail.com>
 .TP
 Mirosław Lach    <m.github@lach.waw.pl>
 .SH NOTES

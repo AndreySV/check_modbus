@@ -111,7 +111,7 @@ double value_data_t(struct data_t *data)
 		break;
 	case FORMAT_DOUBLE:
 		tmp = data->val.long_real;
-		break;		
+		break;
 	default:
 		tmp = 0;
 	}

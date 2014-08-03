@@ -123,26 +123,49 @@ TMP_LOG_FILE=${TEST_NAME}_tmp.log
 
 
 # fill tests
+
+# integer value = 1
 add_test 0 '-a 1 -N'
 add_test 2 '-a 1 -n'
+
+# integer value = 3
 add_test 1 '-a 3 -w 3 -c 7'
-add_test 1 '-a 3 -w 7 -c 3'
-add_test 2 '-a 3 -w 1 -c 3'
-add_test 0 '-a 3 -w 3 -c 1'
-add_test 1 '-a 6 -w 100 -c 102 -F 7 -i -s'
-add_test 1 '-a 8 -w 100 -c 102 -F 7'
-add_test 1 '-a 10 -w 100 -c 102 -F 7 -s'
+add_test 2 '-a 3 -w 7 -c 3'
+add_test 0 '-a 3 -c 6'
+add_test 2 '-a 3 -c @6'
+add_test 1 '-a 3 -w @6'
+add_test 1 '-a 3 -w @6'
+add_test 4 '-a 3'
+add_test 1 '-a 3 -w @6'
+add_test 0 '-a 3 -w 4.8:5'
+add_test 6 '-a 3 -w 8:4'
+
+add_test 1 '-a 3 -w ~:4.9'
+add_test 0 '-a 3 -w @~:4.9'
+add_test 0 '-a 3 -w 4.9:'
+
+#  float value 101.498
+add_test 0 '-a 6 -c 100:102 -F 7 -i -s'
+
+#  float value 101.498
+add_test 0 '-a 8 -F 7 -w 100:102'
+
+# float value 101.498
+add_test 0 '-a 10 -w 100:102 -F 7 -s'
 
 # check swap bytes
-add_test 0 '-a 4 --swapbytes -w 6 -c 7'
+# add_test 0 '-a 4 --swapbytes -w 6 -c 7'
 
 # check gain and offset features
-add_test 1 '-a 3 --gain 1.3 -c 6 -w 7'
-add_test 1 '-a 3 --offset 1.5 -c 6 -w 7'
-add_test 1 '-a 3 --gain 1.1 --offset 1.2 -c 6 -w 7'
+add_test 0 '-a 3 --gain 1.3  -w 6:7'
+add_test 0 '-a 3 --offset 1.5 -w 6:7'
+add_test 0 '-a 3 --gain 1.1 --offset 1.2 -w 6:7'
 
-# add_test 1 '-a 12 -w 100 -c 102 -F 8 -i -s'
-# add_test 1 '-a 16 -w 100 -c 102 -F 8'
+# double value 101.498
+add_test 0 '-a 12 -c 100:102 -F 8 -i -s'
+
+# double value 101.498
+add_test 0 '-a 16 -c 100:102 -F 8'
 
 # check software
 run_all_test

@@ -154,8 +154,13 @@ void print_settings(FILE *fd, struct modbus_params_t *params)
 	fprintf(fd, "format:      %d\n",          params->format);
 	fprintf(fd, "swap bytes:  %d\n",          params->swap_bytes);
 	fprintf(fd, "\n");
-	fprintf(fd, "warning:     %f\n",          params->warn_range);
-	fprintf(fd, "critical:    %f\n",          params->crit_range);
+
+	fprintf(fd, "warning range:\n");
+	fprint_range(fd, &params->warn_range);
+
+	fprintf(fd, "critical range:\n");	
+	fprint_range(fd, &params->crit_range);	
+
 	fprintf(fd, "null:        %d\n",          params->nc);
 	fprintf(fd, "not null:    %d\n",          params->nnc);
 	fprintf(fd, "\n");
@@ -211,8 +216,14 @@ static void    load_defaults(struct modbus_params_t *params)
 	params->inverse_words  = 0;
 	params->swap_bytes  = 0;
 
-	params->warn_range  = 0;
-	params->crit_range  = 0;
+	params->warn_range.defined = 0;
+	params->warn_range.lo = 0;
+	params->warn_range.hi = 0;
+	
+	params->crit_range.defined = 0;
+	params->crit_range.lo = 0;
+	params->crit_range.hi = 0;
+	
 	params->verbose     = 0;
 
 	params->perf_min_en = 0;
@@ -402,6 +413,7 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 int     parse_command_line(struct modbus_params_t *params, int argc, char **argv)
 {
 	int rs;
+	int rc = RESULT_OK;
 	int option_index;
 
 	/* no short option char wasted for rarely used options */
@@ -539,10 +551,16 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			params->format = atoi(optarg);
 			break;
 		case 'w':
-			params->warn_range = atof(optarg);
+			if (parse_range(optarg, &params->warn_range) != 0) {
+				fprintf(stderr, "can't parse warning range %s\n", optarg);
+				rc = RESULT_WRONG_ARG;
+			}
 			break;
 		case 'c':
-			params->crit_range = atof(optarg);
+			if (parse_range(optarg, &params->crit_range) != 0) {
+				fprintf(stderr, "can't parse critical range %s\n", optarg);
+				rc = RESULT_WRONG_ARG;
+			}
 			break;
 		case 'n':
 			params->nc = 1;
@@ -611,9 +629,12 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			break;			
 		case '?':
 		default:
-			print_help();
-			return RESULT_PRINT_HELP;
+			rc = RESULT_PRINT_HELP;
 		};
+
+		if (rc!=RESULT_OK) {
+			return rc;
+		}
 	};  /* while(1) */
 
 	return check_command_line(params, argc, argv);

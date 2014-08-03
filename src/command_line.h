@@ -30,7 +30,10 @@
 
 #include "check_modbus.h"
 
-int     parse_command_line(struct modbus_params_t *params, int argc, char **argv);
+int     parse_command_line(struct modbus_params_t *params,
+			int argc,
+			char **argv);
+
 void    print_settings(FILE *fd, struct modbus_params_t *params);
 
 #endif
