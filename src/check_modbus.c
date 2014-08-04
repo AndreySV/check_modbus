@@ -403,6 +403,9 @@ static int process(struct modbus_params_t *params)
 		/* start new try */
 		rc = open_modbus_connection(mb);
 		if (rc == RESULT_OK) {
+			/* flush old data from buffer */
+			modbus_flush(mb);
+			
 			rc = read_data(mb, f, params, &data);
 			if (rc == RESULT_OK)
 				break;
