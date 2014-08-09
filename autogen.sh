@@ -28,7 +28,6 @@
 #******************************************************************************
 
 aclocal -I m4 \
-    && touch NEWS \
     && autoconf \
     && automake --add-missing --copy  \
     && echo "Ready to run ./configure" 

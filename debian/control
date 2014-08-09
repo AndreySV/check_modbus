@@ -2,8 +2,8 @@ Source: nagios-plugin-check-modbus
 Maintainer: Andrey Skvortsov <Andrej.Skvortzov@gmail.com>
 Section: misc
 Priority: optional
-Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 9), autotools-dev, libmodbus-dev
+Standards-Version: 3.9.3
+Build-Depends: debhelper (>= 9), dh-autoreconf, libmodbus-dev
 Vcs-Git: https://github.com/AndreySV/check_modbus.git
 Vcs-Browser: https://github.com/AndreySV/check_modbus
 Homepage: https://github.com/AndreySV/check_modbus
