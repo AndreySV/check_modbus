@@ -2,6 +2,8 @@
 	attention!!! changed critical/warning parameters behavior to be
 	compatible with standard Nagios ranges.
 	added support of fixed point formats
+	device, register/bit address can be entered in hexadecimal,
+	octal or decimal
 
 2013-04-02 version 0.46
 	fixed bug with number of written bytes into the dump file
