@@ -48,8 +48,14 @@ dnl Checks for library functions.
 AC_CHECK_FUNCS([modbus_new_tcp_pi],,AC_MSG_ERROR([echo Function modbus_new_tcp_pi is not found]))
 
 dnl CC_CHECK_WERROR
-CC_CHECK_CFLAGS_APPEND([-Wall -Wextra -Wpedantic -Wc++-compat -Wmissing-declarations -Wmissing-prototypes -Wformat-security])
+CC_CHECK_CFLAGS_APPEND([ -Wall -Wextra -Wpedantic -Wc++-compat -Wmissing-declarations -Wmissing-prototypes])
+CC_CHECK_CFLAGS_APPEND([ -Wformat-security -Wformat=2 -Wshadow -Wstrict-prototypes ])
+CC_CHECK_CFLAGS_APPEND([ -Wmissing-include-dirs -Wbad-function-cast -Wwrite-strings -Wlogical-op ])
+dnl CC_CHECK_CFLAGS_APPEND([ -Wconversion ])
 
+AC_ARG_ENABLE(strict-build, AS_HELP_STRING([--enable-strict-build], [force warnings to be an error using gcc ]), [
+                            CC_CHECK_CFLAGS_APPEND([ -Werror -Wfatal-errors]) ] ,
+                            [])
 
 dnl Output files
 AC_CONFIG_FILES([
