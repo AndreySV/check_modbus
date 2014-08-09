@@ -45,7 +45,7 @@ static int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, 
 {
 	int rc = RESULT_OK;
 	int size = sizeof_data_t(data);
-	int sad  = params->sad;
+	unsigned int sad  = params->sad;
 
 	if (params->verbose)
 		printf("read_data\n");
@@ -82,8 +82,8 @@ static int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, 
 
 
 	if (f != NULL) {
-		int read;
-		int need_bytes;
+		size_t read_bytes;
+		size_t need_bytes;
 
 		if (fseek(f, sad*sizeof(data->val.words[0]), SEEK_SET))	{
 			if (ferror(f))
@@ -93,14 +93,14 @@ static int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, 
 		}
 
 		need_bytes = sizeof(data->val.words[0])*size;
-		read = fread(data->val.words, 1, need_bytes, f);
+		read_bytes = fread(data->val.words, 1, need_bytes, f);
 
-		if (read != need_bytes)	{
+		if (read_bytes != need_bytes)	{
 			if (ferror(f))
 				fprintf(stderr, "Error: %d, error string: %s\n", errno, strerror(errno));
 			if (feof(f))
 				fprintf(stderr, "Error: end of file\n");
-			fprintf(stderr, "Read only %d bytes from file, but need %d\n", read, need_bytes);
+			fprintf(stderr, "Read only %ld bytes from file, but need %zu\n", read_bytes, need_bytes);
 			return RESULT_ERROR_READ;
 		}
 		rc = RESULT_OK;

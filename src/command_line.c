@@ -37,6 +37,8 @@
 #include "global_macro.h"
 #include "check_modbus.h"
 
+#define ERR(...) fprintf(stderr, __VA_ARGS__)
+
 
 static void print_help(void)
 {
@@ -257,8 +259,8 @@ static int check_swap_inverse(struct modbus_params_t *params)
 		((params->swap_bytes) || (params->inverse_words)))
 		rc = 1;
 	if (rc)	{
-		fprintf(stderr, "Swap bytes and inverse words functionality not acceptable ");
-		fprintf(stderr, "for modbus functions 1 and 2 operated with bits.\n");
+		ERR("Swap bytes and inverse words functionality not acceptable ");
+		ERR("for modbus functions 1 and 2 operated with bits.\n");
 	}
 	return rc;
 }
@@ -279,7 +281,7 @@ static int check_function_num(struct modbus_params_t *params)
 
 	rc =  (params->nf > MBF_MIN_SUPPORTED) && (params->nf < MBF_MAX_SUPPORTED) ? 0 : 1;
 	if (rc)
-		fprintf(stderr, "Invalid function number: %d\n", params->nf);
+		ERR("Invalid function number: %d\n", params->nf);
 	return rc;
 }
 
@@ -297,7 +299,7 @@ static int check_source(struct modbus_params_t *params)
 		cnt++;
 
 	if (cnt > 1) {
-		fprintf(stderr, "Several modbus input interfaces were declared\n");
+		ERR("Several modbus input interfaces were declared\n");
 		return 1;
 	}
 	return 0;
@@ -316,9 +318,9 @@ static int     check_format_type(struct modbus_params_t *params)
 
 	rc =  (ft > min_format) && (ft < max_format) ? 0 : 1;
 	if (rc)	{
-		fprintf(stderr, "Invalid data format: %d\n", params->format);
+		ERR("Invalid data format: %d\n", params->format);
 		if (params->dump)
-			fprintf(stderr, "-F (--format) parameter can not be used in dump mode\n");
+			ERR("-F (--format) parameter can not be used in dump mode\n");
 	}
 	return rc;
 }
@@ -340,16 +342,13 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
 	if (params->host == NULL && params->serial == NULL && params->file == NULL) {
-		fprintf(stderr,
-			"Not provided or unable to parse host address/serial port name/filename: %s\n",
+		ERR("Not provided or unable to parse host address/serial port name/filename: %s\n",
 			argv[0]);
 		return RESULT_WRONG_ARG;
 	};
 #else
 	if (params->host == NULL && params->file == NULL) {
-		fprintf(stderr,
-			"Not provided or unable to parse host address or filename: %s\n",
-			argv[0]);
+		ERR("Not provided or unable to parse host address or filename: %s\n", argv[0]);
 		return RESULT_WRONG_ARG;
 	};
 #endif
@@ -357,30 +356,30 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 #if LIBMODBUS_VERSION_MAJOR >= 3
 	if (params->serial != NULL) {
 		if (params->serial_mode != MODBUS_RTU_RS232 && params->serial_mode != MODBUS_RTU_RS485)	{
-			fprintf(stderr, "%s: Invalid value of serial port mode parameter!\n", argv[0]);
+			ERR("%s: Invalid value of serial port mode parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
 		if (check_serial_parity(params->serial_parity)) {
-			fprintf(stderr, "%s: Invalid value of serial port parity mode parameter!\n", argv[0]);
+			ERR("%s: Invalid value of serial port parity mode parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
 		if (params->serial_data_bits < 5 || params->serial_data_bits > 8) {
-			fprintf(stderr, "%s: Invalid value of serial port mode data length parameter!\n", argv[0]);
+			ERR("%s: Invalid value of serial port mode data length parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
 		if (params->serial_stop_bits < 1 || params->serial_stop_bits > 2) {
-			fprintf(stderr, "%s: Invalid value of serial port stop bits parameter!\n", argv[0]);
+			ERR("%s: Invalid value of serial port stop bits parameter!\n", argv[0]);
 			return RESULT_WRONG_ARG;
 		}
 	}
 #endif
 	if (params->perf_data && (params->perf_label == NULL)) {
-		fprintf(stderr, "Label parameter is required, when performance data is enabled\n");
+		ERR("Label parameter is required, when performance data is enabled\n");
 		return RESULT_WRONG_ARG;
 	}
 
 	if (params->dump_size > 127) {
-		fprintf(stderr, "The maximal number of registers in one dump is 127\n");
+		ERR("The maximal number of registers in one dump is 127\n");
 		return RESULT_WRONG_ARG;
 	}
 
@@ -407,15 +406,6 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 }
 
 
-
-
-
-int     parse_command_line(struct modbus_params_t *params, int argc, char **argv)
-{
-	int rs;
-	int rc = RESULT_OK;
-	int option_index;
-
 	/* no short option char wasted for rarely used options */
 	enum {
 		OPT_LONG_OPTIONS_ONLY = 0x100,
@@ -440,52 +430,60 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 	};
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
-	const char *short_options = "hH:p:S:b:d:a:f:w:c:nNt:F:isvPm:M:L:";
+static	const char *short_options = "hH:p:S:b:d:a:f:w:c:nNt:F:isvPm:M:L:";
 #else
-	const char *short_options = "hH:p:d:a:f:w:c:nNt:F:isvPm:M:L:";
+static	const char *short_options = "hH:p:d:a:f:w:c:nNt:F:isvPm:M:L:";
 #endif
-	const struct option long_options[] = {
-		{"help",          no_argument,            NULL,  'h'   },
-		{"ip",            required_argument,      NULL,  'H'   },
-		{"port",          required_argument,      NULL,  'p'   },
+static	const struct option long_options[] = {
+	{"help",          no_argument,            NULL,  'h'   },
+	{"ip",            required_argument,      NULL,  'H'   },
+	{"port",          required_argument,      NULL,  'p'   },
 #if LIBMODBUS_VERSION_MAJOR >= 3
-		{"serial",        required_argument,      NULL,  'S'   },
-		{"serial_mode",   required_argument,      NULL,  OPT_SERIAL_MODE},
-		{"serial_bps",    required_argument,      NULL,  'b'   },
-		{"serial_parity", required_argument,      NULL,  OPT_SERIAL_PARITY},
-		{"serial_data_bits", required_argument,   NULL,  OPT_SERIAL_DATA_BITS},
-		{"serial_stop_bits", required_argument,   NULL,  OPT_SERIAL_STOP_BITS},
+	{"serial",        required_argument,      NULL,  'S'   },
+	{"serial_mode",   required_argument,      NULL,  OPT_SERIAL_MODE},
+	{"serial_bps",    required_argument,      NULL,  'b'   },
+	{"serial_parity", required_argument,      NULL,  OPT_SERIAL_PARITY},
+	{"serial_data_bits", required_argument,   NULL,  OPT_SERIAL_DATA_BITS},
+	{"serial_stop_bits", required_argument,   NULL,  OPT_SERIAL_STOP_BITS},
 #endif
-		{"file",          required_argument,      NULL,  OPT_FILE},
-		{"device",        required_argument,      NULL,  'd'   },
-		{"address",       required_argument,      NULL,  'a'   },
-		{"try",           required_argument,      NULL,  't'   },
-		{"function",      required_argument,      NULL,  'f'   },
-		{"format",        required_argument,      NULL,  'F'   },
-		{"function",      required_argument,      NULL,  'f'   },
-		{"critical",      required_argument,      NULL,  'c'   },
-		{"null",          no_argument,            NULL,  'n'   },
-		{"not_null",      no_argument,            NULL,  'N'   },
-		{"swapbytes",     no_argument,            NULL,  's'   },
-		{"inverse",       no_argument,            NULL,  'i'   },
-		{"verbose",       no_argument,            NULL,  'v'   },
-		{"perf_data",     no_argument,            NULL,  'P'   },
-		{"perf_min",      required_argument,      NULL,  'm'   },
-		{"perf_max",      required_argument,      NULL,  'M'   },
-		{"perf_label",    required_argument,      NULL,  'L'   },
-		{"dump",          no_argument,            NULL,   OPT_DUMP        },
-		{"dump_size",     required_argument,      NULL,   OPT_DUMP_SIZE   },
-		{"dump_format",   required_argument,      NULL,   OPT_DUMP_FORMAT },
-		{"dump_file",     required_argument,      NULL,   OPT_DUMP_FILE   },
-		{"lock_file_in",  required_argument,      NULL,   OPT_LOCK_FILE_IN   },
-		{"lock_file_out", required_argument,      NULL,   OPT_LOCK_FILE_OUT  },
-		{"gain",          required_argument,      NULL,   OPT_GAIN },
-		{"offset",        required_argument,      NULL,   OPT_OFFSET },
-		{NULL,            0,                      NULL,   0    },
-	};
+	{"file",          required_argument,      NULL,  OPT_FILE},
+	{"device",        required_argument,      NULL,  'd'   },
+	{"address",       required_argument,      NULL,  'a'   },
+	{"try",           required_argument,      NULL,  't'   },
+	{"function",      required_argument,      NULL,  'f'   },
+	{"format",        required_argument,      NULL,  'F'   },
+	{"function",      required_argument,      NULL,  'f'   },
+	{"critical",      required_argument,      NULL,  'c'   },
+	{"null",          no_argument,            NULL,  'n'   },
+	{"not_null",      no_argument,            NULL,  'N'   },
+	{"swapbytes",     no_argument,            NULL,  's'   },
+	{"inverse",       no_argument,            NULL,  'i'   },
+	{"verbose",       no_argument,            NULL,  'v'   },
+	{"perf_data",     no_argument,            NULL,  'P'   },
+	{"perf_min",      required_argument,      NULL,  'm'   },
+	{"perf_max",      required_argument,      NULL,  'M'   },
+	{"perf_label",    required_argument,      NULL,  'L'   },
+	{"dump",          no_argument,            NULL,   OPT_DUMP        },
+	{"dump_size",     required_argument,      NULL,   OPT_DUMP_SIZE   },
+	{"dump_format",   required_argument,      NULL,   OPT_DUMP_FORMAT },
+	{"dump_file",     required_argument,      NULL,   OPT_DUMP_FILE   },
+	{"lock_file_in",  required_argument,      NULL,   OPT_LOCK_FILE_IN   },
+	{"lock_file_out", required_argument,      NULL,   OPT_LOCK_FILE_OUT  },
+	{"gain",          required_argument,      NULL,   OPT_GAIN },
+	{"offset",        required_argument,      NULL,   OPT_OFFSET },
+	{NULL,            0,                      NULL,   0    },
+};
+
+
+
+int     parse_command_line(struct modbus_params_t *params, int argc, char **argv)
+{
+	int rs;
+	int rc = RESULT_OK;
+	int option_index;
 
 	if (argc < 2) {
-		fprintf(stderr, "%s: Could not parse arguments\n", argv[0]);
+		ERR("%s: Could not parse arguments\n", argv[0]);
 		print_help();
 		return RESULT_WRONG_ARG;
 	};
@@ -552,13 +550,13 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			break;
 		case 'w':
 			if (parse_range(optarg, &params->warn_range) != 0) {
-				fprintf(stderr, "can't parse warning range %s\n", optarg);
+				ERR("can't parse warning range %s\n", optarg);
 				rc = RESULT_WRONG_ARG;
 			}
 			break;
 		case 'c':
 			if (parse_range(optarg, &params->crit_range) != 0) {
-				fprintf(stderr, "can't parse critical range %s\n", optarg);
+				ERR("can't parse critical range %s\n", optarg);
 				rc = RESULT_WRONG_ARG;
 			}
 			break;
