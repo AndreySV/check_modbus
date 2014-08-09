@@ -37,14 +37,18 @@
 #include "global_macro.h"
 #include "check_modbus.h"
 
-
-
-
-static void print_help(void)
+static void print_version(void)
 {
 	printf("Check ModBus version %s\n", PACKAGE_VERSION);
 	printf("Build date: %02d.%02d.%04d\n", COMPILE_DAY, COMPILE_MONTH, COMPILE_YEAR);
 	printf("\n");
+}
+
+
+static void print_help(void)
+{
+	print_version();
+	printf("--version           Print version information\n");
 	printf("-v  --verbose       Print additional (debug) information (settings, modbus debug etc).\n");
 	printf("                    Specify multiple times to increase verbosity level.\n");
 	printf("-h  --help          Print this help\n");
@@ -482,7 +486,7 @@ static int parse_int_param(char *arg, int *value)
 
 	errno = 0;
 	*value = strtoul(arg, &end, 0);
-	if (end || errno) {
+	if ((end && *end) || errno) {
 		ERR("wrong parameter value %s\n", arg);
 		return RESULT_WRONG_ARG;
 	}
@@ -493,9 +497,9 @@ static int parse_double_param(char *arg, double *value)
 {
 	char *end;
 
-	errno = 0;	
+	errno = 0;
 	*value = strtod(arg, &end);
-	if (end || errno) {
+	if ((end && *end) || errno) {
 		ERR("wrong parameter value %s\n", arg);
 		return RESULT_WRONG_ARG;
 	}
