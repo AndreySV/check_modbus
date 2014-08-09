@@ -477,8 +477,23 @@ static	const struct option long_options[] = {
 static int parse_int_param(char *arg, int *value)
 {
 	char *end;
+
+	errno = 0;
 	*value = strtoul(arg, &end, 0);
-	if (end) {
+	if (end || errno) {
+		ERR("wrong parameter value %s\n", arg);
+		return RESULT_WRONG_ARG;
+	}
+	return RESULT_OK;
+}
+
+static int parse_double_param(char *arg, double *value)
+{
+	char *end;
+
+	errno = 0;	
+	*value = strtod(arg, &end);
+	if (end || errno) {
 		ERR("wrong parameter value %s\n", arg);
 		return RESULT_WRONG_ARG;
 	}
@@ -590,11 +605,11 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			params->nnc = 1;
 			break;
 		case 'm':
-			params->perf_min = atof(optarg);
+			rc = parse_double_param(optarg, &params->perf_min);
 			params->perf_min_en = 1;
 			break;
 		case 'M':
-			params->perf_max = atof(optarg);
+			rc = parse_double_param(optarg, &params->perf_max);
 			params->perf_max_en = 1;
 			break;
 		case 'L':
@@ -634,10 +649,10 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			break;
 
 		case OPT_GAIN:
-			params->gain = atof(optarg);
+			rc = parse_double_param(optarg, &params->gain);
 			break;
 		case OPT_OFFSET:
-			params->offset = atof(optarg);
+			rc = parse_double_param(optarg, &params->offset);
 			break;
 		case '?':
 		default:
