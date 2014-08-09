@@ -1,0 +1,16 @@
+Source: nagios-plugin-check-modbus
+Maintainer: Andrey Skvortsov <Andrej.Skvortzov@gmail.com>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9), autotools-dev, libmodbus-dev
+Vcs-Git: https://github.com/AndreySV/check_modbus.git
+Vcs-Browser: https://github.com/AndreySV/check_modbus
+Homepage: https://github.com/AndreySV/check_modbus
+
+Package: nagios-plugin-check-modbus
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: nagios checker for Modbus RTU and TCP devices
+ This plugin can be used to check in Nagios industrial devices
+ supported Modbus RTU/TCP.

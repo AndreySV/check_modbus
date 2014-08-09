@@ -1,0 +1,5 @@
+nagios-plugin-check-modbus (0.47-1) UNRELEASED; urgency=low
+
+  * Initial release. 
+
+ -- Andrey Skvortsov <andrey@host>  Sat, 09 Aug 2014 19:46:44 +0400

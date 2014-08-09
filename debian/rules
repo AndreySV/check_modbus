@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+DEB_VERSION := $(shell dpkg-parsechangelog --format rfc822 | grep-dctrl -ensVersion -S .)
+
+%:
+	dh $@
+
+override_dh_auto_install:
+	make install        DESTDIR=$(CURDIR)/debian/nagios-plugin-check-modbus
