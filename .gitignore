@@ -1,3 +1,25 @@
+INSTALL
+Makefile
+Makefile.in
+/aclocal.m4
+/autom4te.cache
+/config.*
+/configure
+/depcomp
+/install-sh
+/missing
+
+src/check_modbus
+tests/test_inverse
+tests/test_swap
+
+debian/files
+debian/*.log
+debian/*.debhelper
+debian/*.substvars
+debian/nagios-plugin-check-modbus/
+
+
 # Compiled Object files
 *.slo
 *.lo
