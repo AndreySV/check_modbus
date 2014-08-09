@@ -426,7 +426,8 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 		OPT_LOCK_FILE_OUT,
 
 		OPT_GAIN,
-		OPT_OFFSET
+		OPT_OFFSET,
+		OPT_VERSION
 	};
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
@@ -471,6 +472,7 @@ static	const struct option long_options[] = {
 	{"lock_file_out", required_argument,      NULL,   OPT_LOCK_FILE_OUT  },
 	{"gain",          required_argument,      NULL,   OPT_GAIN },
 	{"offset",        required_argument,      NULL,   OPT_OFFSET },
+	{"version",       no_argument,            NULL,   OPT_VERSION },
 	{NULL,            0,                      NULL,   0    },
 };
 
@@ -653,6 +655,10 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			break;
 		case OPT_OFFSET:
 			rc = parse_double_param(optarg, &params->offset);
+			break;
+		case OPT_VERSION:
+			print_version();
+			rc = RESULT_PRINT_HELP;
 			break;
 		case '?':
 		default:

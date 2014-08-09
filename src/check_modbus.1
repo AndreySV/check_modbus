@@ -1,4 +1,4 @@
-.TH check_modbus 1 "May 2013" ""   ""
+.TH check_modbus 1 "Aug 2014" ""   ""
 .SH NAME
 check_modbus - tool to monitor state of different devices in Nagios using Modbus-TCP/RTU protocols.
 
@@ -56,6 +56,10 @@ Only \fBbinary\fR dump format can by used as an input source for \fBcheck_modbus
 \fB \-v, \-\-verbose\fR
 turn on verbose mode. Additional debug information (settings, modbus debug ) will be printed 
 .TP
+.TP
+\fB \-\-version\fR
+display version information
+.TP
 \fB \-h, \-\-help\fR
 print help for a command
 .TP
@@ -102,7 +106,8 @@ Use binary input file as a source for data instead of communicating with device 
 Device modbus number. Default 1
 .TP
 \fB \-a, \-\-adress\fR=\fINUMBER\fR
-Register or bit address. Default 1
+Register or bit address. Can be hexadecimal (-a 0x0F) , octal (-a 017) or
+decimal (-a 15). Default 1
 .TP
 \fB \-t, \-\-try\fR=\fINUMBER\fR
 Number of tries to connect modbus device. It's useful to get reliable answer from the device in noisy environment. Default 1.
@@ -297,6 +302,9 @@ Andrey Skvortsov <Andrej.Skvortzov@gmail.com>
 .TP
 Mirosław Lach    <m.github@lach.waw.pl>
 .SH NOTES
+Since version 0.47 is changed behavior for options -w and -c to be
+compliant with standard Nagios ranges format.
+
 All bug reports can be posted on the GitHub page https://github.com/AndreySV/check_modbus
 .SH COPYRIGHT
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
