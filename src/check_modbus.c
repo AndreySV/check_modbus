@@ -87,8 +87,8 @@ static int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, 
 
 		if (fseek(f, sad*sizeof(data->val.words[0]), SEEK_SET))	{
 			if (ferror(f))
-				fprintf(stderr, "Error: %d error string: %s\n", errno, strerror(errno));
-			fprintf(stderr, "Can not seek in file\n");
+				ERR("Error: %d error string: %s\n", errno, strerror(errno));
+			ERR("Can not seek in file\n");
 			return RESULT_ERROR;
 		}
 
@@ -97,10 +97,10 @@ static int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, 
 
 		if (read_bytes != need_bytes)	{
 			if (ferror(f))
-				fprintf(stderr, "Error: %d, error string: %s\n", errno, strerror(errno));
+				ERR("Error: %d, error string: %s\n", errno, strerror(errno));
 			if (feof(f))
-				fprintf(stderr, "Error: end of file\n");
-			fprintf(stderr, "Read only %ld bytes from file, but need %zu\n", read_bytes, need_bytes);
+				ERR("Error: end of file\n");
+			ERR("Read only %ld bytes from file, but need %zu\n", read_bytes, need_bytes);
 			return RESULT_ERROR_READ;
 		}
 		rc = RESULT_OK;
@@ -123,21 +123,21 @@ static void     print_error(int rc)
 {
 	switch (rc) {
 	case RESULT_ERROR_CONNECT:
-		fprintf(stderr, "Connection failed: %s\n:", modbus_strerror(errno));
+		ERR("Connection failed: %s\n:", modbus_strerror(errno));
 		break;
 	case RESULT_ERROR_READ:
-		fprintf(stderr, "Read failed: %s\n", modbus_strerror(errno));
+		ERR("Read failed: %s\n", modbus_strerror(errno));
 		break;
 	case RESULT_UNSUPPORTED_FORMAT:
-		fprintf(stderr, "Invalid data format\n");
+		ERR("Invalid data format\n");
 		break;
 	case RESULT_UNSUPPORTED_FUNCTION:
-		fprintf(stderr, "Invalid function number\n");
+		ERR("Invalid function number\n");
 		break;
 	case RESULT_OK:
 		break;
 	default:
-		fprintf(stderr, "Unsupported return code (%d)\n", rc);
+		ERR("Unsupported return code (%d)\n", rc);
 		break;
 	}
 }
@@ -242,7 +242,7 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 	if (params->host != NULL) {
 		*mb = modbus_new_tcp_pi(params->host, params->mport);
 		if (*mb == NULL) {
-			fprintf(stderr, "Unable to allocate libmodbus context\n");
+			ERR("Unable to allocate libmodbus context\n");
 			return RESULT_ERROR;
 		}
 	}
@@ -257,7 +257,7 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 			if (modbus_rtu_get_serial_mode(*mb) != params->serial_mode) {
 				rc = modbus_rtu_set_serial_mode(*mb, params->serial_mode);
 				if (rc == -1) {
-					fprintf(stderr, "Unable to set serial mode - %s (%d)\n", modbus_strerror(errno), errno);
+					ERR("Unable to set serial mode - %s (%d)\n", modbus_strerror(errno), errno);
 					return RESULT_ERROR;
 				}
 			} else {
@@ -265,7 +265,7 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 					printf("Serial port already in requested mode.\n");
 			}
 		} else {
-			fprintf(stderr, "Unable to allocate libmodbus context\n");
+			ERR("Unable to allocate libmodbus context\n");
 			return RESULT_ERROR;
 		}
 	}
@@ -277,8 +277,7 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 
 		*f = fopen(params->file, "rb");
 		if (*f == NULL) {
-			fprintf(stderr,
-				"Unable to open binary dump file %s (%s)\n",
+			ERR("Unable to open binary dump file %s (%s)\n",
 				params->file, strerror(errno));
 			return RESULT_ERROR;
 		}
@@ -364,7 +363,7 @@ static int     save_dump_file(struct modbus_params_t *params, struct data_t *dat
 
 		fout = fopen(params->dump_file, "wb");
 		if (!fout) {
-			fprintf(stderr, "Can't create file %s\n", params->dump_file);
+			ERR("Can't create file %s\n", params->dump_file);
 			return RESULT_ERROR;
 		}
 	} else

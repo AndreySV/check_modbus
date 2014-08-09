@@ -37,7 +37,7 @@
 #include "global_macro.h"
 #include "check_modbus.h"
 
-#define ERR(...) fprintf(stderr, __VA_ARGS__)
+
 
 
 static void print_help(void)

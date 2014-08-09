@@ -123,4 +123,7 @@ enum {
 	DUMP_FMT_MAX_SUPPORTED
 };
 
+
+#define ERR(...) fprintf(stderr, __VA_ARGS__)
+
 #endif
