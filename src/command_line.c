@@ -160,8 +160,8 @@ void print_settings(FILE *fd, struct modbus_params_t *params)
 	fprintf(fd, "warning range:\n");
 	fprint_range(fd, &params->warn_range);
 
-	fprintf(fd, "critical range:\n");	
-	fprint_range(fd, &params->crit_range);	
+	fprintf(fd, "critical range:\n");
+	fprint_range(fd, &params->crit_range);
 
 	fprintf(fd, "null:        %d\n",          params->nc);
 	fprintf(fd, "not null:    %d\n",          params->nnc);
@@ -221,11 +221,11 @@ static void    load_defaults(struct modbus_params_t *params)
 	params->warn_range.defined = 0;
 	params->warn_range.lo = 0;
 	params->warn_range.hi = 0;
-	
+
 	params->crit_range.defined = 0;
 	params->crit_range.lo = 0;
 	params->crit_range.hi = 0;
-	
+
 	params->verbose     = 0;
 
 	params->perf_min_en = 0;
@@ -474,6 +474,16 @@ static	const struct option long_options[] = {
 	{NULL,            0,                      NULL,   0    },
 };
 
+static int parse_int_param(char *arg, int *value)
+{
+	char *end;
+	*value = strtoul(arg, &end, 0);
+	if (end) {
+		ERR("wrong parameter value %s\n", arg);
+		return RESULT_WRONG_ARG;
+	}
+	return RESULT_OK;
+}
 
 
 int     parse_command_line(struct modbus_params_t *params, int argc, char **argv)
@@ -517,36 +527,40 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			params->serial = optarg;
 			break;
 		case OPT_SERIAL_MODE:
-			params->serial_mode = atoi(optarg);
+			rc = parse_int_param(optarg, &params->serial_mode);
 			break;
 		case 'b':
-			params->serial_bps = atoi(optarg);
+			rc = parse_int_param(optarg, &params->serial_bps);
 			break;
 		case OPT_SERIAL_PARITY:
 			params->serial_parity = (optarg) ? toupper(*optarg) : '\0';
 			break;
 		case OPT_SERIAL_DATA_BITS:
-			params->serial_data_bits = atoi(optarg);
+			rc = parse_int_param(optarg, &params->serial_data_bits);
 			break;
 		case OPT_SERIAL_STOP_BITS:
-			params->serial_stop_bits = atoi(optarg);
+			rc = parse_int_param(optarg, &params->serial_stop_bits);
 			break;
 #endif
 		case OPT_FILE:
 			params->file = optarg;
 			break;
 		case 'd':
-			params->devnum = atoi(optarg);
+			rc = parse_int_param(optarg, &params->devnum);
 			break;
 		case 'a':
-			params->sad = atoi(optarg);
+			rc = parse_int_param(optarg, &params->sad);
+			if (params->sad <= 0) {
+				ERR("Address should be greater than zero: %s\n", optarg);
+				rc = RESULT_WRONG_ARG;
+			}
 			params->sad--; /* register/bit address starts from 0 */
 			break;
 		case 'f':
-			params->nf = atoi(optarg);
+			rc = parse_int_param(optarg, &params->nf);
 			break;
 		case 'F':
-			params->format = atoi(optarg);
+			rc = parse_int_param(optarg, &params->format);
 			break;
 		case 'w':
 			if (parse_range(optarg, &params->warn_range) != 0) {
@@ -570,7 +584,7 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			params->swap_bytes = 1;
 			break;
 		case 't':
-			params->tries = atoi(optarg);
+			rc = parse_int_param(optarg, &params->tries);
 			break;
 		case 'N':
 			params->nnc = 1;
@@ -596,10 +610,10 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			params->dump = 1;
 			break;
 		case OPT_DUMP_SIZE:
-			params->dump_size = atoi(optarg);
+			rc = parse_int_param(optarg, &params->dump_size);
 			break;
 		case OPT_DUMP_FORMAT:
-			params->dump_format = atoi(optarg);
+			rc = parse_int_param(optarg, &params->dump_format);
 			switch (params->dump_format) {
 			case DUMP_FMT_BIN:
 				params->format = FORMAT_DUMP_BIN;
@@ -624,15 +638,14 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			break;
 		case OPT_OFFSET:
 			params->offset = atof(optarg);
-			break;			
+			break;
 		case '?':
 		default:
 			rc = RESULT_PRINT_HELP;
 		};
 
-		if (rc!=RESULT_OK) {
+		if (rc != RESULT_OK)
 			return rc;
-		}
 	};  /* while(1) */
 
 	return check_command_line(params, argc, argv);
