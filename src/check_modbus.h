@@ -124,6 +124,6 @@ enum {
 };
 
 
-#define ERR(...) fprintf(stderr, __VA_ARGS__)
+
 
 #endif

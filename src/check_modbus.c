@@ -38,6 +38,7 @@
 #include "lock.h"
 #include "compile_date_time.h"
 #include "command_line.h"
+#include "dbg_printf.h"
 
 
 
@@ -45,10 +46,9 @@ static int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, 
 {
 	int rc = RESULT_OK;
 	int size = sizeof_data_t(data);
-	unsigned int sad  = params->sad;
+	int sad  = params->sad;
 
-	if (params->verbose)
-		printf("read_data\n");
+	INFO("");
 
 	clear_data_t(data);
 
@@ -110,8 +110,7 @@ static int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, 
 	if (rc == RESULT_OK)
 		reorder_data_t(data, params->swap_bytes, params->inverse_words);
 
-	if (params->verbose)
-		printf("read_data rc: %d\n", rc);
+	INFO("rc: %d", rc);
 	return rc;
 }
 
@@ -198,8 +197,7 @@ static int print_result(struct modbus_params_t *params, struct data_t *data)
 	adjust_result(params, data);
 	result      = value_data_t(data);
 
-	if (params->verbose)
-		printf("print_result: %f\n", result);
+	INFO("%f", result);
 
 	if (params->nc != params->nnc) {
 		if (params->nc  == 1)
@@ -211,9 +209,7 @@ static int print_result(struct modbus_params_t *params, struct data_t *data)
 
 
 	printf("%s: ", status_text[rc]);
-
-	if (params->verbose)
-		printf("print_result rc: %d\n", rc);
+	INFO("rc: %d", rc);
 
 	printf_data_t(stdout, data);
 	print_performance_data(params, data);
@@ -232,8 +228,7 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 	*f  = NULL;
 
 	rc = RESULT_OK;
-	if (params->verbose)
-		printf("init_connection\n");
+	INFO("");
 
 	set_lock(params, LOCK_INPUT);
 	/*******************************************************************/
@@ -261,7 +256,7 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 					return RESULT_ERROR;
 				}
 			} else {
-				if (params->verbose)
+				if (dbg_chk_level(DBG_INFO))
 					printf("Serial port already in requested mode.\n");
 			}
 		} else {
@@ -286,7 +281,7 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 
 	/*******************************************************************/
 	if (*mb != NULL) {
-		if (params->verbose > 1)
+		if (dbg_chk_level(DBG_DEBUG))
 			modbus_set_debug(*mb, 1);
 
 		/* set short timeout */
@@ -297,10 +292,7 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 		modbus_set_slave(*mb, params->devnum);
 	}
 
-
-
-	if (params->verbose)
-		printf("init_connection rc: %d\n", rc);
+	INFO("rc: %d", rc);
 	return rc;
 }
 
@@ -393,8 +385,7 @@ static int process(struct modbus_params_t *params)
 	struct data_t   data;
 	int             rc;
 
-	if (params->verbose)
-		printf("process\n");
+
 
 	rc = init_connection(params, &mb, &f);
 	if (rc)
@@ -425,8 +416,7 @@ static int process(struct modbus_params_t *params)
 	}
 
 	deinit_connection(&mb, &f);
-	if (params->verbose)
-		printf("process rc: %d\n", rc);
+	INFO("rc: %d", rc);
 	return rc;
 }
 

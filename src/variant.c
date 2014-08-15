@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "variant.h"
+#include "dbg_printf.h"
 
 /* returns size in words */
 int sizeof_data_t(struct data_t *data)
@@ -56,7 +57,7 @@ int sizeof_data_t(struct data_t *data)
 		size = 4;
 		break;
 	default:
-		printf("Sizeof_data_t(): Unsupported format (%d)\n", data->format);
+		ERR("Sizeof_data_t(): Unsupported format (%d)\n", data->format);
 		break;
 	}
 	return size;
@@ -168,7 +169,7 @@ void printf_data_t(FILE *fd, struct data_t *data)
 		break;
 
 	default:
-		fprintf(stderr, "Printf_struct data_t(): Unsupported format (%d)\n", data->format);
+		ERR("Printf_struct data_t(): Unsupported format (%d)\n", data->format);
 	}
 }
 

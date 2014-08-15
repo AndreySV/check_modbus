@@ -37,7 +37,7 @@
 
 
 #include "lock.h"
-
+#include "dbg_printf.h"
 
 
 static int    lock_file_old(char *file)
@@ -89,7 +89,7 @@ static void    control_lock(struct modbus_params_t *params, int lock_type, bool 
 		break;
 
 	default:
-		fprintf(stderr, "Unknown lock type\n");
+		ERR("Unknown lock type\n");
 		return;
 	}
 
@@ -110,7 +110,7 @@ static void    control_lock(struct modbus_params_t *params, int lock_type, bool 
 				} else {
 					cnt++;
 					if (cnt > max_cnt) {
-						fprintf(stderr, "Can't create lock file %s\n", lock_file);
+						ERR("Can't create lock file %s\n", lock_file);
 						exit(RESULT_ERROR);
 					}
 					usleep(100000);

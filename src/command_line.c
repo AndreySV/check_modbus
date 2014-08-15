@@ -36,6 +36,7 @@
 #include "compile_date_time.h"
 #include "global_macro.h"
 #include "check_modbus.h"
+#include "dbg_printf.h"
 
 static void print_version(void)
 {
@@ -403,7 +404,7 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 	if (check_dump_param(params))
 		return RESULT_WRONG_ARG;
 
-	if (params->verbose)
+	if (dbg_chk_level(DBG_INFO))
 		print_settings(stdout, params);
 
 	return RESULT_OK;
@@ -529,6 +530,7 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 		switch (rs) {
 		case 'v':
 			params->verbose++;
+			dbg_set_level(params->verbose);
 			break;
 		case 'h':
 			print_help();
