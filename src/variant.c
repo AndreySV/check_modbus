@@ -125,7 +125,7 @@ void printf_data_t(FILE *fd, struct data_t *data)
 
 	switch (data->format) {
 	case FORMAT_SIGNED_WORD:
-		fprintf(fd, "%d", data->val.word);
+		fprintf(fd, "%d", data->val.sword);
 		break;
 	case FORMAT_UNSIGNED_WORD:
 		fprintf(fd, "%u", data->val.word);
