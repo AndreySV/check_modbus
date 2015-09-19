@@ -4,7 +4,7 @@ check_modbus - tool to monitor state of different devices in Nagios using Modbus
 
 .SH SYNOPSIS
 .TP
-\fBcheck_modbus\fR [ options ] [ \-\-ip= | \-H ] hostname \-f function 
+\fBcheck_modbus\fR [ options ] [ \-\-ip= | \-H ] hostname \-f function
 .TP
 \fBcheck_modbus\fR [ options ] [ \-\-serial= | \-S ] serial_port \-f function
 .TP
@@ -34,7 +34,7 @@ check_modbus --ip=plc01 -a 1 -f 4 --dump --dump_format 1 --dump_size 60 --dump_f
 
 
 .TP
-Afterwards many parameters can be analyzed from created dump file. 
+Afterwards many parameters can be analyzed from created dump file.
 .RS
 .TP
 .PD 0
@@ -50,11 +50,11 @@ check_modbus --file=file.dump -F 2 -f 4 -a 2  -w 100 -c 150
 .RE
 .PD
 .TP
-Only \fBbinary\fR dump format can by used as an input source for \fBcheck_modbus\fR. Other formats (hexadecimal and decimal) may be useful for other programs. 
+Only \fBbinary\fR dump format can by used as an input source for \fBcheck_modbus\fR. Other formats (hexadecimal and decimal) may be useful for other programs.
 .SH OPTIONS
 .TP
 \fB \-v, \-\-verbose\fR
-turn on verbose mode. Additional debug information (settings, modbus debug ) will be printed 
+turn on verbose mode. Additional debug information (settings, modbus debug ) will be printed
 .TP
 .TP
 \fB \-\-version\fR
@@ -64,7 +64,7 @@ display version information
 print help for a command
 .TP
 \fB \-H, \-\-ip\fR=\fIHOSTNAME\fR
-IP address or hostname. IPv6 address can be used here as well. 
+IP address or hostname. IPv6 address can be used here as well.
 .TP
 \fB \-p, \-\-port\fR=\fIPORT\fR
 TCP port number used for Modbus-TCP. By default is 502.
@@ -122,7 +122,7 @@ Number of tries to connect modbus device. It's useful to get reliable answer fro
 Data format. Default 1 (signed word)
 .RS
 .PD 0
-.TP 
+.TP
 1
 - int16_t
 .TP
@@ -156,7 +156,7 @@ Swap bytes in each incomming word
 Inverse order of \fBwords\fR in the packet. To convert data from big-endian to little-endian or the other way use both options \fB-i\fR and \fB-s\fR at the same time.
 .TP
 \fB \-f, \-\-function\fR=\fIFUNCTION\fR
-Used modbus function. 
+Used modbus function.
 .RS
 .PD 0
 .TP
@@ -222,7 +222,7 @@ Format of output dump. Default 1 (binary).
 \fB \-\-dump_size\fR=\fINUMBER\fR
 Number of registers (2 bytes) or bits in output dump. The dump starts
 from address given by parameter \fB\-a, \-\-address\fR.
-.TP 
+.TP
 \fB \-\-dump_file\fR=\fIFILE\fR
 Save dump to the file. If no dump file was specified in the dump mode,
 then stdout will be used for output.
@@ -260,13 +260,13 @@ Program can return the following codes:
 2
 - critical level
 .TP
-3 
+3
 - general error
 .TP
 4
 - unknown error
 .TP
-5 
+5
 - help information were returned
 .TP
 6
@@ -278,7 +278,7 @@ Program can return the following codes:
 8
 - read error
 .TP
-9 
+9
 - unsupported function
 .TP
 10
@@ -292,7 +292,7 @@ read float value from modbus address 13 using Modbus-TCP
 check_modbus --ip=192.168.1.123 -a 15 -f 4 -w ~:2345 -c ~:1234
 read signed integer value from modbus address 15
 .TP
-check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n 
+check_modbus --ip=plc01 --try=5 -d 2 -a 20 -f 2 -n
 .TP
 check_modbus --ip=plc01 -a 1 -f 4 --dump --dump_format 1 --dump_size 60 --dump_file file.dump
 save 60 registers from plc01 to the file.dump in binary format. All these registers can be analyzed later off-line or even on the other machine. See next example.
