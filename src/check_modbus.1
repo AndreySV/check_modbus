@@ -1,4 +1,4 @@
-.TH check_modbus 1 "Aug 2014" ""   ""
+.TH check_modbus 1 "Sep 2015" ""   ""
 .SH NAME
 check_modbus - tool to monitor state of different devices in Nagios using Modbus-TCP/RTU protocols.
 
@@ -108,6 +108,12 @@ Device modbus number. Default 1
 \fB \-a, \-\-adress\fR=\fINUMBER\fR
 Register or bit address. Can be hexadecimal (-a 0x0F) , octal (-a 017) or
 decimal (-a 15). Default 1
+
+Sometimes device's modbus registers
+description starts from 0 address,
+sometimes from 1. The least address in check_modbus is 1. So if in
+device's registers start from 0, increment register address to set
+correct value to -a parameter.
 .TP
 \fB \-t, \-\-try\fR=\fINUMBER\fR
 Number of tries to connect modbus device. It's useful to get reliable answer from the device in noisy environment. Default 1.
