@@ -245,26 +245,13 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 	/*******************************************************************/
 	/*                       Modbus-RTU                                */
 	/*******************************************************************/
-#if LIBMODBUS_VERSION_MAJOR >= 3
 	if (params->serial != NULL) {
 		*mb = modbus_new_rtu(params->serial, params->serial_bps, params->serial_parity, params->serial_data_bits, params->serial_stop_bits);
-		if (*mb != NULL) {
-			if (modbus_rtu_get_serial_mode(*mb) != params->serial_mode) {
-				rc = modbus_rtu_set_serial_mode(*mb, params->serial_mode);
-				if (rc == -1) {
-					ERR("Unable to set serial mode - %s (%d)\n", modbus_strerror(errno), errno);
-					return RESULT_ERROR;
-				}
-			} else {
-				if (dbg_chk_level(DBG_INFO))
-					printf("Serial port already in requested mode.\n");
-			}
-		} else {
+		if (*mb == NULL) {
 			ERR("Unable to allocate libmodbus context\n");
 			return RESULT_ERROR;
 		}
 	}
-#endif
 	/*******************************************************************/
 	/*                       File input                                */
 	/*******************************************************************/
@@ -320,16 +307,37 @@ static void    deinit_connection(modbus_t **mb, FILE **f)
 	}
 }
 
-static int     open_modbus_connection(modbus_t *mb)
+static int     set_serial_mode(modbus_t *mb, struct modbus_params_t *params)
+{
+  int rc;
+  if (modbus_rtu_get_serial_mode(mb) != params->serial_mode) {
+    rc = modbus_rtu_set_serial_mode(mb, params->serial_mode);
+    if (rc == -1) {
+      ERR("Unable to set serial mode - %s (%d)\n", modbus_strerror(errno), errno);
+      return RESULT_ERROR;
+    }
+  } else {
+    if (dbg_chk_level(DBG_INFO))
+      printf("Serial port already in requested mode.\n");
+  }
+  return RESULT_OK;
+}
+
+static int     open_modbus_connection(modbus_t *mb, struct modbus_params_t *params)
 {
 	int rc = RESULT_OK;
 
 	if (mb != NULL) {
 		if (modbus_connect(mb) == -1)
 			rc = RESULT_ERROR_CONNECT;
-		else
-			/* flush old data from buffer */			
-			modbus_flush(mb);
+		else {
+#if LIBMODBUS_VERSION_MAJOR >= 3
+		  if (params->serial != NULL)
+		    rc = set_serial_mode(mb, params);
+#endif
+		  /* flush old data from buffer */
+		  modbus_flush(mb);
+		}
 	}
 
 	return rc;
@@ -395,7 +403,7 @@ static int process(struct modbus_params_t *params)
 	init_data_t(&data, params->format, params->dump_size);
 	for (try_cnt = 0; try_cnt < params->tries; try_cnt++) {
 		/* start new try */
-		rc = open_modbus_connection(mb);
+	        rc = open_modbus_connection(mb, params);
 		if (rc == RESULT_OK) {
 			rc = read_data(mb, f, params, &data);
 			if (rc == RESULT_OK)
