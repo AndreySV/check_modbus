@@ -5,8 +5,8 @@ struct range {
 	const char   *src;
 	double	      lo;
 	double	      hi;
-	int	      inverted:1;
-	int	      defined:1;
+	unsigned int	inverted:1;
+	unsigned int	defined:1;
 
 };
 
