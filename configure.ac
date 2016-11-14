@@ -51,6 +51,7 @@ dnl CC_CHECK_WERROR
 CC_CHECK_CFLAGS_APPEND([ -Wall -Wextra -Wpedantic -Wc++-compat -Wmissing-declarations -Wmissing-prototypes])
 CC_CHECK_CFLAGS_APPEND([ -Wformat-security -Wformat=2 -Wshadow -Wstrict-prototypes ])
 CC_CHECK_CFLAGS_APPEND([ -Wmissing-include-dirs -Wbad-function-cast -Wwrite-strings -Wlogical-op ])
+CC_CHECK_CFLAGS_APPEND([ -std=c99 -D_GNU_SOURCE ])
 dnl CC_CHECK_CFLAGS_APPEND([ -Wconversion ])
 
 AC_ARG_ENABLE(strict-build, AS_HELP_STRING([--enable-strict-build], [force warnings to be an error using gcc ]), [
