@@ -459,6 +459,7 @@ static	const struct option long_options[] = {
 	{"function",      required_argument,      NULL,  'f'   },
 	{"format",        required_argument,      NULL,  'F'   },
 	{"function",      required_argument,      NULL,  'f'   },
+	{"warning",       required_argument,      NULL,  'w'   },
 	{"critical",      required_argument,      NULL,  'c'   },
 	{"null",          no_argument,            NULL,  'n'   },
 	{"not_null",      no_argument,            NULL,  'N'   },
