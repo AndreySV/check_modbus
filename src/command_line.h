@@ -2,7 +2,7 @@
   check_modbus: checker for Modbus TCP/RTU devices for Nagios control
   system based on libmodbus library
 
-  Copyright (C) 2011 2012 2013 2014 Andrey Skvortsov
+  Copyright (C) 2011 2012 2013 2014 Andrey Skvortsov <andrej.skvortzov@gmail.com>
 
 
   This program is free software; you can redistribute it and/or modify
@@ -20,9 +20,6 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   02110-1301, USA.
 
-
-  Andrey Skvortsov
-  Andrej . Skvortzov [at] gmail . com
 */
 
 #ifndef _COMMAND_LINE_H_
