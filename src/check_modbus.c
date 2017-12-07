@@ -209,6 +209,7 @@ static int print_result(struct modbus_params_t *params, struct data_t *data)
 	INFO("rc: %d", rc);
 
 	printf_data_t(stdout, data);
+	printf(" %s", params->unit);
 	print_performance_data(params, data);
 
 	printf("\n");

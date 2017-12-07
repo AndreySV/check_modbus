@@ -92,6 +92,7 @@ static void print_help(void)
 	printf("-c  --critical=     [ Critical range ]\n");
 	printf("-n  --null          [ If the query will get zero, return the critical signal ]\n");
 	printf("-N  --not_null      [ If the query will get no zero, return the critical signal ]\n");
+	printf("-u  --unit=         [ Unit label for output data (e.g., '°C')]\n");
 	printf("\n");
 	printf("-m  --perf_min=     [ Minimum value for performance data]\n");
 	printf("-M  --perf_max=     [ Maximum value for performance data]\n");
@@ -167,6 +168,7 @@ void print_settings(FILE *fd, struct modbus_params_t *params)
 
 	fprintf(fd, "null:        %d\n",          params->nc);
 	fprintf(fd, "not null:    %d\n",          params->nnc);
+	fprintf(fd, "unit:        %s\n",          params->unit ? params->unit : "NULL");
 	fprintf(fd, "\n");
 	fprintf(fd, "perf_data:   %d\n",          params->perf_data);
 
@@ -229,6 +231,7 @@ static void    load_defaults(struct modbus_params_t *params)
 	params->crit_range.hi = 0;
 
 	params->verbose     = 0;
+	params->unit        = "";
 
 	params->perf_min_en = 0;
 	params->perf_max_en = 0;
@@ -433,9 +436,9 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 	};
 
 #if LIBMODBUS_VERSION_MAJOR >= 3
-static	const char *short_options = "hH:p:S:b:d:a:f:w:c:nNt:F:isvPm:M:L:";
+static	const char *short_options = "hH:p:S:b:d:a:f:w:c:nNt:F:isvPm:u:M:L:";
 #else
-static	const char *short_options = "hH:p:d:a:f:w:c:nNt:F:isvPm:M:L:";
+static	const char *short_options = "hH:p:d:a:f:w:c:nNt:F:isvPm:u:M:L:";
 #endif
 static	const struct option long_options[] = {
 	{"help",          no_argument,            NULL,  'h'   },
@@ -462,6 +465,7 @@ static	const struct option long_options[] = {
 	{"swapbytes",     no_argument,            NULL,  's'   },
 	{"inverse",       no_argument,            NULL,  'i'   },
 	{"verbose",       no_argument,            NULL,  'v'   },
+	{"unit",          required_argument,      NULL,  'u'   },
 	{"perf_data",     no_argument,            NULL,  'P'   },
 	{"perf_min",      required_argument,      NULL,  'm'   },
 	{"perf_max",      required_argument,      NULL,  'M'   },
@@ -608,6 +612,9 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			break;
 		case 'N':
 			params->nnc = 1;
+			break;
+		case 'u':
+			params->unit = optarg;
 			break;
 		case 'm':
 			rc = parse_double_param(optarg, &params->perf_min);
