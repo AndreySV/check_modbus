@@ -1,8 +1,7 @@
 dnl                                               -*- Autoconf -*-
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.67])
-dnl AC_PREREQ(2.59)
+AC_PREREQ([2.63])
 AC_INIT(check_modbus, 0.47, Andrej.Skvortzov-at-gmail.com)
 AM_INIT_AUTOMAKE(check_modbus,0.47)
 
