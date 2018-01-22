@@ -272,8 +272,11 @@ static int init_connection(struct modbus_params_t *params, modbus_t **mb, FILE *
 		/* set short timeout */
 		response_timeout.tv_sec = 1;
 		response_timeout.tv_usec = 0;
+#if (LIBMODBUS_VERSION_CHECK(3, 1, 2))
+		modbus_set_response_timeout(*mb, response_timeout.tv_sec, response_timeout.tv_usec);
+#else
 		modbus_set_response_timeout(*mb, &response_timeout);
-
+#endif
 		modbus_set_slave(*mb, params->devnum);
 	}
 
