@@ -30,7 +30,9 @@
 #include "modbus/modbus.h"
 
 
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#define LIBMODBUS_SERIAL_SUPPORTED (LIBMODBUS_VERSION_CHECK(3, 0, 0))
+
+#if LIBMODBUS_SERIAL_SUPPORTED
 #define SERIAL_PARITY_DEFAULT 'N'
 #endif
 
@@ -57,7 +59,7 @@ struct modbus_params_t {
 	struct range  crit_range;           /* Critical range */
 	char    *host;                      /* IP address or host name */
 
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 	char    *serial;                    /* serial port name */
 	int     serial_mode;                /* serial port mode (RS232/RS485) */
 	int     serial_bps;                 /* serial port speed */

@@ -332,7 +332,7 @@ static int     open_modbus_connection(modbus_t *mb, struct modbus_params_t *para
 		if (modbus_connect(mb) == -1)
 			rc = RESULT_ERROR_CONNECT;
 		else {
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 		  if (params->serial != NULL)
 		    rc = set_serial_mode(mb, params);
 #endif

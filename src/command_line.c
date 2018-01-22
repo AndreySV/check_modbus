@@ -53,7 +53,7 @@ static void print_help(void)
 	printf("-H  --ip=           IP address or hostname\n");
 	printf("-p  --port=         [ TCP Port number. Default %s ]\n", XSTR(MODBUS_TCP_DEFAULT_PORT));
 
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 	printf("-S  --serial=       Serial port to use\n");
 	printf("-b  --serial_bps=   [ Serial port speed. Default 9600 ]\n");
 	printf("    --serial_mode=  [ RS mode of serial port. Default 0 ]\n");
@@ -117,7 +117,7 @@ static void print_help(void)
 	printf("          ./check_modbus --ip=plc01 --try=5 -d 2 -a 1 -f 4 --dump --dump_format 1 --dump_size 20\n");
 	printf("          ./check_modbus --file=file.dump -F 7 -f 4 -a 20 -w 100\n");
 
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 	printf("          ./check_modbus --serial=/dev/ttyS0 -d 2 -a 7 -f 4 -n\n");
 #endif
 
@@ -133,7 +133,7 @@ void print_settings(FILE *fd, struct modbus_params_t *params)
 		fprintf(fd, "ip:          %s\n",          params->host);
 		fprintf(fd, "port:        %s\n",          params->mport);
 	}
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 	else if (params->serial != NULL) {
 		fprintf(fd, "serial:           %s\n",     params->serial);
 		fprintf(fd, "serial_mode:      %s\n",     (params->serial_mode == MODBUS_RTU_RS232) ? "MODBUS_RTU_RS232" : "MODBUS_RTU_RS485");
@@ -197,7 +197,7 @@ static void    load_defaults(struct modbus_params_t *params)
 {
 	static char  mport_default[] = XSTR(MODBUS_TCP_DEFAULT_PORT);
 
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 	static char  serial_parity_default = SERIAL_PARITY_DEFAULT;
 
 	params->serial           = NULL;
@@ -296,7 +296,7 @@ static int check_source(struct modbus_params_t *params)
 	int cnt;
 
 	cnt = params->host   ? 1 : 0;
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 	if (params->serial)
 		cnt++;
 #endif
@@ -331,7 +331,7 @@ static int     check_format_type(struct modbus_params_t *params)
 }
 
 
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 static int     check_serial_parity(char parity)
 {
 	return ((parity == 'N') || (parity == 'E') || (parity == 'O')) ? 0 : 1;
@@ -345,7 +345,7 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 {
 	(void)argc;
 
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 	if (params->host == NULL && params->serial == NULL && params->file == NULL) {
 		ERR("Not provided or unable to parse host address/serial port name/filename: %s\n",
 			argv[0]);
@@ -358,7 +358,7 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 	};
 #endif
 
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 	if (params->serial != NULL) {
 		if (params->serial_mode != MODBUS_RTU_RS232 && params->serial_mode != MODBUS_RTU_RS485)	{
 			ERR("%s: Invalid value of serial port mode parameter!\n", argv[0]);
@@ -414,7 +414,7 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 	/* no short option char wasted for rarely used options */
 	enum {
 		OPT_LONG_OPTIONS_ONLY = 0x100,
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 		OPT_SERIAL_MODE,
 		OPT_SERIAL_PARITY,
 		OPT_SERIAL_DATA_BITS,
@@ -435,7 +435,7 @@ static int      check_command_line(struct modbus_params_t *params, int argc, cha
 		OPT_VERSION
 	};
 
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 static	const char *short_options = "hH:p:S:b:d:a:f:w:c:nNt:F:isvPm:u:M:L:";
 #else
 static	const char *short_options = "hH:p:d:a:f:w:c:nNt:F:isvPm:u:M:L:";
@@ -444,7 +444,7 @@ static	const struct option long_options[] = {
 	{"help",          no_argument,            NULL,  'h'   },
 	{"ip",            required_argument,      NULL,  'H'   },
 	{"port",          required_argument,      NULL,  'p'   },
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 	{"serial",        required_argument,      NULL,  'S'   },
 	{"serial_mode",   required_argument,      NULL,  OPT_SERIAL_MODE},
 	{"serial_bps",    required_argument,      NULL,  'b'   },
@@ -545,7 +545,7 @@ int     parse_command_line(struct modbus_params_t *params, int argc, char **argv
 			params->mport = optarg;
 			break;
 
-#if LIBMODBUS_VERSION_MAJOR >= 3
+#if LIBMODBUS_SERIAL_SUPPORTED
 			/* MODBUS RTU */
 		case 'S':
 			params->serial = optarg;
