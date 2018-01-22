@@ -78,6 +78,8 @@ struct modbus_params_t {
 	int     perf_min_en;
 	int     perf_max_en;
 
+	char    *unit;                      /* Unit label for output data */
+
 	double  perf_min;                   /* min value for performance data */
 	double  perf_max;                   /* max value for performance data */
 	int     perf_data;                  /* enable performance data */
