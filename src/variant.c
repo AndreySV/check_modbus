@@ -150,7 +150,7 @@ void printf_data_t(FILE *fd, struct data_t *data)
 		break;
 	case FORMAT_DUMP_HEX:
 		for (i = 0; i < (2*data->arr_size);) {
-			fprintf(fd, "%X ", data->val.bytes[i++]);
+			fprintf(fd, "%02X ", data->val.bytes[i++]);
 			if ((i%16) == 0)
 				fprintf(fd, "\n");
 		}
