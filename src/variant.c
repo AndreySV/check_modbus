@@ -206,3 +206,21 @@ int equal_data_t(struct data_t *data1, struct data_t *data2)
 
 	return 1;
 }
+
+
+void     convert_bytes_to_words_data_t(struct data_t *data)
+{
+	int i;
+	switch(data->format) {
+	case FORMAT_DUMP_BIN:
+	case FORMAT_DUMP_HEX:
+	case FORMAT_DUMP_DEC:
+		for(i = data->arr_size - 1;; i--) {
+			uint16_t tmp = data->val.bytes[i];
+			data->val.words[i] = tmp;
+			if (!i)
+				break;
+		}
+		break;
+	}
+}

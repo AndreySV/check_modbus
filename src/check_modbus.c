@@ -58,10 +58,14 @@ static int     read_data(modbus_t *mb, FILE *f, struct modbus_params_t *params, 
 		case MBF001_READ_COIL_STATUS:
 			rc = modbus_read_bits(mb, sad, size , data->val.bytes);
 			rc =  ((rc == -1) || (rc != size)) ? RESULT_ERROR_READ : RESULT_OK;
+			if (rc == RESULT_OK)
+				convert_bytes_to_words_data_t(data);
 			break;
 		case MBF002_READ_INPUT_STATUS:
 			rc = modbus_read_input_bits(mb, sad, size, data->val.bytes);
 			rc =  ((rc == -1) || (rc != size)) ? RESULT_ERROR_READ : RESULT_OK;
+			if (rc == RESULT_OK)
+				convert_bytes_to_words_data_t(data);
 			break;
 		case MBF003_READ_HOLDING_REGISTERS:
 			rc = modbus_read_registers(mb, sad, size, data->val.words);

@@ -80,5 +80,6 @@ void    init_data_t(struct data_t *data, int8_t format, uint8_t size);
 void    clear_data_t(struct data_t *data);
 void    reorder_data_t(struct data_t *data, int swap_bytes, int inverse_words);
 int     equal_data_t(struct data_t *data1, struct data_t *data2);
+void    convert_bytes_to_words_data_t(struct data_t *data);
 
 #endif
