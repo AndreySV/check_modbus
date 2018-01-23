@@ -99,6 +99,12 @@ static void print_help(void)
 	printf("-P  --perf_data     [ Enable to show performance data. By default performance data is disabled]\n");
 	printf("-L  --perf_label=   [ Label for performance data]\n");
 	printf("\n");
+
+	printf("--gain=             [ Gain value. The read value can be adjusted\n");
+	printf("                      using expression gain*value+offset. Default 1.0 ]\n");
+	printf("--offset=           [ Offset value. Default 0.0 ]\n");
+	printf("\n");
+
 	printf("--dump              [ Dump register and bits values instead of analize their values ]\n");
 	printf("--dump_size=        [ Number of registers/bits in output dump ]\n");
 	printf("--dump_format=      [ Format of dump output. Default 1]\n");
